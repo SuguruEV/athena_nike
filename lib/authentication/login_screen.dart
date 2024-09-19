@@ -14,7 +14,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _phoneNumberController = TextEditingController();
-  final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
+  final RoundedLoadingButtonController _btnController =
+      RoundedLoadingButtonController();
 
   Country selectedCountry = Country(
     phoneCode: '34',
@@ -71,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 maxLength: 10,
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.done,
-                onChanged: (value){
+                onChanged: (value) {
                   setState(() {
                     _phoneNumberController.text = value;
                   });
@@ -84,7 +85,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     fontWeight: FontWeight.w500,
                   ),
                   prefixIcon: Container(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.fromLTRB(
+                      8.0,
+                      12.0,
+                      8.0,
+                      12.0,
+                    ),
                     child: InkWell(
                       onTap: () {
                         showCountryPicker(
@@ -126,12 +132,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   suffixIcon: _phoneNumberController.text.length > 9
                       ? InkWell(
-                        onTap: (){
-                          
-                        },
-                        child: Container(
-                            height: 40,
-                            width: 40,
+                          onTap: () {},
+                          child: Container(
+                            height: 35,
+                            width: 35,
                             margin: const EdgeInsets.all(10),
                             decoration: const BoxDecoration(
                                 color: Colors.green, shape: BoxShape.circle),
@@ -141,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               size: 30,
                             ),
                           ),
-                      )
+                        )
                       : null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
