@@ -1,8 +1,11 @@
+import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/utilities/assets_manager.dart';
 import 'package:country_picker/country_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -39,6 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.read<AuthenticationProvider>();
+
     return Scaffold(
       body: Center(
         child: Padding(
@@ -130,24 +135,35 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  suffixIcon: _phoneNumberController.text.length > 9
-                      ? InkWell(
-                          onTap: () {
-                            
-                          },
-                          child: Container(
-                            height: 35,
-                            width: 35,
-                            margin: const EdgeInsets.all(10),
-                            decoration: const BoxDecoration(
-                                color: Colors.green, shape: BoxShape.circle),
-                            child: const Icon(
-                              Icons.done,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          ),
-                        )
+                  suffixIcon: _phoneNumberController.text.length == 9 || _phoneNumberController.text.length == 10
+                      ? authProvider.isLoading
+                          ? const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: CircularProgressIndicator(),
+                          )
+                          : InkWell(
+                              onTap: () {
+                                // Sign In With Phone Number
+                                authProvider.signInWithPhoneNumber(
+                                  phoneNumber:
+                                      '+${selectedCountry.phoneCode}${_phoneNumberController.text}',
+                                  context: context
+                                );
+                              },
+                              child: Container(
+                                height: 35,
+                                width: 35,
+                                margin: const EdgeInsets.all(10),
+                                decoration: const BoxDecoration(
+                                    color: Colors.green,
+                                    shape: BoxShape.circle),
+                                child: const Icon(
+                                  Icons.done,
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
+                              ),
+                            )
                       : null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
