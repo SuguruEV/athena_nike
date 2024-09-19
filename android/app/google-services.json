@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "738254835702",
+    "project_id": "athenachat-28cba",
+    "storage_bucket": "athenachat-28cba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:738254835702:android:cb5ec6d7b981f79ef8c1d7",
+        "android_client_info": {
+          "package_name": "es.suguruev.athenanike"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvvZfmP80q7L4UvPs_iQWQYtie1h5G5-o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
