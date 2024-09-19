@@ -1,4 +1,6 @@
+import 'package:athena_nike/utilities/assets_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,11 +12,13 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Column(
         children: [
-          Center(
-            child: Text('Login Screen'),
+          SizedBox(
+            height: 200,
+            width: 200,
+            child: Lottie.asset(AssetsManager.chatBubble),
           ),
         ],
       ),
