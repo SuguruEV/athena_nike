@@ -1,12 +1,10 @@
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/utilities/assets_manager.dart';
 import 'package:country_picker/country_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,8 +15,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _phoneNumberController = TextEditingController();
-  final RoundedLoadingButtonController _btnController =
-      RoundedLoadingButtonController();
 
   Country selectedCountry = Country(
     phoneCode: '34',
@@ -36,7 +32,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void dispose() {
     _phoneNumberController.dispose();
-    _btnController.stop();
     super.dispose();
   }
 

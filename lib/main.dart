@@ -1,6 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:athena_nike/authentication/login_screen.dart';
 import 'package:athena_nike/authentication/otp_screen.dart';
+import 'package:athena_nike/authentication/user_information_screen.dart';
 import 'package:athena_nike/firebase_options.dart';
 import 'package:athena_nike/main_screen/home_screen.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
@@ -49,7 +50,7 @@ class MyApp extends StatelessWidget {
         title: 'Athena Chat',
         theme: theme,
         darkTheme: darkTheme,
-        home: const OTPScreen(),
+        home: const UserInformationScreen(),
       ),
     );
   }
