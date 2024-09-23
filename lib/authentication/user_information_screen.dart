@@ -4,6 +4,7 @@ import 'package:athena_nike/utilities/assets_manager.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:athena_nike/widgets/app_bar_back_button.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class UserInformationScreen extends StatefulWidget {
@@ -36,13 +37,54 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
       },
     );
     // Crop image
-    if (finalFileImage != null) {
-      // Crop Image
-      // finalFileImage = await cropImage(finalFileImage!);
-      setState(() {
-        userImage = finalFileImage!.path;
-      });
+    cropImage(finalFileImage?.path);
+  }
+
+  void cropImage(filePath) async {
+    if (filePath != null) {
+      CroppedFile? croppedFile = await ImageCropper().cropImage(
+        sourcePath: filePath,
+        maxHeight: 800,
+        maxWidth: 800,
+        compressQuality: 90,
+      );
+
+      if (croppedFile != null) {
+        setState(() {
+          finalFileImage = File(croppedFile.path);
+        });
+      } else {
+      }
     }
+  }
+
+  void showBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => SizedBox(
+        height: MediaQuery.of(context).size.height / 5,
+        child: Column(
+          children: [
+            ListTile(
+              onTap: () {
+                selectImage(true);
+                Navigator.of(context).pop();
+              },
+              leading: const Icon(Icons.camera_alt),
+              title: const Text('Camera'),
+            ),
+            ListTile(
+              onTap: () {
+                selectImage(false);
+                Navigator.of(context).pop();
+              },
+              leading: const Icon(Icons.image),
+              title: const Text('Gallery'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -65,26 +107,59 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
           ),
           child: Column(
             children: [
-              const Stack(
-                children: [
-                  CircleAvatar(
-                    radius: 60,
-                    backgroundImage: const AssetImage(AssetsManager.userImage),
-                  ),
-                  Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: CircleAvatar(
-                        radius: 20,
-                        backgroundColor: Colors.green,
-                        child: const Icon(
-                          Icons.camera_alt,
-                          color: Colors.white,
-                          size: 20,
+              finalFileImage == null
+                  ? Stack(
+                      children: [
+                        const CircleAvatar(
+                          radius: 60,
+                          backgroundImage: AssetImage(AssetsManager.userImage),
                         ),
-                      )),
-                ],
-              ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: InkWell(
+                            onTap: () {
+                              showBottomSheet();
+                            },
+                            child: const CircleAvatar(
+                              radius: 20,
+                              backgroundColor: Colors.green,
+                              child: Icon(
+                                Icons.camera_alt,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: 60,
+                          backgroundImage:
+                              FileImage(File(finalFileImage!.path)),
+                        ),
+                        Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: InkWell(
+                              onTap: () {
+                                showBottomSheet();
+                              },
+                              child: const CircleAvatar(
+                                radius: 20,
+                                backgroundColor: Colors.green,
+                                child: Icon(
+                                  Icons.camera_alt,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                            )),
+                      ],
+                    ),
               const SizedBox(height: 30),
               TextField(
                 controller: _nameController,
