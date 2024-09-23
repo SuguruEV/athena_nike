@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/models/user_model.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
@@ -5,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationProvider extends ChangeNotifier {
   bool _isLoading = false;
@@ -22,6 +25,43 @@ class AuthenticationProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  // Check if user exists
+  Future<bool> checkUserExists() async {
+    DocumentSnapshot documentSnapshot =
+        await _firestore.collection(Constants.users).doc(_uid).get();
+    if (documentSnapshot.exists) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // Get User Data From Firestore
+  Future<void> getUserDataFromFireStore() async {
+    DocumentSnapshot documentSnapshot =
+        await _firestore.collection(Constants.users).doc(_uid).get();
+    _userModel =
+        UserModel.fromMap(documentSnapshot.data() as Map<String, dynamic>);
+    notifyListeners();
+  }
+
+  // Save User Data To Shared Preferences
+  Future<void> saveUserDataToSharedPreferences() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.setString(
+        Constants.userModel, jsonEncode(userModel!.toMap()));
+  }
+
+  // Get Data From Shared Preferences
+  Future<void> getUserDataFromSharedPreferences() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String userModelString =
+        sharedPreferences.getString(Constants.userModel) ?? '';
+    _userModel = UserModel.fromMap(jsonDecode(userModelString));
+    _uid = _userModel!.uid;
+    notifyListeners();
+  }
 
   // Sign in with phone number
   Future<void> signInWithPhoneNumber({

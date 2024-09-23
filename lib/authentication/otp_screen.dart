@@ -1,6 +1,7 @@
 import 'package:athena_nike/authentication/login_screen.dart';
 import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
@@ -31,6 +32,8 @@ class _OTPScreenState extends State<OTPScreen> {
     final verificationId = args[Constants.verificationId] as String;
     final phoneNumber = args[Constants.phoneNumber] as String;
 
+    final authProvider = context.watch<AuthenticationProvider>();
+
     final defaultPinTheme = PinTheme(
       width: 56,
       height: 60,
@@ -41,14 +44,12 @@ class _OTPScreenState extends State<OTPScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         color: Colors.grey.shade200,
-        border: Border.all(
-          color: Colors.transparent
-        ),
+        border: Border.all(color: Colors.transparent),
       ),
     );
 
     return Scaffold(
-      body: SafeArea(
+        body: SafeArea(
       child: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -88,11 +89,15 @@ class _OTPScreenState extends State<OTPScreen> {
                   controller: controller,
                   focusNode: focusNode,
                   defaultPinTheme: defaultPinTheme,
-                  onCompleted: (pin){
+                  onCompleted: (pin) {
                     setState(() {
                       otpCode = pin;
                     });
-                  // Verify OTP Code
+                    // Verify OTP Code
+                    verifyOTPCode(
+                      verificationId: verificationId,
+                      otpCode: otpCode!,
+                    );
                   },
                   focusedPinTheme: defaultPinTheme.copyWith(
                     height: 68,
@@ -119,15 +124,43 @@ class _OTPScreenState extends State<OTPScreen> {
                 ),
               ),
               const SizedBox(height: 30),
-              Text('Didn\'t receive the code?',
+              authProvider.isLoading
+                  ? const CircularProgressIndicator()
+                  : const SizedBox.shrink(),
+              authProvider.isSuccessful ? Container(
+                height: 50,
+                width: 50,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.green,
+                ),
+                child: const Icon(
+                  Icons.check,
+                  color: Colors.white,
+                  size: 30,
+                ),
+              ) : const SizedBox.shrink(),
+
+              authProvider.isLoading ? const SizedBox.shrink() :
+              Text(
+                'Didn\'t receive the code?',
                 style: GoogleFonts.openSans(
                   fontSize: 16,
                 ),
               ),
-
               const SizedBox(height: 10),
-              TextButton(onPressed: () {}, child: Text('Resend Code', 
-              style: GoogleFonts.openSans(fontSize: 18, fontWeight: FontWeight.w600,),))
+              authProvider.isLoading ? const SizedBox.shrink() :
+              TextButton(
+                  onPressed: () {
+                    // TODO Resend OTP Code
+                  },
+                  child: Text(
+                    'Resend Code',
+                    style: GoogleFonts.openSans(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ))
             ],
           ),
         ),
@@ -144,19 +177,37 @@ class _OTPScreenState extends State<OTPScreen> {
       verificationId: verificationId,
       otpCode: otpCode,
       context: context,
-      onSuccess: () {
+      onSuccess: () async {
         // 1. Check if user exists in Firestore
+        bool userExists = await authProvider.checkUserExists();
 
+        if (userExists) {
+          // 2. If user exists, navigate to Home Screen
 
+          // * Get user information from firestore
+          await authProvider.getUserDataFromFireStore();
 
-        // 2. If user exists, navigate to Home Screen
+          // * Save user information to provider / SharedPreferences
+          await authProvider.saveUserDataToSharedPreferences();
 
-        // * Get user information from firestore
-
-        // * Save user information to provider / SharedPreferences
-
-        // 3. If user does not exist, navigate to User Information Screen
+          // * Navigate to Home Screen
+          navigate(userExists: true);
+        } else {
+          // 3. If user does not exist, navigate to User Information Screen
+          navigate(userExists: false);
+        }
       },
     );
+  }
+
+  void navigate({required bool userExists}) {
+    if (userExists) {
+      // Navigate to Home Screen and Remove All Previous Routes
+      Navigator.pushNamedAndRemoveUntil(
+          context, Constants.homeScreen, (route) => false);
+    } else {
+      // Navigate to User Information Screen
+      Navigator.pushNamed(context, Constants.userInformationScreen);
+    }
   }
 }
