@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:athena_nike/utilities/assets_manager.dart';
+import 'package:athena_nike/utilities/global_methods.dart';
+import 'package:athena_nike/widgets/app_bar_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
@@ -14,6 +18,9 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
       RoundedLoadingButtonController();
   final TextEditingController _nameController = TextEditingController();
 
+  File? finalFileImage;
+  String userImage = '';
+
   @override
   void dispose() {
     _btnController.stop();
@@ -21,16 +28,41 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
     super.dispose();
   }
 
+  void selectImage(bool fromCamera) async {
+    finalFileImage = await pickImage(
+      fromCamera: fromCamera,
+      onFail: (String message) {
+        showSnackBar(context, message);
+      },
+    );
+    // Crop image
+    if (finalFileImage != null) {
+      // Crop Image
+      // finalFileImage = await cropImage(finalFileImage!);
+      setState(() {
+        userImage = finalFileImage!.path;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: AppBarBackButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
         title: const Text('User Information'),
         centerTitle: true,
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20,),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 20,
+          ),
           child: Column(
             children: [
               const Stack(
@@ -53,20 +85,17 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
                       )),
                 ],
               ),
-              const SizedBox(height: 30),      
+              const SizedBox(height: 30),
               TextField(
                 controller: _nameController,
                 decoration: const InputDecoration(
                   hintText: 'Name',
                   labelText: 'Name',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8)
-                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
                   ),
                 ),
               ),
-
               const SizedBox(height: 30),
               SizedBox(
                 width: double.infinity,
@@ -82,10 +111,9 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
                   child: const Text(
                     'Continue',
                     style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500
-                    ),
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500),
                   ),
                 ),
               ),

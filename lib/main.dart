@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
         title: 'Athena Chat',
         theme: theme,
         darkTheme: darkTheme,
-        initialRoute: Constants.loginScreen,
+        initialRoute: Constants.userInformationScreen,
         routes: {
           Constants.loginScreen: (context) => const LoginScreen(),
           Constants.otpScreen: (context) => const OTPScreen(),
