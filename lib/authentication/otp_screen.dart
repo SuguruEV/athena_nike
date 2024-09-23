@@ -1,6 +1,10 @@
+import 'package:athena_nike/authentication/login_screen.dart';
+import 'package:athena_nike/constants.dart';
+import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
+import 'package:provider/provider.dart';
 
 class OTPScreen extends StatefulWidget {
   const OTPScreen({super.key});
@@ -23,6 +27,10 @@ class _OTPScreenState extends State<OTPScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as Map;
+    final verificationId = args[Constants.verificationId] as String;
+    final phoneNumber = args[Constants.phoneNumber] as String;
+
     final defaultPinTheme = PinTheme(
       width: 56,
       height: 60,
@@ -65,7 +73,7 @@ class _OTPScreenState extends State<OTPScreen> {
               ),
               const SizedBox(height: 10),
               Text(
-                '+260 96 000 0000',
+                phoneNumber,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.openSans(
                   fontSize: 18,
@@ -125,5 +133,30 @@ class _OTPScreenState extends State<OTPScreen> {
         ),
       ),
     ));
+  }
+
+  void verifyOTPCode({
+    required String verificationId,
+    required String otpCode,
+  }) async {
+    final authProvider = context.read<AuthenticationProvider>();
+    authProvider.verifyOTPCode(
+      verificationId: verificationId,
+      otpCode: otpCode,
+      context: context,
+      onSuccess: () {
+        // 1. Check if user exists in Firestore
+
+
+
+        // 2. If user exists, navigate to Home Screen
+
+        // * Get user information from firestore
+
+        // * Save user information to provider / SharedPreferences
+
+        // 3. If user does not exist, navigate to User Information Screen
+      },
+    );
   }
 }

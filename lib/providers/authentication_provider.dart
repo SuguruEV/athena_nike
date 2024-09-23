@@ -1,3 +1,4 @@
+import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/models/user_model.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -51,9 +52,45 @@ class AuthenticationProvider extends ChangeNotifier {
         _isLoading = false;
         notifyListeners();
         // Navigate to OTP Screen
-        print('Navigation to OTP Screen');
+        Navigator.of(context).pushNamed(
+          Constants.otpScreen,
+          arguments: {
+            Constants.verificationId: verificationId,
+            Constants.phoneNumber: phoneNumber,
+          },
+        );
       },
       codeAutoRetrievalTimeout: (String verificationId) {},
     );
+  }
+
+  // Verify OTP Code
+  Future<void> verifyOTPCode({
+    required String verificationId,
+    required String otpCode,
+    required BuildContext context,
+    required Function onSuccess,
+  }) async {
+    _isLoading = true;
+    notifyListeners();
+
+    final credential = PhoneAuthProvider.credential(
+      verificationId: verificationId,
+      smsCode: otpCode,
+    );
+
+    await _auth.signInWithCredential(credential).then((value) async {
+      _uid = value.user!.uid;
+      _phoneNumber = value.user!.phoneNumber;
+      _isSuccessful = true;
+      _isLoading = false;
+      onSuccess();
+      notifyListeners();
+    }).catchError((e) {
+      _isSuccessful = false;
+      _isLoading = false;
+      notifyListeners();
+      showSnackBar(context, e.toString());
+    });
   }
 }
