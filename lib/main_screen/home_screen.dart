@@ -1,9 +1,14 @@
+import 'package:athena_nike/authentication/login_screen.dart';
 import 'package:athena_nike/main_screen/chats_list_screen.dart';
 import 'package:athena_nike/main_screen/groups_screen.dart';
 import 'package:athena_nike/main_screen/people_screen.dart';
+import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/utilities/assets_manager.dart';
+import 'package:athena_nike/utilities/global_methods.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,17 +29,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthenticationProvider>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Athena Chat'),
-        actions: const [
+        actions: [
           Padding(
-            padding: EdgeInsets.all(8.0),
-            child: CircleAvatar(
+            padding: const EdgeInsets.all(8.0),
+            child: userImageWidget(
+              imageUrl: authProvider.userModel!.image,
               radius: 20,
-              backgroundImage: AssetImage(AssetsManager.userImage),
+              onTap: () {
+                // Navigate to User Profile Screen
+              },
             ),
-          )
+          ),
         ],
       ),
       body: PageView(
@@ -53,10 +63,12 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Chats',
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.group), label: 'Groups',
+            icon: Icon(CupertinoIcons.group),
+            label: 'Groups',
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.globe), label: 'People',
+            icon: Icon(CupertinoIcons.globe),
+            label: 'People',
           ),
         ],
         currentIndex: currentIndex,
