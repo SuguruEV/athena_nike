@@ -178,7 +178,7 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
       phoneNumber: authProvider.phoneNumber!,
       image: '',
       token: '',
-      aboutMe: 'Hey there! I am using Athena Chat',
+      aboutMe: 'Hey there! I am using Aegis',
       lastSeen: '',
       createdAt: '',
       isOnline: true,
