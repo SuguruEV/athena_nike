@@ -31,7 +31,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Aegis'),
+        title: const Text(
+          'Aegis',
+          style: TextStyle(
+            fontFamily: 'TitilliumWeb',
+          ),
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),

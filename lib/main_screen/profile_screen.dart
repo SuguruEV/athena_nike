@@ -1,3 +1,4 @@
+import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/models/user_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
@@ -29,16 +30,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
           },
         ),
         centerTitle: true,
-        title: const Text('Profile'),
+        title: Text(
+          'Profile',
+          style: GoogleFonts.titilliumWeb(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         actions: [
           currentUser.uid == uid
               ?
               // Logout Button
               IconButton(
                   onPressed: () {
-                    //context.read<AuthenticationProvider>().logout();
+                    // Navigate to the settings screen with the UID as an argument
+                    Navigator.pushNamed(
+                      context,
+                      Constants.settingsScreen,
+                      arguments: uid,
+                    );
                   },
-                  icon: const Icon(Icons.logout),
+                  icon: const Icon(Icons.settings),
                 )
               : const SizedBox(),
         ],
@@ -97,6 +109,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   userModel: userModel,
                 ),
                 const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 40,
+                      width: 40,
+                      child: Divider(
+                        color: Colors.grey,
+                        thickness: 1,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      'About Me',
+                      style: GoogleFonts.titilliumWeb(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    const SizedBox(
+                      height: 40,
+                      width: 40,
+                      child: Divider(
+                        color: Colors.grey,
+                        thickness: 1,
+                      ),
+                    ),
+                  ],
+                ),
                 Text(
                   userModel.aboutMe,
                   style: GoogleFonts.titilliumWeb(
