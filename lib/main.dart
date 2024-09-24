@@ -6,6 +6,7 @@ import 'package:athena_nike/authentication/user_information_screen.dart';
 import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/firebase_options.dart';
 import 'package:athena_nike/main_screen/home_screen.dart';
+import 'package:athena_nike/main_screen/profile_screen.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +61,7 @@ class MyApp extends StatelessWidget {
           Constants.userInformationScreen: (context) =>
               const UserInformationScreen(),
           Constants.homeScreen: (context) => const HomeScreen(),
+          Constants.profileScreen: (context) => const ProfileScreen(),
         },
       ),
     );

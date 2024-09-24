@@ -210,4 +210,9 @@ class AuthenticationProvider extends ChangeNotifier {
     String fileUrl = await storageTaskSnapshot.ref.getDownloadURL();
     return fileUrl;
   }
+
+  // Get User Stream
+  Stream<DocumentSnapshot> userStream({required String userID}) {
+    return _firestore.collection(Constants.users).doc(userID).snapshots();
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/main_screen/chats_list_screen.dart';
 import 'package:athena_nike/main_screen/groups_screen.dart';
 import 'package:athena_nike/main_screen/people_screen.dart';
@@ -38,7 +39,12 @@ class _HomeScreenState extends State<HomeScreen> {
               imageUrl: authProvider.userModel!.image,
               radius: 20,
               onTap: () {
-                // Navigate to User Profile Screen
+                // Navigate to User Profile Screen with UIDs as Arguments
+                Navigator.pushNamed(
+                  context,
+                  Constants.profileScreen,
+                  arguments: authProvider.userModel!.uid,
+                );
               },
             ),
           ),
