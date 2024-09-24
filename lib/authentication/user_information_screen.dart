@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/models/user_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
-import 'package:athena_nike/utilities/assets_manager.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:athena_nike/widgets/app_bar_back_button.dart';
 import 'package:athena_nike/widgets/display_user_image.dart';
@@ -42,10 +41,16 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
       },
     );
     // Crop image
-    cropImage(finalFileImage?.path);
+    await cropImage(finalFileImage?.path);
+
+    popContext();
   }
 
-  void cropImage(filePath) async {
+  popContext() {
+    Navigator.pop(context);
+  }
+
+  Future<void> cropImage(filePath) async {
     if (filePath != null) {
       CroppedFile? croppedFile = await ImageCropper().cropImage(
         sourcePath: filePath,
@@ -72,7 +77,6 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
             ListTile(
               onTap: () {
                 selectImage(true);
-                Navigator.of(context).pop();
               },
               leading: const Icon(Icons.camera_alt),
               title: const Text('Camera'),
@@ -80,7 +84,6 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
             ListTile(
               onTap: () {
                 selectImage(false);
-                Navigator.of(context).pop();
               },
               leading: const Icon(Icons.image),
               title: const Text('Gallery'),
@@ -202,8 +205,11 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
       },
     );
   }
-  
+
   void navigateToHomeScreen() {
-    // Navigate To Home Screen and
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      Constants.homeScreen,
+      (route) => false,
+    );
   }
 }

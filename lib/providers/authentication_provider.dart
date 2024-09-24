@@ -105,7 +105,7 @@ class AuthenticationProvider extends ChangeNotifier {
     );
   }
 
-  // Verify OTP Code
+  // verify otp code
   Future<void> verifyOTPCode({
     required String verificationId,
     required String otpCode,
