@@ -49,11 +49,11 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 height: 200,
                 width: 200,
-                child: Lottie.asset(AssetsManager.greekLoading),
+                child: Lottie.asset(AssetsManager.temple),
               ),
               Text(
-                'Athena Chat',
-                style: GoogleFonts.openSans(
+                'Aegis',
+                style: GoogleFonts.titilliumWeb(
                   fontSize: 28,
                   fontWeight: FontWeight.w500,
                 ),
@@ -62,8 +62,8 @@ class _LoginScreenState extends State<LoginScreen> {
               Text(
                 'Add your phone number, we will send you a code to verify your account.',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.openSans(
-                  fontSize: 16,
+                style: GoogleFonts.titilliumWeb(
+                  fontSize: 20,
                 ),
               ),
               const SizedBox(height: 20),
@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: InputDecoration(
                   counterText: '',
                   hintText: 'Phone Number',
-                  hintStyle: GoogleFonts.openSans(
+                  hintStyle: GoogleFonts.titilliumWeb(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
@@ -98,13 +98,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           showPhoneCode: true,
                           countryListTheme: CountryListThemeData(
                             bottomSheetHeight: 400,
-                            textStyle: GoogleFonts.openSans(
+                            textStyle: GoogleFonts.titilliumWeb(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
                             ),
                             inputDecoration: InputDecoration(
                               hintText: 'Search',
-                              hintStyle: GoogleFonts.openSans(
+                              hintStyle: GoogleFonts.titilliumWeb(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -123,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       child: Text(
                         '${selectedCountry.flagEmoji} +${selectedCountry.phoneCode}',
-                        style: GoogleFonts.openSans(
+                        style: GoogleFonts.titilliumWeb(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),

@@ -1,11 +1,8 @@
-import 'package:athena_nike/authentication/login_screen.dart';
 import 'package:athena_nike/main_screen/chats_list_screen.dart';
 import 'package:athena_nike/main_screen/groups_screen.dart';
 import 'package:athena_nike/main_screen/people_screen.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
-import 'package:athena_nike/utilities/assets_manager.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Athena Chat'),
+        title: const Text('Aegis'),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),

@@ -1,4 +1,5 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:athena_nike/authentication/landing_screen.dart';
 import 'package:athena_nike/authentication/login_screen.dart';
 import 'package:athena_nike/authentication/otp_screen.dart';
 import 'package:athena_nike/authentication/user_information_screen.dart';
@@ -48,11 +49,12 @@ class MyApp extends StatelessWidget {
       initial: savedThemeMode ?? AdaptiveThemeMode.light,
       builder: (theme, darkTheme) => MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Athena Chat',
+        title: 'Aegis',
         theme: theme,
         darkTheme: darkTheme,
-        initialRoute: Constants.loginScreen,
+        initialRoute: Constants.landingScreen,
         routes: {
+          Constants.landingScreen: (context) => const LandingScreen(),
           Constants.loginScreen: (context) => const LoginScreen(),
           Constants.otpScreen: (context) => const OTPScreen(),
           Constants.userInformationScreen: (context) =>
