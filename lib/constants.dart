@@ -28,5 +28,6 @@ class Constants {
   static const String sentFriendRequestsUIDs = 'sentFriendRequestsUIDs';
   static const String verificationId = 'verificationId';
   static const String users = 'users';
+  static const String userImages = 'userImages';
   static const String userModel = 'userModel';
 }

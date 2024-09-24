@@ -1,10 +1,15 @@
 import 'dart:io';
 
+import 'package:athena_nike/constants.dart';
+import 'package:athena_nike/models/user_model.dart';
+import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/utilities/assets_manager.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:athena_nike/widgets/app_bar_back_button.dart';
+import 'package:athena_nike/widgets/display_user_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class UserInformationScreen extends StatefulWidget {
@@ -53,8 +58,7 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
         setState(() {
           finalFileImage = File(croppedFile.path);
         });
-      } else {
-      }
+      } else {}
     }
   }
 
@@ -107,59 +111,13 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
           ),
           child: Column(
             children: [
-              finalFileImage == null
-                  ? Stack(
-                      children: [
-                        const CircleAvatar(
-                          radius: 60,
-                          backgroundImage: AssetImage(AssetsManager.userImage),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: InkWell(
-                            onTap: () {
-                              showBottomSheet();
-                            },
-                            child: const CircleAvatar(
-                              radius: 20,
-                              backgroundColor: Colors.green,
-                              child: Icon(
-                                Icons.camera_alt,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : Stack(
-                      children: [
-                        CircleAvatar(
-                          radius: 60,
-                          backgroundImage:
-                              FileImage(File(finalFileImage!.path)),
-                        ),
-                        Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: InkWell(
-                              onTap: () {
-                                showBottomSheet();
-                              },
-                              child: const CircleAvatar(
-                                radius: 20,
-                                backgroundColor: Colors.green,
-                                child: Icon(
-                                  Icons.camera_alt,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                              ),
-                            )),
-                      ],
-                    ),
+              DisplayUserImage(
+                finalFileImage: finalFileImage,
+                radius: 60,
+                onPressed: () {
+                  showBottomSheet();
+                },
+              ),
               const SizedBox(height: 30),
               TextField(
                 controller: _nameController,
@@ -177,7 +135,15 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
                 child: RoundedLoadingButton(
                   controller: _btnController,
                   onPressed: () {
-                    // Save User Information
+                    if (_nameController.text.isEmpty ||
+                        _nameController.text.length < 3) {
+                      showSnackBar(context,
+                          'Name is required / Name must be at least 3 characters long');
+                      _btnController.reset();
+                      return;
+                    }
+                    // Save User Data To Firestore
+                    saveUserDataToFireStore();
                   },
                   successIcon: Icons.check,
                   successColor: Colors.green,
@@ -197,5 +163,47 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
         ),
       ),
     );
+  }
+
+  // Save User Data To Firestore
+  void saveUserDataToFireStore() async {
+    final authProvider = context.read<AuthenticationProvider>();
+
+    UserModel userModel = UserModel(
+      uid: authProvider.uid!,
+      name: _nameController.text.trim(),
+      phoneNumber: authProvider.phoneNumber!,
+      image: '',
+      token: '',
+      aboutMe: 'Hey there! I am using Athena Chat',
+      lastSeen: '',
+      createdAt: '',
+      isOnline: true,
+      friendsUIDs: [],
+      friendRequestsUIDs: [],
+      sentFriendRequestsUIDs: [],
+    );
+
+    authProvider.saveUserDataToFireStore(
+      userModel: userModel,
+      fileImage: finalFileImage,
+      onSuccess: () async {
+        _btnController.success();
+        await Future.delayed(const Duration(seconds: 1));
+        // Save User Data to Shared Preferences
+        await authProvider.saveUserDataToSharedPreferences();
+        navigateToHomeScreen();
+      },
+      onFail: () async {
+        _btnController.error();
+        showSnackBar(context, 'Failed to save user data');
+        await Future.delayed(const Duration(seconds: 1));
+        _btnController.reset();
+      },
+    );
+  }
+  
+  void navigateToHomeScreen() {
+    // Navigate To Home Screen and
   }
 }

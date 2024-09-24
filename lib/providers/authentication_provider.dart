@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/models/user_model.dart';
@@ -132,5 +133,58 @@ class AuthenticationProvider extends ChangeNotifier {
       notifyListeners();
       showSnackBar(context, e.toString());
     });
+  }
+
+  // Save User Data To Firestore
+  void saveUserDataToFireStore({
+    required UserModel userModel,
+    required File? fileImage,
+    required Function onSuccess,
+    required Function onFail,
+  }) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      if (fileImage != null) {
+        // Upload Image To Storage
+        String imageUrl = await storeFileToStorage(
+            file: fileImage,
+            reference: '${Constants.userImages}/${userModel.uid}');
+
+        userModel.image = imageUrl;
+      }
+
+      userModel.lastSeen = DateTime.now().microsecondsSinceEpoch.toString();
+      userModel.createdAt = DateTime.now().microsecondsSinceEpoch.toString();
+
+      _userModel = userModel;
+      _uid = userModel.uid;
+
+      // Save User Data To Firestore
+      await _firestore
+          .collection(Constants.users)
+          .doc(userModel.uid)
+          .set(userModel.toMap());
+
+      _isLoading = false;
+      onSuccess();
+      notifyListeners();
+    } on FirebaseException catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      onFail(e.toString());
+    }
+  }
+
+  // Store File to Storage and Return File URL
+  Future<String> storeFileToStorage({
+    required File file,
+    required String reference,
+  }) async {
+    UploadTask uploadTask = _storage.ref().child(reference).putFile(file);
+    TaskSnapshot storageTaskSnapshot = await uploadTask;
+    String fileUrl = await storageTaskSnapshot.ref.getDownloadURL();
+    return fileUrl;
   }
 }
