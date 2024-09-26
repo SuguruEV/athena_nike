@@ -215,4 +215,12 @@ class AuthenticationProvider extends ChangeNotifier {
   Stream<DocumentSnapshot> userStream({required String userID}) {
     return _firestore.collection(Constants.users).doc(userID).snapshots();
   }
+
+  // Get All Users Stream
+  Stream<QuerySnapshot> getAllUsersStream({required String userID}) {
+    return _firestore
+        .collection(Constants.users)
+        .where(Constants.uid, isNotEqualTo: userID)
+        .snapshots();
+  }
 }
