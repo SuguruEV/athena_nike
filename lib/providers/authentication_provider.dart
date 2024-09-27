@@ -223,4 +223,27 @@ class AuthenticationProvider extends ChangeNotifier {
         .where(Constants.uid, isNotEqualTo: userID)
         .snapshots();
   }
+
+  // Send Friend Request
+  Future<void> sendFriendRequest({
+    required String friendID,
+  }) async {
+    try {
+      // Add Our UID to Friends Request List
+      await _firestore.collection(Constants.users).doc(friendID).update(
+        {
+          Constants.friendRequestsUIDs: FieldValue.arrayUnion([_uid]),
+        },
+      );
+
+      // Add Friend UID to Our Friend Requests List
+      await _firestore.collection(Constants.users).doc(_uid).update(
+        {
+          Constants.sentFriendRequestsUIDs: FieldValue.arrayUnion([friendID]),
+        },
+      );
+    } on FirebaseException catch (e) {
+      print(e.toString());
+    }
+  }
 }
