@@ -246,4 +246,25 @@ class AuthenticationProvider extends ChangeNotifier {
       print(e.toString());
     }
   }
+
+  // Cancel Friend Request
+  Future<void>cancelFriendRequest({required String friendID}) async {
+    try {
+      // Remove Our UID from Friends Request List
+      await _firestore.collection(Constants.users).doc(friendID).update(
+        {
+          Constants.friendRequestsUIDs: FieldValue.arrayRemove([_uid]),
+        },
+      );
+
+      // Remove Friend UID from Our Friend Requests List
+      await _firestore.collection(Constants.users).doc(_uid).update(
+        {
+          Constants.sentFriendRequestsUIDs: FieldValue.arrayRemove([friendID]),
+        },
+      );
+    } on FirebaseException catch (e) {
+      print(e.toString());
+    }
+  }
 }

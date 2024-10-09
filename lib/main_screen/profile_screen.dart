@@ -203,10 +203,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     } else {
       if (currentUser.uid != userModel.uid) {
+        // Show Cancel Friend Request Button if Request is Sent
+        // Else Show Send Friend Request Button
+        String label = '';
+        if (userModel.friendRequestsUIDs.contains(currentUser.uid)) {
+          // Show Send Friend Request Button
+          label = 'Cancel Friend Request';
+        } else {
+          label = 'Send Friend Request';
+        }
+
+        // Show Send Friend Request Button
         return buildElevatedButton(
-          label: 'Send Friend Request',
           onPressed: () async {
-            // Send Friend Request
+            label == 'Cancel Friend Request'
+                ? await context
+                    .read<AuthenticationProvider>()
+                    .cancelFriendRequest(friendID: userModel.uid)
+                    .whenComplete(() {
+                    showSnackBar(context, 'Friend Request Cancelled');
+                  })
+                :
             await context
                 .read<AuthenticationProvider>()
                 .sendFriendRequest(friendID: userModel.uid)
@@ -214,6 +231,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               showSnackBar(context, 'Friend Request Sent');
             });
           },
+          label: label,
         );
       } else {
         return const SizedBox.shrink();
