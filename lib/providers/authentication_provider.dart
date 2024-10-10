@@ -248,7 +248,7 @@ class AuthenticationProvider extends ChangeNotifier {
   }
 
   // Cancel Friend Request
-  Future<void>cancelFriendRequest({required String friendID}) async {
+  Future<void> cancelFriendRequest({required String friendID}) async {
     try {
       // Remove Our UID from Friends Request List
       await _firestore.collection(Constants.users).doc(friendID).update(
@@ -266,5 +266,40 @@ class AuthenticationProvider extends ChangeNotifier {
     } on FirebaseException catch (e) {
       print(e.toString());
     }
+  }
+
+  Future<void> acceptFriendRequest({required String friendID}) async {
+    // add our uid to friends list
+    await _firestore.collection(Constants.users).doc(friendID).update({
+      Constants.friendsUIDs: FieldValue.arrayUnion([_uid]),
+    });
+
+    // add friend uid to our friends list
+    await _firestore.collection(Constants.users).doc(_uid).update({
+      Constants.friendsUIDs: FieldValue.arrayUnion([friendID]),
+    });
+
+    // remove our uid from friends request list
+    await _firestore.collection(Constants.users).doc(friendID).update({
+      Constants.sentFriendRequestsUIDs: FieldValue.arrayRemove([_uid]),
+    });
+
+    // remove friend uid from our friend requests sent list
+    await _firestore.collection(Constants.users).doc(_uid).update({
+      Constants.friendRequestsUIDs: FieldValue.arrayRemove([friendID]),
+    });
+  }
+
+  // remove friend
+  Future<void> removeFriend({required String friendID}) async {
+    // remove our uid from friends list
+    await _firestore.collection(Constants.users).doc(friendID).update({
+      Constants.friendsUIDs: FieldValue.arrayRemove([_uid]),
+    });
+
+    // remove friend uid from our friends list
+    await _firestore.collection(Constants.users).doc(_uid).update({
+      Constants.friendsUIDs: FieldValue.arrayRemove([friendID]),
+    });
   }
 }

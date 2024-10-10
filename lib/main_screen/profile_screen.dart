@@ -154,24 +154,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget buildElevatedButton({
-    required String label,
-    required VoidCallback onPressed,
-  }) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.7,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        child: Text(
-          label.toUpperCase(),
-          style: GoogleFonts.titilliumWeb(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget buildFriendRequestButton({
     required UserModel currentUser,
     required UserModel userModel,
@@ -180,6 +162,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         userModel.friendRequestsUIDs.isNotEmpty) {
       return buildElevatedButton(
         label: 'View Friend Requests',
+        width: MediaQuery.of(context).size.width * 0.7,
+        backgroundColor: Theme.of(context).buttonTheme.colorScheme!.primary,
+        textColor: Colors.white,
         onPressed: () {
           // Navigate to Friend Requests Screen
         },
@@ -197,45 +182,155 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (currentUser.uid == userModel.uid && userModel.friendsUIDs.isNotEmpty) {
       return buildElevatedButton(
         label: 'View Friends',
+        width: MediaQuery.of(context).size.width * 0.7,
+        backgroundColor: Theme.of(context).cardColor,
+        textColor: Theme.of(context).primaryColor,
         onPressed: () {
           // Navigate to Friends Screen
         },
       );
     } else {
       if (currentUser.uid != userModel.uid) {
-        // Show Cancel Friend Request Button if Request is Sent
+        // Show Cancel Friend Request Button if The User has Sent a Friend Request
         // Else Show Send Friend Request Button
-        String label = '';
         if (userModel.friendRequestsUIDs.contains(currentUser.uid)) {
           // Show Send Friend Request Button
-          label = 'Cancel Friend Request';
+          return buildElevatedButton(
+            onPressed: () async {
+              await context
+                  .read<AuthenticationProvider>()
+                  .cancelFriendRequest(friendID: userModel.uid)
+                  .whenComplete(() {
+                showSnackBar(context, 'Friend Request Cancelled');
+              });
+            },
+            label: 'Cancel Friend Request',
+            width: MediaQuery.of(context).size.width * 0.7,
+            backgroundColor: Theme.of(context).cardColor,
+            textColor: Theme.of(context).primaryColor,
+          );
+        } else if (userModel.sentFriendRequestsUIDs.contains(currentUser.uid)) {
+          return buildElevatedButton(
+            onPressed: () async {
+              await context
+                  .read<AuthenticationProvider>()
+                  .acceptFriendRequest(friendID: userModel.uid)
+                  .whenComplete(() {
+                showSnackBar(
+                    context, 'You are now friends with ${userModel.name}');
+              });
+            },
+            label: 'Accept Friend Request',
+            width: MediaQuery.of(context).size.width * 0.7,
+            backgroundColor: Theme.of(context).cardColor,
+            textColor: Theme.of(context).primaryColor,
+          );
+        } else if (userModel.friendsUIDs.contains(currentUser.uid)) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildElevatedButton(
+                onPressed: () async {
+                  // Show Unfriend Dialog To Ask User if they want to unfriend
+                  showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                            title: const Text(
+                              'Unfriend',
+                              textAlign: TextAlign.center,
+                            ),
+                            content: Text(
+                              'Are you sure you want to unfriend ${userModel.name}?',
+                              textAlign: TextAlign.center,
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+                                  // Remove Friend
+                                  await context
+                                      .read<AuthenticationProvider>()
+                                      .removeFriend(friendID: userModel.uid)
+                                      .whenComplete(() {
+                                    showSnackBar(
+                                        context, 'You are no longer friends');
+                                  });
+                                },
+                                child: const Text('Unfriend'),
+                              ),
+                            ],
+                          ));
+                },
+                label: 'Unfriend',
+                width: MediaQuery.of(context).size.width * 0.4,
+                backgroundColor:
+                    Theme.of(context).buttonTheme.colorScheme!.primary,
+                textColor: Colors.white,
+              ),
+              buildElevatedButton(
+                onPressed: () async {
+                  // Navigate to Chat Screen
+                },
+                label: 'Chat',
+                width: MediaQuery.of(context).size.width * 0.4,
+                backgroundColor: Theme.of(context).cardColor,
+                textColor: Theme.of(context).primaryColor,
+              ),
+            ],
+          );
         } else {
-          label = 'Send Friend Request';
+          return buildElevatedButton(
+            onPressed: () async {
+              await context
+                  .read<AuthenticationProvider>()
+                  .sendFriendRequest(friendID: userModel.uid)
+                  .whenComplete(() {
+                showSnackBar(context, 'Friend Request Sent');
+              });
+            },
+            label: 'Send Friend Request',
+            width: MediaQuery.of(context).size.width * 0.7,
+            backgroundColor: Theme.of(context).cardColor,
+            textColor: Theme.of(context).primaryColor,
+          );
         }
-
-        // Show Send Friend Request Button
-        return buildElevatedButton(
-          onPressed: () async {
-            label == 'Cancel Friend Request'
-                ? await context
-                    .read<AuthenticationProvider>()
-                    .cancelFriendRequest(friendID: userModel.uid)
-                    .whenComplete(() {
-                    showSnackBar(context, 'Friend Request Cancelled');
-                  })
-                :
-            await context
-                .read<AuthenticationProvider>()
-                .sendFriendRequest(friendID: userModel.uid)
-                .whenComplete(() {
-              showSnackBar(context, 'Friend Request Sent');
-            });
-          },
-          label: label,
-        );
       } else {
         return const SizedBox.shrink();
       }
     }
+  }
+
+  Widget buildElevatedButton({
+    required String label,
+    required VoidCallback onPressed,
+    required double width,
+    required Color backgroundColor,
+    required Color textColor,
+  }) {
+    return SizedBox(
+      width: width,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: backgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+        ),
+        onPressed: onPressed,
+        child: Text(
+          label.toUpperCase(),
+          style: GoogleFonts.titilliumWeb(
+            fontWeight: FontWeight.bold,
+            color: textColor,
+          ),
+        ),
+      ),
+    );
   }
 }
