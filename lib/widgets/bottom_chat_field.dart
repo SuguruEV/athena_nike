@@ -50,7 +50,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
           ),
           Expanded(
             child: TextFormField(
-              decoration: const InputDecoration(
+              decoration: const InputDecoration.collapsed(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(30)),
                   borderSide: BorderSide.none,
