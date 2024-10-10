@@ -33,3 +33,9 @@ class Constants {
   static const String userImages = 'userImages';
   static const String userModel = 'userModel';
 }
+
+enum FriendViewType {
+  friends,
+  friendRequests,
+  groupView,
+}

@@ -163,10 +163,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return buildElevatedButton(
         label: 'View Friend Requests',
         width: MediaQuery.of(context).size.width * 0.7,
-        backgroundColor: Theme.of(context).buttonTheme.colorScheme!.primary,
-        textColor: Colors.white,
+        backgroundColor: Theme.of(context).cardColor,
+        textColor: Theme.of(context).primaryColor,
         onPressed: () {
           // Navigate to Friend Requests Screen
+          Navigator.pushNamed(
+            context,
+            Constants.friendRequestsScreen,
+          );
         },
       );
     } else {
@@ -187,6 +191,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         textColor: Theme.of(context).primaryColor,
         onPressed: () {
           // Navigate to Friends Screen
+          Navigator.pushNamed(
+            context,
+            Constants.friendsScreen,
+          );
         },
       );
     } else {

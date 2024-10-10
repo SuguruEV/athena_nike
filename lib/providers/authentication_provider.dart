@@ -302,4 +302,45 @@ class AuthenticationProvider extends ChangeNotifier {
       Constants.friendsUIDs: FieldValue.arrayRemove([friendID]),
     });
   }
+
+  // Get A List of Friends
+  Future<List<UserModel>> getFriendsList(String uid) async {
+    List<UserModel> friendsList = [];
+    DocumentSnapshot documentSnapshot =
+        await _firestore.collection(Constants.users).doc(uid).get();
+
+    List<dynamic> friendsUIDs = documentSnapshot.get(Constants.friendsUIDs);
+
+    for (String friendUID in friendsUIDs) {
+      DocumentSnapshot documentSnapshot =
+          await _firestore.collection(Constants.users).doc(friendUID).get();
+      UserModel friend =
+          UserModel.fromMap(documentSnapshot.data() as Map<String, dynamic>);
+      friendsList.add(friend);
+    }
+
+    return friendsList;
+  }
+
+  // Get A List of Friend Requests
+  Future<List<UserModel>> getFriendRequestsList(String uid) async {
+    List<UserModel> friendRequestsList = [];
+    DocumentSnapshot documentSnapshot =
+        await _firestore.collection(Constants.users).doc(uid).get();
+
+    List<dynamic> friendRequestsUIDs =
+        documentSnapshot.get(Constants.friendRequestsUIDs);
+
+    for (String friendRequestUID in friendRequestsUIDs) {
+      DocumentSnapshot documentSnapshot = await _firestore
+          .collection(Constants.users)
+          .doc(friendRequestUID)
+          .get();
+      UserModel friendRequest =
+          UserModel.fromMap(documentSnapshot.data() as Map<String, dynamic>);
+      friendRequestsList.add(friendRequest);
+    }
+
+    return friendRequestsList;
+  }
 }
