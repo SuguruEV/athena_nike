@@ -289,7 +289,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     context,
                     Constants.chatScreen,
                     arguments: {
-                      Constants.contactUID: userModel.uid,
+                      Constants.contactID: userModel.uid,
                       Constants.contactName: userModel.name,
                       Constants.contactImage: userModel.image,
                       Constants.groupID: '',

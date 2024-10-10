@@ -53,10 +53,17 @@ class _ChatAppBarState extends State<ChatAppBar> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(userModel.name),
-                const Text(
+                Text(
+                  userModel.name,
+                  style: GoogleFonts.titilliumWeb(
+                    fontSize: 16,
+                  ),
+                ),
+                Text(
                   'Online',
-                  style: TextStyle(fontSize: 10),
+                  style: GoogleFonts.titilliumWeb(
+                    fontSize: 12,
+                  ),
                 ),
               ],
             ),

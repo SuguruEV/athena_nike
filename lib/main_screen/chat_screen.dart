@@ -1,4 +1,5 @@
 import 'package:athena_nike/constants.dart';
+import 'package:athena_nike/widgets/bottom_chat_field.dart';
 import 'package:athena_nike/widgets/chat_app_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,7 @@ class _ChatScreenState extends State<ChatScreen> {
     // Get Arguments Passed From Previous Screen
     final arguments = ModalRoute.of(context)!.settings.arguments as Map;
     // Get ContactUID From Arguments
-    final contactUID = arguments[Constants.contactUID];
+    final contactID = arguments[Constants.contactID];
     // Get ContactName From Arguments
     final contactName = arguments[Constants.contactName];
     // Get ContactImage From Arguments
@@ -27,27 +28,30 @@ class _ChatScreenState extends State<ChatScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: ChatAppBar(contactID: contactUID),
+        title: ChatAppBar(contactID: contactID),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: 20,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text('Message $index'),
-                );
-              },
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: 20,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text('Message $index'),
+                  );
+                },
+              ),
             ),
-          ),
-          TextFormField(
-            decoration: const InputDecoration(
-              hintText: 'Type a message',
-              suffixIcon: Icon(Icons.send),
-            ),
-          ),
-        ],
+            BottomChatField(
+              contactID: contactID,
+              contactName: contactName,
+              contactImage: contactImage,
+              groupID: groupID,
+            )
+          ],
+        ),
       ),
     );
   }
