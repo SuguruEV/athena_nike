@@ -1,4 +1,5 @@
 import 'package:athena_nike/constants.dart';
+import 'package:athena_nike/widgets/chat_app_bar.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -26,7 +27,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chats'),
+        title: ChatAppBar(contactID: contactUID),
       ),
       body: Column(
         children: [
