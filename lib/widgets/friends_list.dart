@@ -63,11 +63,17 @@ class FriendsList extends StatelessWidget {
                 trailing: ElevatedButton(
                   onPressed: () async {
                     if (viewType == FriendViewType.friends) {
-                      // Navigate To Chat Screen With Friend UID as Argument
+                      // Navigate To Chat Screen With The Following Arguments
+                      // 1. Friend Name 2. Friend UID 3. Friend Image 4. GroupID with an empty String
                       Navigator.pushNamed(
                         context,
                         Constants.chatScreen,
-                        arguments: data.uid,
+                        arguments: {
+                          Constants.contactUID: data.uid,
+                          Constants.contactName: data.name,
+                          Constants.contactImage: data.image,
+                          Constants.groupID: '',
+                        },
                       );
                     } else if (viewType == FriendViewType.friendRequests) {
                       // Accept Friend Request

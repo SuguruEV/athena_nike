@@ -32,6 +32,11 @@ class Constants {
   static const String users = 'users';
   static const String userImages = 'userImages';
   static const String userModel = 'userModel';
+
+  static const String contactUID = 'contactUID';
+  static const String contactName = 'contactName';
+  static const String contactImage = 'contactImage';
+  static const String groupID = 'groupID';
 }
 
 enum FriendViewType {

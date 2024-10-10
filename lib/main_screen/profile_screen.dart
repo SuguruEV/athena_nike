@@ -283,7 +283,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               buildElevatedButton(
                 onPressed: () async {
-                  // Navigate to Chat Screen
+                  // Navigate To Chat Screen With The Following Arguments
+                  // 1. Friend Name 2. Friend UID 3. Friend Image 4. GroupID with an empty String
+                  Navigator.pushNamed(
+                    context,
+                    Constants.chatScreen,
+                    arguments: {
+                      Constants.contactUID: userModel.uid,
+                      Constants.contactName: userModel.name,
+                      Constants.contactImage: userModel.image,
+                      Constants.groupID: '',
+                    },
+                  );
                 },
                 label: 'Chat',
                 width: MediaQuery.of(context).size.width * 0.4,
