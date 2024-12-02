@@ -196,4 +196,39 @@ class ChatProvider extends ChangeNotifier {
       }).toList();
     });
   }
+
+  // Stream messages from chat collection
+  Stream<List<MessageModel>> getMessagesStream({
+    required String userUID,
+    required String contactUID,
+    required String isGroup,
+  }) {
+    if (isGroup.isNotEmpty) {
+      return _firestore
+          .collection(Constants.groups)
+          .doc(contactUID)
+          .collection(Constants.messages)
+          .orderBy(Constants.timeSent, descending: false)
+          .snapshots()
+          .map((snapshot) {
+        return snapshot.docs.map((doc) {
+          return MessageModel.fromMap(doc.data());
+        }).toList();
+      });
+    } else {
+      return _firestore
+          .collection(Constants.users)
+          .doc(userUID)
+          .collection(Constants.chats)
+          .doc(contactUID)
+          .collection(Constants.messages)
+          .orderBy(Constants.timeSent, descending: false)
+          .snapshots()
+          .map((snapshot) {
+        return snapshot.docs.map((doc) {
+          return MessageModel.fromMap(doc.data());
+        }).toList();
+      });
+    }
+  }
 }

@@ -2,6 +2,7 @@ import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/models/last_message_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/providers/chat_provider.dart';
+import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -53,6 +54,7 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
                       itemCount: chatsList.length,
                       itemBuilder: (context, index) {
                         final chat = chatsList[index];
+                        final dateTime = formatDate(chat.timeSent, [hh, ':', nn, ' ', am]);
                         // Check if we sent the last message
                         final isMe = chat.senderUID == uid;
                         final lastMessage = isMe ? 'You: ${chat.message}' : chat.message;
@@ -68,7 +70,7 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          trailing: Text(chat.timeSent.toString()),
+                          trailing: Text(dateTime),
                           onTap: () {
                             Navigator.pushNamed(
                               context,
