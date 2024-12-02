@@ -208,7 +208,6 @@ class ChatProvider extends ChangeNotifier {
           .collection(Constants.groups)
           .doc(contactUID)
           .collection(Constants.messages)
-          .orderBy(Constants.timeSent, descending: false)
           .snapshots()
           .map((snapshot) {
         return snapshot.docs.map((doc) {
@@ -222,7 +221,6 @@ class ChatProvider extends ChangeNotifier {
           .collection(Constants.chats)
           .doc(contactUID)
           .collection(Constants.messages)
-          .orderBy(Constants.timeSent, descending: false)
           .snapshots()
           .map((snapshot) {
         return snapshot.docs.map((doc) {
