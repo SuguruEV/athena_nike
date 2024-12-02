@@ -1,15 +1,21 @@
+import 'package:athena_nike/constants.dart';
+import 'package:athena_nike/providers/authentication_provider.dart';
+import 'package:athena_nike/providers/chat_provider.dart';
+import 'package:athena_nike/utilities/global_methods.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class BottomChatField extends StatefulWidget {
   const BottomChatField({
     super.key,
-    required this.contactID,
+    required this.contactUID,
     required this.contactName,
     required this.contactImage,
     required this.groupID,
   });
 
-  final String contactID;
+  final String contactUID;
   final String contactName;
   final String contactImage;
   final String groupID;
@@ -19,6 +25,45 @@ class BottomChatField extends StatefulWidget {
 }
 
 class _BottomChatFieldState extends State<BottomChatField> {
+  late TextEditingController _textEditingController;
+  late FocusNode _focusNode;
+
+  @override
+  void initState() {
+    _textEditingController = TextEditingController();
+    _focusNode = FocusNode();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void sendTextMessage() {
+    final currentUser = context.read<AuthenticationProvider>().userModel!;
+    final chatProvider = context.read<ChatProvider>();
+
+    chatProvider.sendTextMessage(
+      sender: currentUser,
+      contactUID: widget.contactUID,
+      contactName: widget.contactName,
+      contactImage: widget.contactImage,
+      message: _textEditingController.text,
+      messageType: MessageEnum.text,
+      groupID: widget.groupID,
+      onSuccess: () {
+        _textEditingController.clear();
+        _focusNode.requestFocus();
+      },
+      onError: (error) {
+        showSnackBar(context, error);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -50,6 +95,8 @@ class _BottomChatFieldState extends State<BottomChatField> {
           ),
           Expanded(
             child: TextFormField(
+              controller: _textEditingController,
+              focusNode: _focusNode,
               decoration: const InputDecoration.collapsed(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -59,17 +106,20 @@ class _BottomChatFieldState extends State<BottomChatField> {
               ),
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Theme.of(context).primaryColor,
-            ),
-            margin: const EdgeInsets.all(5),
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Icon(
-                Icons.arrow_upward,
-                color: Colors.white,
+          GestureDetector(
+            onTap: sendTextMessage,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: Theme.of(context).primaryColor,
+              ),
+              margin: const EdgeInsets.all(5),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.arrow_upward,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),

@@ -64,4 +64,21 @@ class MessageModel {
       repliedMessageType: map[Constants.repliedMessageType].toString().toMessageEnum(),
     );
   }
+
+  copyWith({required String userID}) {
+    return MessageModel(
+      senderUID: senderUID,
+      senderName: senderName,
+      senderImage: senderImage,
+      contactUID: userID,
+      message: message,
+      messageType: messageType,
+      timeSent: timeSent,
+      messageID: messageID,
+      isSeen: isSeen,
+      repliedMessage: repliedMessage,
+      repliedTo: repliedTo,
+      repliedMessageType: repliedMessageType,
+    );
+  }
 }

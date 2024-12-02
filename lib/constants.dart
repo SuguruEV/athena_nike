@@ -33,7 +33,6 @@ class Constants {
   static const String userImages = 'userImages';
   static const String userModel = 'userModel';
 
-  static const String contactID = 'contactID';
   static const String contactName = 'contactName';
   static const String contactImage = 'contactImage';
   static const String groupID = 'groupID';

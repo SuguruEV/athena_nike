@@ -101,6 +101,12 @@ class ChatProvider extends ChangeNotifier {
     required Function(String p1) onError,
   }) async {
     try {
+
+      // 0. Contact MessageModel
+      final contactMessageModel = messageModel.copyWith(
+        userID: messageModel.senderUID,
+      );
+
       // 1. Initialize last message for the sender
       final senderLastMessage = LastMessageModel(
         senderUID: messageModel.senderUID,
@@ -144,7 +150,7 @@ class ChatProvider extends ChangeNotifier {
                 .doc(messageModel.senderUID)
                 .collection(Constants.messages)
                 .doc(messageModel.messageID),
-            messageModel.toMap(),
+            contactMessageModel.toMap(),
           );
 
           // 5. Send the Last message to sender firestore location

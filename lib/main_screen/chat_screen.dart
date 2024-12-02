@@ -16,7 +16,7 @@ class _ChatScreenState extends State<ChatScreen> {
     // Get Arguments Passed From Previous Screen
     final arguments = ModalRoute.of(context)!.settings.arguments as Map;
     // Get ContactUID From Arguments
-    final contactID = arguments[Constants.contactID];
+    final contactUID = arguments[Constants.contactUID];
     // Get ContactName From Arguments
     final contactName = arguments[Constants.contactName];
     // Get ContactImage From Arguments
@@ -28,7 +28,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: ChatAppBar(contactID: contactID),
+        title: ChatAppBar(contactUID: contactUID),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -45,7 +45,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
             BottomChatField(
-              contactID: contactID,
+              contactUID: contactUID,
               contactName: contactName,
               contactImage: contactImage,
               groupID: groupID,

@@ -8,9 +8,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class ChatAppBar extends StatefulWidget {
-  const ChatAppBar({super.key, required this.contactID});
+  const ChatAppBar({super.key, required this.contactUID});
 
-  final String contactID;
+  final String contactUID;
 
   @override
   State<ChatAppBar> createState() => _ChatAppBarState();
@@ -22,7 +22,7 @@ class _ChatAppBarState extends State<ChatAppBar> {
     return StreamBuilder(
       stream: context
           .read<AuthenticationProvider>()
-          .userStream(userID: widget.contactID),
+          .userStream(userID: widget.contactUID),
       builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.hasError) {
           return const Center(child: Text('Something went wrong'));
