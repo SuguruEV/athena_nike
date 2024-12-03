@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:athena_nike/utilities/assets_manager.dart';
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
 // Show Snack Bar Method
@@ -64,4 +66,25 @@ Future<File?> pickImage({
   }
 
   return fileImage;
+}
+
+SizedBox buildDateTime(BuildContext context, groupedByValue) {
+  return SizedBox(
+    width: MediaQuery.of(context).size.width * 0.5,
+    child: Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          formatDate(groupedByValue.timeSent, [dd, ' ', M, ',', yyyy]),
+          textAlign: TextAlign.center,
+          style: GoogleFonts.titilliumWeb(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+          ),
+        ), // optional
+      ),
+    ),
+  );
 }
