@@ -2,19 +2,20 @@ import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/models/last_message_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/providers/chat_provider.dart';
+import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ChatsListScreen extends StatefulWidget {
-  const ChatsListScreen({super.key});
+class MyChatsScreen extends StatefulWidget {
+  const MyChatsScreen({super.key});
 
   @override
-  State<ChatsListScreen> createState() => _ChatsListScreenState();
+  State<MyChatsScreen> createState() => _MyChatsScreenState();
 }
 
-class _ChatsListScreenState extends State<ChatsListScreen> {
+class _MyChatsScreenState extends State<MyChatsScreen> {
   @override
   Widget build(BuildContext context) {
     final uid = context.read<AuthenticationProvider>().userModel!.uid;
@@ -54,16 +55,20 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
                       itemCount: chatsList.length,
                       itemBuilder: (context, index) {
                         final chat = chatsList[index];
-                        final dateTime = formatDate(chat.timeSent, [hh, ':', nn, ' ', am]);
+                        final dateTime =
+                            formatDate(chat.timeSent, [hh, ':', nn, ' ', am]);
                         // Check if we sent the last message
                         final isMe = chat.senderUID == uid;
-                        final lastMessage = isMe ? 'You: ${chat.message}' : chat.message;
+                        final lastMessage =
+                            isMe ? 'You: ${chat.message}' : chat.message;
 
                         return ListTile(
-                          leading: CircleAvatar(
-                            radius: 30,
-                            backgroundImage: NetworkImage(chat.contactImage),
+                          leading: userImageWidget(
+                            imageUrl: chat.contactImage,
+                            radius: 40,
+                            onTap: () {},
                           ),
+                          contentPadding: EdgeInsets.zero,
                           title: Text(chat.contactName),
                           subtitle: Text(
                             lastMessage,

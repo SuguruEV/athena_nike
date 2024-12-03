@@ -1,4 +1,5 @@
 import 'package:athena_nike/models/message_model.dart';
+import 'package:athena_nike/models/message_reply_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/providers/chat_provider.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
@@ -78,14 +79,48 @@ class _ChatListState extends State<ChatList> {
                         top: 8.0,
                         bottom: 8.0,
                       ),
-                      child: MyMessageWidget(message: element),
+                      child: MyMessageWidget(
+                        message: element,
+                        onRightSwipe: () {
+                          // Set the message reply to true
+                          final messageReply = MessageReplyModel(
+                            message: element.message,
+                            senderUID: element.senderUID,
+                            senderName: element.senderName,
+                            senderImage: element.senderImage,
+                            messageType: element.messageType,
+                            isMe: isMe,
+                          );
+
+                          context.read<ChatProvider>().setMessageReplyModel(
+                                messageReply,
+                              );
+                        },
+                      ),
                     )
                   : Padding(
                       padding: const EdgeInsets.only(
                         top: 8.0,
                         bottom: 8.0,
                       ),
-                      child: ContactMessageWidget(message: element),
+                      child: ContactMessageWidget(
+                        message: element,
+                        onRightSwipe: () {
+                          // Set the message reply to true
+                          final messageReply = MessageReplyModel(
+                            message: element.message,
+                            senderUID: element.senderUID,
+                            senderName: element.senderName,
+                            senderImage: element.senderImage,
+                            messageType: element.messageType,
+                            isMe: isMe,
+                          );
+
+                          context.read<ChatProvider>().setMessageReplyModel(
+                                messageReply,
+                              );
+                        },
+                      ),
                     );
             },
             groupComparator: (value1, value2) => value2.compareTo(value1),
