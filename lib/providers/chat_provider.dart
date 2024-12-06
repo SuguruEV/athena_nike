@@ -125,54 +125,90 @@ class ChatProvider extends ChangeNotifier {
         contactImage: messageModel.senderImage,
       );
 
+      // 3. Send Message to Sender Firestore Location
+      await _firestore
+          .collection(Constants.users)
+          .doc(messageModel.senderUID)
+          .collection(Constants.chats)
+          .doc(contactUID)
+          .collection(Constants.messages)
+          .doc(messageModel.messageID)
+          .set(messageModel.toMap());
+
+      // 4. Send Message to Contact Firestore Location
+      await _firestore
+          .collection(Constants.users)
+          .doc(contactUID)
+          .collection(Constants.chats)
+          .doc(messageModel.senderUID)
+          .collection(Constants.messages)
+          .doc(messageModel.messageID)
+          .set(contactMessageModel.toMap());
+
+      // 5. Send the Last message to sender firestore location
+      await _firestore
+          .collection(Constants.users)
+          .doc(messageModel.senderUID)
+          .collection(Constants.chats)
+          .doc(contactUID)
+          .set(senderLastMessage.toMap());
+
+      // 6. Send the last message to contact firestore location
+      await _firestore
+          .collection(Constants.users)
+          .doc(contactUID)
+          .collection(Constants.chats)
+          .doc(messageModel.senderUID)
+          .set(contactLastMessage.toMap());
+
       // Run Transaction
-      await _firestore.runTransaction(
-        (transaction) async {
-          // 3. Send Message to Sender Firestore Location
-          transaction.set(
-            _firestore
-                .collection(Constants.users)
-                .doc(messageModel.senderUID)
-                .collection(Constants.chats)
-                .doc(contactUID)
-                .collection(Constants.messages)
-                .doc(messageModel.messageID),
-            messageModel.toMap(),
-          );
+      // await _firestore.runTransaction(
+      //   (transaction) async {
+      //     // 3. Send Message to Sender Firestore Location
+      //     transaction.set(
+      //       _firestore
+      //           .collection(Constants.users)
+      //           .doc(messageModel.senderUID)
+      //           .collection(Constants.chats)
+      //           .doc(contactUID)
+      //           .collection(Constants.messages)
+      //           .doc(messageModel.messageID),
+      //       messageModel.toMap(),
+      //     );
 
-          // 4. Send Message to Contact Firestore Location
-          transaction.set(
-            _firestore
-                .collection(Constants.users)
-                .doc(contactUID)
-                .collection(Constants.chats)
-                .doc(messageModel.senderUID)
-                .collection(Constants.messages)
-                .doc(messageModel.messageID),
-            contactMessageModel.toMap(),
-          );
+      //     transaction.set(
+      //       _firestore
+      //           .collection(Constants.users)
+      //           .doc(contactUID)
+      //           .collection(Constants.chats)
+      //           .doc(messageModel.senderUID)
+      //           .collection(Constants.messages)
+      //           .doc(messageModel.messageID),
+      //       contactMessageModel.toMap(),
+      //     );
 
-          // 5. Send the Last message to sender firestore location
-          transaction.set(
-            _firestore
-                .collection(Constants.users)
-                .doc(messageModel.senderUID)
-                .collection(Constants.chats)
-                .doc(contactUID),
-            senderLastMessage.toMap(),
-          );
+      //     // 5. Send the Last message to sender firestore location
+      //     transaction.set(
+      //       _firestore
+      //           .collection(Constants.users)
+      //           .doc(messageModel.senderUID)
+      //           .collection(Constants.chats)
+      //           .doc(contactUID),
+      //       senderLastMessage.toMap(),
+      //     );
 
-          // 6. Send the last message to contact firestore location
-          transaction.set(
-            _firestore
-                .collection(Constants.users)
-                .doc(contactUID)
-                .collection(Constants.chats)
-                .doc(messageModel.senderUID),
-            contactLastMessage.toMap(),
-          );
-        },
-      );
+      //     // 6. Send the last message to contact firestore location
+      //     transaction.set(
+      //       _firestore
+      //           .collection(Constants.users)
+      //           .doc(contactUID)
+      //           .collection(Constants.chats)
+      //           .doc(messageModel.senderUID),
+      //       contactLastMessage.toMap(),
+      //     );
+      //   },
+      // );
+
       // 7. Call onSuccess
       onSuccess();
     } on FirebaseException catch (e) {
