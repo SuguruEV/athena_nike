@@ -164,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         label: 'View Friend Requests',
         width: MediaQuery.of(context).size.width * 0.7,
         backgroundColor: Theme.of(context).cardColor,
-        textColor: Theme.of(context).primaryColor,
+        textColor: Theme.of(context).colorScheme.primary,
         onPressed: () {
           // Navigate to Friend Requests Screen
           Navigator.pushNamed(
@@ -188,7 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         label: 'View Friends',
         width: MediaQuery.of(context).size.width * 0.7,
         backgroundColor: Theme.of(context).cardColor,
-        textColor: Theme.of(context).primaryColor,
+        textColor: Theme.of(context).colorScheme.primary,
         onPressed: () {
           // Navigate to Friends Screen
           Navigator.pushNamed(
@@ -215,7 +215,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             label: 'Cancel Friend Request',
             width: MediaQuery.of(context).size.width * 0.7,
             backgroundColor: Theme.of(context).cardColor,
-            textColor: Theme.of(context).primaryColor,
+            textColor: Theme.of(context).colorScheme.primary,
           );
         } else if (userModel.sentFriendRequestsUIDs.contains(currentUser.uid)) {
           return buildElevatedButton(
@@ -231,7 +231,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             label: 'Accept Friend Request',
             width: MediaQuery.of(context).size.width * 0.7,
             backgroundColor: Theme.of(context).cardColor,
-            textColor: Theme.of(context).primaryColor,
+            textColor: Theme.of(context).colorScheme.primary,
           );
         } else if (userModel.friendsUIDs.contains(currentUser.uid)) {
           return Row(
@@ -299,7 +299,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 label: 'Chat',
                 width: MediaQuery.of(context).size.width * 0.4,
                 backgroundColor: Theme.of(context).cardColor,
-                textColor: Theme.of(context).primaryColor,
+                textColor: Colors.white,
               ),
             ],
           );
@@ -316,7 +316,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             label: 'Send Friend Request',
             width: MediaQuery.of(context).size.width * 0.7,
             backgroundColor: Theme.of(context).cardColor,
-            textColor: Theme.of(context).primaryColor,
+            textColor: Theme.of(context).colorScheme.primary,
           );
         }
       } else {
@@ -336,6 +336,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       width: width,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
+          elevation: 5,
           backgroundColor: backgroundColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),

@@ -76,7 +76,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
             borderRadius: BorderRadius.circular(30),
             color: Theme.of(context).cardColor,
             border: Border.all(
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
           child: Column(
@@ -121,7 +121,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        color: Theme.of(context).primaryColor,
+                        color: Colors.deepPurple,
                       ),
                       margin: const EdgeInsets.all(5),
                       child: const Padding(

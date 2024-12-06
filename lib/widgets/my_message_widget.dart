@@ -37,7 +37,7 @@ class MyMessageWidget extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
+              color: Colors.deepPurple,
               borderRadius: BorderRadius.circular(10.0),
             ),
             child: Stack(
