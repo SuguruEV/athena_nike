@@ -56,7 +56,7 @@ class _ChatListState extends State<ChatList> {
               child: CircularProgressIndicator(),
             );
           }
-      
+
           if (snapshot.data!.isEmpty) {
             return Center(
               child: Text(
@@ -70,7 +70,7 @@ class _ChatListState extends State<ChatList> {
               ),
             );
           }
-      
+
           // Automatically Scrolls to the bottom on new message
           WidgetsBinding.instance!.addPostFrameCallback((_) {
             _scrollController.animateTo(
@@ -79,7 +79,7 @@ class _ChatListState extends State<ChatList> {
               curve: Curves.easeInOut,
             );
           });
-      
+
           if (snapshot.hasData) {
             final messagesList = snapshot.data!;
             return GroupedListView<dynamic, DateTime>(
@@ -98,6 +98,17 @@ class _ChatListState extends State<ChatList> {
                 child: buildDateTime(groupedByValue),
               ),
               itemBuilder: (context, dynamic element) {
+                // Set message as seen
+                if (!element.isSeen && element.senderUID != uid) {
+                  context.read<ChatProvider>().setMessageAsSeen(
+                        userUID: uid,
+                        contactUID: widget.contactUID,
+                        messageID: element.messageID,
+                        groupID: widget.groupID,
+                      );
+                }
+
+                // Check if we sent the message
                 final isMe = element.senderUID == uid;
                 return isMe
                     ? Padding(
@@ -117,7 +128,7 @@ class _ChatListState extends State<ChatList> {
                               messageType: element.messageType,
                               isMe: isMe,
                             );
-      
+
                             context.read<ChatProvider>().setMessageReplyModel(
                                   messageReply,
                                 );
@@ -141,7 +152,7 @@ class _ChatListState extends State<ChatList> {
                               messageType: element.messageType,
                               isMe: isMe,
                             );
-      
+
                             context.read<ChatProvider>().setMessageReplyModel(
                                   messageReply,
                                 );
@@ -153,7 +164,7 @@ class _ChatListState extends State<ChatList> {
               itemComparator: (item1, item2) {
                 var firstItem = item1.timeSent;
                 var secondItem = item2.timeSent;
-      
+
                 return secondItem!.compareTo(firstItem!);
               },
               useStickyGroupSeparators: true,
