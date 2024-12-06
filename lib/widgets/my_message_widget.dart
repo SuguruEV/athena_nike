@@ -21,6 +21,7 @@ class MyMessageWidget extends StatelessWidget {
       nn,
       ' ',
     ]);
+    final isReplying = message.repliedTo.isNotEmpty;
 
     return SwipeTo(
       onRightSwipe: (details) {
@@ -48,11 +49,48 @@ class MyMessageWidget extends StatelessWidget {
                     top: 5.0,
                     bottom: 20.0,
                   ),
-                  child: Text(
-                    message.message,
-                    style: const TextStyle(
-                      color: Colors.white,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      if (isReplying) ...{
+                        Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context)
+                                  .primaryColorDark
+                                  .withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    message.repliedTo,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    message.repliedMessage,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ))
+                      },
+                      Text(
+                        message.message,
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Positioned(
@@ -73,9 +111,7 @@ class MyMessageWidget extends StatelessWidget {
                       Icon(
                         message.isSeen ? Icons.done_all : Icons.done,
                         size: 15,
-                        color: message.isSeen
-                            ? Colors.blue
-                            : Colors.white60,
+                        color: message.isSeen ? Colors.blue : Colors.white60,
                       ),
                     ],
                   ),

@@ -68,9 +68,8 @@ Future<File?> pickImage({
   return fileImage;
 }
 
-SizedBox buildDateTime(BuildContext context, groupedByValue) {
-  return SizedBox(
-    width: MediaQuery.of(context).size.width * 0.5,
+Center buildDateTime(groupedByValue) {
+  return Center(
     child: Card(
       elevation: 2,
       child: Padding(
@@ -79,9 +78,7 @@ SizedBox buildDateTime(BuildContext context, groupedByValue) {
           formatDate(groupedByValue.timeSent, [dd, ' ', M, ',', yyyy]),
           textAlign: TextAlign.center,
           style: GoogleFonts.titilliumWeb(
-            fontSize: 18,
             fontWeight: FontWeight.bold,
-            letterSpacing: 1.2,
           ),
         ), // optional
       ),
