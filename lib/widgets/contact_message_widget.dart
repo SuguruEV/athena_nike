@@ -1,4 +1,6 @@
+import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/models/message_model.dart';
+import 'package:athena_nike/widgets/display_message_type.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_to/swipe_to.dart';
@@ -12,7 +14,13 @@ class ContactMessageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final time = formatDate(message.timeSent, [hh, ':', nn, ' ']);
+    final time = formatDate(message.timeSent, [
+      hh,
+      ':',
+      nn,
+      ' ',
+      am,
+    ]);
     final isReplying = message.repliedTo.isNotEmpty;
     final senderName = message.repliedTo == 'You' ? message.senderName : 'You';
 
@@ -36,12 +44,19 @@ class ContactMessageWidget extends StatelessWidget {
             child: Stack(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(
-                    left: 10.0,
-                    right: 30.0,
-                    top: 5.0,
-                    bottom: 20.0,
-                  ),
+                  padding: message.messageType == MessageEnum.text
+                      ? const EdgeInsets.fromLTRB(
+                          10.0,
+                          5.0,
+                          20.0,
+                          20.0,
+                        )
+                      : const EdgeInsets.fromLTRB(
+                          5.0,
+                          5.0,
+                          5.0,
+                          25.0,
+                        ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -55,12 +70,12 @@ class ContactMessageWidget extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                senderName,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              DisplayMessageType(
+                                message: message.repliedMessage,
+                                type: message.messageType,
+                                color: Colors.black,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                               Text(
                                 message.repliedMessage,
@@ -72,13 +87,11 @@ class ContactMessageWidget extends StatelessWidget {
                           ),
                         ),
                       },
-                      Text(
-                        message.message,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      DisplayMessageType(
+                        message: message.message,
+                        type: message.messageType,
+                        color: Colors.white,
+                      )
                     ],
                   ),
                 ),

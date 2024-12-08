@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:athena_nike/utilities/assets_manager.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -26,7 +27,7 @@ Widget userImageWidget({
       radius: radius,
       backgroundColor: Colors.grey[300],
       backgroundImage: imageUrl.isNotEmpty
-          ? NetworkImage(imageUrl)
+          ? CachedNetworkImageProvider(imageUrl)
           : const AssetImage(AssetsManager.userImage) as ImageProvider,
     ),
   );
