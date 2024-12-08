@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/utilities/assets_manager.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:date_format/date_format.dart';
@@ -85,4 +86,67 @@ Center buildDateTime(groupedByValue) {
       ),
     ),
   );
+}
+
+Widget messageToShow({
+  required MessageEnum type,
+  required String message,
+}) {
+  switch (type) {
+    case MessageEnum.text:
+      return Text(
+        message,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      );
+    case MessageEnum.image:
+      return const Row(
+        children: [
+          Icon(
+            Icons.image_outlined,
+          ),
+          SizedBox(width: 10),
+          Text(
+            'Image',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      );
+    case MessageEnum.video:
+      return const Row(
+        children: [
+          Icon(
+            Icons.video_library_outlined,
+          ),
+          SizedBox(width: 10),
+          Text(
+            'Video',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      );
+    case MessageEnum.audio:
+      return const Row(
+        children: [
+          Icon(
+            Icons.audiotrack_outlined,
+          ),
+          SizedBox(width: 10),
+          Text(
+            'Audio',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      );
+
+    default:
+      return Text(
+        message,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      );
+  }
 }

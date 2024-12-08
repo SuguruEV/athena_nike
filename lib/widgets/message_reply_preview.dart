@@ -1,4 +1,6 @@
+import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/providers/chat_provider.dart';
+import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,6 +15,8 @@ class MessageReplyPreview extends StatelessWidget {
       builder: (context, chatProvider, child) {
         final messageReply = chatProvider.messageReplyModel;
         final isMe = messageReply!.isMe;
+        final type = messageReply.messageType;
+
         return Container(
           decoration: BoxDecoration(
             color: Theme.of(context).primaryColor.withOpacity(0.2),
@@ -29,10 +33,9 @@ class MessageReplyPreview extends StatelessWidget {
                 fontSize: 12,
               ),
             ),
-            subtitle: Text(
-              messageReply.message,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            subtitle: messageToShow(
+              type: type,
+              message: messageReply.message,
             ),
             trailing: IconButton(
               onPressed: () {
