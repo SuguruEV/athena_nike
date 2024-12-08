@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/models/last_message_model.dart';
 import 'package:athena_nike/models/message_model.dart';
@@ -41,6 +43,8 @@ class ChatProvider extends ChangeNotifier {
     required Function onSuccess,
     required Function(String) onError,
   }) async {
+    // Set loading to true
+    setLoading(true);
     try {
       var messageID = const Uuid().v4();
 
@@ -71,6 +75,79 @@ class ChatProvider extends ChangeNotifier {
       );
 
       // 3. Check if its a group message and send to group else send to contact
+      if (groupID.isNotEmpty) {
+        // Handle Group Message
+      } else {
+        // Handle Contact Message
+        await handleContactMessage(
+          messageModel: messageModel,
+          contactUID: contactUID,
+          contactName: contactName,
+          contactImage: contactImage,
+          onSuccess: onSuccess,
+          onError: onError,
+        );
+
+        // Set Message reply model to null
+        setMessageReplyModel(null);
+      }
+    } catch (e) {
+      onError(e.toString());
+    }
+  }
+
+  // Send File Message To Firestore
+  Future<void> sendFileMessage({
+    required UserModel sender,
+    required String contactUID,
+    required String contactName,
+    required String contactImage,
+    required File file,
+    required MessageEnum messageType,
+    required String groupID,
+    required Function onSuccess,
+    required Function(String) onError,
+  }) async {
+    // Set loading to true
+    setLoading(true);
+    notifyListeners();
+
+
+    try {
+      var messageID = const Uuid().v4();
+
+      // 1. Check if its a message reply and add the replied message to the message
+      String repliedMessage = _messageReplyModel?.message ?? '';
+      String repliedTo = _messageReplyModel == null
+          ? ''
+          : _messageReplyModel!.isMe
+              ? 'You'
+              : _messageReplyModel!.senderName;
+      MessageEnum repliedMessageType =
+          _messageReplyModel?.messageType ?? MessageEnum.text;
+
+      // 2. Upload the file to firebase storage
+      final ref =
+          '${Constants.chatFiles}/${messageType.name}/${sender.uid}/$contactUID/$messageID';
+      String fileURL = await storeFileToStorage(file: file, reference: ref);
+
+      // 3. Update/Set the messagemodel
+      final messageModel = MessageModel(
+        senderUID: sender.uid,
+        senderName: sender.name,
+        senderImage: sender.image,
+        contactUID: contactUID,
+        message: fileURL,
+        messageType: messageType,
+        timeSent: DateTime.now(),
+        messageID: messageID,
+        isSeen: false,
+        repliedMessage: repliedMessage,
+        repliedTo: repliedTo,
+        repliedMessageType: repliedMessageType,
+      );
+
+      // 4. Check if its a group message and send to group else send to contact
       if (groupID.isNotEmpty) {
         // Handle Group Message
       } else {
@@ -210,6 +287,8 @@ class ChatProvider extends ChangeNotifier {
       // );
 
       // 7. Call onSuccess
+      // Set loading to false
+      setLoading(false);
       onSuccess();
     } on FirebaseException catch (e) {
       onError(e.message ?? e.toString());
@@ -315,5 +394,17 @@ class ChatProvider extends ChangeNotifier {
         }).toList();
       });
     }
+  }
+
+  // Store file to storage and return file url
+  Future<String> storeFileToStorage({
+    required File file,
+    required String reference,
+  }) async {
+    UploadTask uploadTask =
+        _firebaseStorage.ref().child(reference).putFile(file);
+    TaskSnapshot taskSnapshot = await uploadTask;
+    String fileUrl = await taskSnapshot.ref.getDownloadURL();
+    return fileUrl;
   }
 }
