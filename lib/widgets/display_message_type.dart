@@ -43,9 +43,14 @@ class DisplayMessageType extends StatelessWidget {
             fit: BoxFit.cover,
           );
         case MessageEnum.audio:
-          return Image.network(
+          return Text(
             message,
-            fit: BoxFit.cover,
+            style: TextStyle(
+              color: color,
+              fontSize: 16,
+            ),
+            maxLines: maxLines,
+            overflow: overflow,
           );
         default:
           return Text(

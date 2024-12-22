@@ -150,6 +150,9 @@ class _BottomChatFieldState extends State<BottomChatField> {
       onSuccess: () {
         _textEditingController.clear();
         _focusNode.unfocus();
+        setState(() {
+          isSendingAudio = false;
+        });
       },
       onError: (error) {
         showSnackBar(context, error);
@@ -200,54 +203,51 @@ class _BottomChatFieldState extends State<BottomChatField> {
                   : const SizedBox.shrink(),
               Row(
                 children: [
-                  chatProvider.isLoading
-                      ? const CircularProgressIndicator()
-                      : IconButton(
-                          onPressed: () {
-                            // Show Attachment Options
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (context) {
-                                return SizedBox(
-                                  height: 200,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      children: [
-                                        // Select image from camera
-                                        ListTile(
-                                          leading: const Icon(Icons.camera),
-                                          title: const Text('Camera'),
-                                          onTap: () {
-                                            selectImage(true);
-                                          },
-                                        ),
-                                        // Select image from gallery
-                                        ListTile(
-                                          leading: const Icon(Icons.image),
-                                          title: const Text('Gallery'),
-                                          onTap: () {
-                                            selectImage(false);
-                                          },
-                                        ),
-                                        // Select a video file from device
-                                        ListTile(
-                                          leading:
-                                              const Icon(Icons.video_library),
-                                          title: const Text('Video'),
-                                          onTap: () {
-                                            selectImage(false);
-                                          },
-                                        ),
-                                      ],
-                                    ),
+                  IconButton(
+                    onPressed: isSendingAudio ? null : () {
+                      // Show Attachment Options
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return SizedBox(
+                            height: 200,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  // Select image from camera
+                                  ListTile(
+                                    leading: const Icon(Icons.camera),
+                                    title: const Text('Camera'),
+                                    onTap: () {
+                                      selectImage(true);
+                                    },
                                   ),
-                                );
-                              },
-                            );
-                          },
-                          icon: const Icon(Icons.attachment),
-                        ),
+                                  // Select image from gallery
+                                  ListTile(
+                                    leading: const Icon(Icons.image),
+                                    title: const Text('Gallery'),
+                                    onTap: () {
+                                      selectImage(false);
+                                    },
+                                  ),
+                                  // Select a video file from device
+                                  ListTile(
+                                    leading: const Icon(Icons.video_library),
+                                    title: const Text('Video'),
+                                    onTap: () {
+                                      selectImage(false);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    icon: const Icon(Icons.attachment),
+                  ),
                   Expanded(
                     child: TextFormField(
                       controller: _textEditingController,
@@ -267,7 +267,10 @@ class _BottomChatFieldState extends State<BottomChatField> {
                     ),
                   ),
                   chatProvider.isLoading
-                      ? const CircularProgressIndicator()
+                      ? const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: CircularProgressIndicator(),
+                        )
                       : GestureDetector(
                           onTap: isShowSendButton ? sendTextMessage : null,
                           onLongPress: isShowSendButton ? null : startRecording,
