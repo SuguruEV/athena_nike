@@ -1,4 +1,5 @@
 import 'package:athena_nike/constants.dart';
+import 'package:athena_nike/widgets/audio_player_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -43,15 +44,7 @@ class DisplayMessageType extends StatelessWidget {
             fit: BoxFit.cover,
           );
         case MessageEnum.audio:
-          return Text(
-            message,
-            style: TextStyle(
-              color: color,
-              fontSize: 16,
-            ),
-            maxLines: maxLines,
-            overflow: overflow,
-          );
+          return AudioPlayerWidget(audioUrl: message);
         default:
           return Text(
             message,

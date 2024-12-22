@@ -35,148 +35,144 @@ class _ChatListState extends State<ChatList> {
   Widget build(BuildContext context) {
     // Current User UID
     final uid = context.read<AuthenticationProvider>().userModel!.uid;
-    return GestureDetector(
-      onVerticalDragDown: (_) {
-        FocusScope.of(context).unfocus();
-      },
-      child: StreamBuilder<List<MessageModel>>(
-        stream: context.read<ChatProvider>().getMessagesStream(
-              userUID: uid,
-              contactUID: widget.contactUID,
-              isGroup: widget.groupID,
-            ),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(
-              child: Text('Something went wrong'),
-            );
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          if (snapshot.data!.isEmpty) {
-            return Center(
-              child: Text(
-                'No Messages',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.titilliumWeb(
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2,
-                ),
-              ),
-            );
-          }
-
-          // Automatically Scrolls to the bottom on new message
-          WidgetsBinding.instance!.addPostFrameCallback((_) {
-            _scrollController.animateTo(
-              _scrollController.position.minScrollExtent,
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeInOut,
-            );
-          });
-
-          if (snapshot.hasData) {
-            final messagesList = snapshot.data!;
-            return GroupedListView<dynamic, DateTime>(
-              reverse: true,
-              controller: _scrollController,
-              elements: messagesList,
-              groupBy: (element) {
-                return DateTime(
-                  element.timeSent!.year,
-                  element.timeSent!.month,
-                  element.timeSent!.day,
-                );
-              },
-              groupHeaderBuilder: (dynamic groupedByValue) => SizedBox(
-                height: 40,
-                child: buildDateTime(groupedByValue),
-              ),
-              itemBuilder: (context, dynamic element) {
-                // Set message as seen
-                if (!element.isSeen && element.senderUID != uid) {
-                  context.read<ChatProvider>().setMessageAsSeen(
-                        userUID: uid,
-                        contactUID: widget.contactUID,
-                        messageID: element.messageID,
-                        groupID: widget.groupID,
-                      );
-                }
-
-                // Check if we sent the message
-                final isMe = element.senderUID == uid;
-                return isMe
-                    ? Padding(
-                        padding: const EdgeInsets.only(
-                          top: 8.0,
-                          bottom: 8.0,
-                        ),
-                        child: MyMessageWidget(
-                          message: element,
-                          onRightSwipe: () {
-                            // Set the message reply to true
-                            final messageReply = MessageReplyModel(
-                              message: element.message,
-                              senderUID: element.senderUID,
-                              senderName: element.senderName,
-                              senderImage: element.senderImage,
-                              messageType: element.messageType,
-                              isMe: isMe,
-                            );
-
-                            context.read<ChatProvider>().setMessageReplyModel(
-                                  messageReply,
-                                );
-                          },
-                        ),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.only(
-                          top: 8.0,
-                          bottom: 8.0,
-                        ),
-                        child: ContactMessageWidget(
-                          message: element,
-                          onRightSwipe: () {
-                            // Set the message reply to true
-                            final messageReply = MessageReplyModel(
-                              message: element.message,
-                              senderUID: element.senderUID,
-                              senderName: element.senderName,
-                              senderImage: element.senderImage,
-                              messageType: element.messageType,
-                              isMe: isMe,
-                            );
-
-                            context.read<ChatProvider>().setMessageReplyModel(
-                                  messageReply,
-                                );
-                          },
-                        ),
-                      );
-              },
-              groupComparator: (value1, value2) => value2.compareTo(value1),
-              itemComparator: (item1, item2) {
-                var firstItem = item1.timeSent;
-                var secondItem = item2.timeSent;
-
-                return secondItem!.compareTo(firstItem!);
-              },
-              useStickyGroupSeparators: true,
-              floatingHeader: true,
-              order: GroupedListOrder.ASC,
-            );
-          }
+    return StreamBuilder<List<MessageModel>>(
+      stream: context.read<ChatProvider>().getMessagesStream(
+            userUID: uid,
+            contactUID: widget.contactUID,
+            isGroup: widget.groupID,
+          ),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
           return const Center(
-            child: Text('No Messages'),
+            child: Text('Something went wrong'),
           );
-        },
-      ),
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+    
+        if (snapshot.data!.isEmpty) {
+          return Center(
+            child: Text(
+              'No Messages',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.titilliumWeb(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
+              ),
+            ),
+          );
+        }
+    
+        // Automatically Scrolls to the bottom on new message
+        WidgetsBinding.instance!.addPostFrameCallback((_) {
+          _scrollController.animateTo(
+            _scrollController.position.minScrollExtent,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+          );
+        });
+    
+        if (snapshot.hasData) {
+          final messagesList = snapshot.data!;
+          return GroupedListView<dynamic, DateTime>(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            reverse: true,
+            controller: _scrollController,
+            elements: messagesList,
+            groupBy: (element) {
+              return DateTime(
+                element.timeSent!.year,
+                element.timeSent!.month,
+                element.timeSent!.day,
+              );
+            },
+            groupHeaderBuilder: (dynamic groupedByValue) => SizedBox(
+              height: 40,
+              child: buildDateTime(groupedByValue),
+            ),
+            itemBuilder: (context, dynamic element) {
+              // Set message as seen
+              if (!element.isSeen && element.senderUID != uid) {
+                context.read<ChatProvider>().setMessageAsSeen(
+                      userUID: uid,
+                      contactUID: widget.contactUID,
+                      messageID: element.messageID,
+                      groupID: widget.groupID,
+                    );
+              }
+    
+              // Check if we sent the message
+              final isMe = element.senderUID == uid;
+              return isMe
+                  ? Padding(
+                      padding: const EdgeInsets.only(
+                        top: 8.0,
+                        bottom: 8.0,
+                      ),
+                      child: MyMessageWidget(
+                        message: element,
+                        onRightSwipe: () {
+                          // Set the message reply to true
+                          final messageReply = MessageReplyModel(
+                            message: element.message,
+                            senderUID: element.senderUID,
+                            senderName: element.senderName,
+                            senderImage: element.senderImage,
+                            messageType: element.messageType,
+                            isMe: isMe,
+                          );
+    
+                          context.read<ChatProvider>().setMessageReplyModel(
+                                messageReply,
+                              );
+                        },
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.only(
+                        top: 8.0,
+                        bottom: 8.0,
+                      ),
+                      child: ContactMessageWidget(
+                        message: element,
+                        onRightSwipe: () {
+                          // Set the message reply to true
+                          final messageReply = MessageReplyModel(
+                            message: element.message,
+                            senderUID: element.senderUID,
+                            senderName: element.senderName,
+                            senderImage: element.senderImage,
+                            messageType: element.messageType,
+                            isMe: isMe,
+                          );
+    
+                          context.read<ChatProvider>().setMessageReplyModel(
+                                messageReply,
+                              );
+                        },
+                      ),
+                    );
+            },
+            groupComparator: (value1, value2) => value2.compareTo(value1),
+            itemComparator: (item1, item2) {
+              var firstItem = item1.timeSent;
+              var secondItem = item2.timeSent;
+    
+              return secondItem!.compareTo(firstItem!);
+            },
+            useStickyGroupSeparators: true,
+            floatingHeader: true,
+            order: GroupedListOrder.ASC,
+          );
+        }
+        return const Center(
+          child: Text('No Messages'),
+        );
+      },
     );
   }
 }
