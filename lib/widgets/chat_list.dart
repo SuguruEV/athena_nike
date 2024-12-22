@@ -5,6 +5,7 @@ import 'package:athena_nike/providers/chat_provider.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:athena_nike/widgets/contact_message_widget.dart';
 import 'package:athena_nike/widgets/my_message_widget.dart';
+import 'package:athena_nike/widgets/reactions_dialog.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,6 +32,18 @@ class _ChatListState extends State<ChatList> {
     super.dispose();
   }
 
+  showReactionsDialogue({required MessageModel message, required String uid}) {
+    showDialog(
+      context: context,
+      builder: (context) => ReactionsDialog(
+        uid: uid,
+        message: message,
+        onReactionsTap: (reaction) {},
+        onContextMenuTap: (item) {},
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Current User UID
@@ -52,7 +65,7 @@ class _ChatListState extends State<ChatList> {
             child: CircularProgressIndicator(),
           );
         }
-    
+
         if (snapshot.data!.isEmpty) {
           return Center(
             child: Text(
@@ -66,7 +79,7 @@ class _ChatListState extends State<ChatList> {
             ),
           );
         }
-    
+
         // Automatically Scrolls to the bottom on new message
         WidgetsBinding.instance!.addPostFrameCallback((_) {
           _scrollController.animateTo(
@@ -75,7 +88,7 @@ class _ChatListState extends State<ChatList> {
             curve: Curves.easeInOut,
           );
         });
-    
+
         if (snapshot.hasData) {
           final messagesList = snapshot.data!;
           return GroupedListView<dynamic, DateTime>(
@@ -104,34 +117,39 @@ class _ChatListState extends State<ChatList> {
                       groupID: widget.groupID,
                     );
               }
-    
+
               // Check if we sent the message
               final isMe = element.senderUID == uid;
               return isMe
-                  ? Padding(
-                      padding: const EdgeInsets.only(
-                        top: 8.0,
-                        bottom: 8.0,
+                  ? InkWell(
+                      onLongPress: () {
+                        showReactionsDialogue(message: element, uid: uid);
+                      },
+                    child: Padding(
+                        padding: const EdgeInsets.only(
+                          top: 8.0,
+                          bottom: 8.0,
+                        ),
+                        child: MyMessageWidget(
+                          message: element,
+                          onRightSwipe: () {
+                            // Set the message reply to true
+                            final messageReply = MessageReplyModel(
+                              message: element.message,
+                              senderUID: element.senderUID,
+                              senderName: element.senderName,
+                              senderImage: element.senderImage,
+                              messageType: element.messageType,
+                              isMe: isMe,
+                            );
+                    
+                            context.read<ChatProvider>().setMessageReplyModel(
+                                  messageReply,
+                                );
+                          },
+                        ),
                       ),
-                      child: MyMessageWidget(
-                        message: element,
-                        onRightSwipe: () {
-                          // Set the message reply to true
-                          final messageReply = MessageReplyModel(
-                            message: element.message,
-                            senderUID: element.senderUID,
-                            senderName: element.senderName,
-                            senderImage: element.senderImage,
-                            messageType: element.messageType,
-                            isMe: isMe,
-                          );
-    
-                          context.read<ChatProvider>().setMessageReplyModel(
-                                messageReply,
-                              );
-                        },
-                      ),
-                    )
+                  )
                   : Padding(
                       padding: const EdgeInsets.only(
                         top: 8.0,
@@ -149,7 +167,7 @@ class _ChatListState extends State<ChatList> {
                             messageType: element.messageType,
                             isMe: isMe,
                           );
-    
+
                           context.read<ChatProvider>().setMessageReplyModel(
                                 messageReply,
                               );
@@ -161,7 +179,7 @@ class _ChatListState extends State<ChatList> {
             itemComparator: (item1, item2) {
               var firstItem = item1.timeSent;
               var secondItem = item2.timeSent;
-    
+
               return secondItem!.compareTo(firstItem!);
             },
             useStickyGroupSeparators: true,

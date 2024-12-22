@@ -169,3 +169,22 @@ Widget messageToShow({
       );
   }
 }
+
+// Default list of emoji for reactions and plus sign at the end for more emoji
+// like, love, haha, wow, sad, angry, and plus sign
+List<String> reactions = [
+  '😍',
+  '😂',
+  '😮',
+  '😢',
+  '😡',
+  '👍',
+  '➕',
+];
+
+// List of contextMenu for reply, copy and delete
+List<String> contextMenu = [
+  'Reply',
+  'Copy',
+  'Delete',
+];
