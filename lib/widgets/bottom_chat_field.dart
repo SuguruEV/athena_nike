@@ -6,7 +6,10 @@ import 'package:athena_nike/providers/chat_provider.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:athena_nike/widgets/message_reply_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sound_record/flutter_sound_record.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class BottomChatField extends StatefulWidget {
@@ -28,14 +31,20 @@ class BottomChatField extends StatefulWidget {
 }
 
 class _BottomChatFieldState extends State<BottomChatField> {
+  FlutterSoundRecord? _soundRecord;
   late TextEditingController _textEditingController;
   late FocusNode _focusNode;
   File? finalFileImage;
   String filePath = '';
 
+  bool isRecording = false;
+  bool isShowSendButton = false;
+  bool isSendingAudio = false;
+
   @override
   void initState() {
     _textEditingController = TextEditingController();
+    _soundRecord = FlutterSoundRecord();
     _focusNode = FocusNode();
     super.initState();
   }
@@ -43,8 +52,50 @@ class _BottomChatFieldState extends State<BottomChatField> {
   @override
   void dispose() {
     _textEditingController.dispose();
+    _soundRecord?.dispose();
     _focusNode.dispose();
     super.dispose();
+  }
+
+  // Check Microphone Permission
+  Future<bool> checkMicrophonePermission() async {
+    bool hasPermission = await Permission.microphone.isGranted;
+    final status = await Permission.microphone.request();
+    if (status == PermissionStatus.granted) {
+      hasPermission = true;
+    } else {
+      hasPermission = false;
+    }
+
+    return hasPermission;
+  }
+
+  // Start Recording Audio
+  void startRecording() async {
+    final hasPermission = await checkMicrophonePermission();
+    if (hasPermission) {
+      var tempDir = await getTemporaryDirectory();
+      filePath = '${tempDir.path}/flutter_sound.aac';
+      await _soundRecord!.start(
+        path: filePath,
+      );
+      setState(() {
+        isRecording = true;
+      });
+    }
+  }
+
+  // Stop Recording Audio
+  void stopRecording() async {
+    await _soundRecord!.stop();
+    setState(() {
+      isRecording = false;
+      isShowSendButton = true;
+    });
+    // Send audio message to Firestore
+    sendFileMessage(
+      messageType: MessageEnum.audio,
+    );
   }
 
   void selectImage(bool fromCamera) async {
@@ -98,7 +149,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
       groupID: widget.groupID,
       onSuccess: () {
         _textEditingController.clear();
-        _focusNode.requestFocus();
+        _focusNode.unfocus();
       },
       onError: (error) {
         showSnackBar(context, error);
@@ -120,7 +171,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
       groupID: widget.groupID,
       onSuccess: () {
         _textEditingController.clear();
-        _focusNode.requestFocus();
+        _focusNode.unfocus();
       },
       onError: (error) {
         showSnackBar(context, error);
@@ -208,24 +259,36 @@ class _BottomChatFieldState extends State<BottomChatField> {
                         ),
                         hintText: 'Type a message',
                       ),
+                      onChanged: (value) {
+                        setState(() {
+                          isShowSendButton = value.isNotEmpty;
+                        });
+                      },
                     ),
                   ),
                   chatProvider.isLoading
                       ? const CircularProgressIndicator()
                       : GestureDetector(
-                          onTap: sendTextMessage,
+                          onTap: isShowSendButton ? sendTextMessage : null,
+                          onLongPress: isShowSendButton ? null : startRecording,
+                          onLongPressUp: stopRecording,
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(30),
                               color: Colors.deepPurple,
                             ),
                             margin: const EdgeInsets.all(5),
-                            child: const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(
-                                Icons.arrow_upward,
-                                color: Colors.white,
-                              ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: isShowSendButton
+                                  ? const Icon(
+                                      Icons.arrow_upward,
+                                      color: Colors.white,
+                                    )
+                                  : const Icon(
+                                      Icons.mic,
+                                      color: Colors.white,
+                                    ),
                             ),
                           ),
                         ),
