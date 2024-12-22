@@ -2,9 +2,10 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 class AudioPlayerWidget extends StatefulWidget {
-  const AudioPlayerWidget({super.key, required this.audioUrl});
+  const AudioPlayerWidget({super.key, required this.audioUrl, required this.color,});
 
   final String audioUrl;
+  final Color color;
 
   @override
   State<AudioPlayerWidget> createState() => _AudioPlayerWidgetState();
@@ -77,7 +78,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
           backgroundColor: Colors.orangeAccent,
           child: CircleAvatar(
             radius: 20,
-            backgroundColor: Theme.of(context).colorScheme.secondary,
+            backgroundColor: Colors.white,
             child: IconButton(
               onPressed: () async {
                 if (!isPlaying) {
@@ -88,7 +89,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
               },
               icon: Icon(
                 isPlaying ? Icons.pause : Icons.play_arrow,
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
           ),
@@ -102,8 +103,8 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
           ),
         ),
         Text(formatTime(duration - position),
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: widget.color,
               fontSize: 12.0,
             )),
       ],

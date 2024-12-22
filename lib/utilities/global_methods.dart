@@ -70,6 +70,25 @@ Future<File?> pickImage({
   return fileImage;
 }
 
+// Pick Video From Gallery
+Future<File?> pickVideo({
+  required Function(String) onFail,
+}) async {
+  File? fileVideo;
+  try {
+    final pickedFile = await ImagePicker().pickVideo(source: ImageSource.gallery);
+    if (pickedFile == null) {
+      onFail('No Video Selected');
+    } else {
+      fileVideo = File(pickedFile.path);
+    }
+  } catch (e) {
+    onFail(e.toString());
+  }
+
+  return fileVideo;
+}
+
 Center buildDateTime(groupedByValue) {
   return Center(
     child: Card(

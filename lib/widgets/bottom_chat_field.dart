@@ -111,6 +111,25 @@ class _BottomChatFieldState extends State<BottomChatField> {
     popContext();
   }
 
+  // Select a video file from device
+  void selectVideo() async {
+    File? fileVideo = await pickVideo(
+      onFail: (String message) {
+        showSnackBar(context, message);
+      },
+    );
+
+    popContext();
+
+    if (fileVideo != null) {
+      filePath = fileVideo.path;
+      // Send video message to Firestore
+      sendFileMessage(
+        messageType: MessageEnum.video,
+      );
+    }
+  }
+
   popContext() {
     Navigator.pop(context);
   }
@@ -207,48 +226,49 @@ class _BottomChatFieldState extends State<BottomChatField> {
               Row(
                 children: [
                   IconButton(
-                    onPressed: isSendingAudio ? null : () {
-                      // Show Attachment Options
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (context) {
-                          return SizedBox(
-                            height: 200,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  // Select image from camera
-                                  ListTile(
-                                    leading: const Icon(Icons.camera),
-                                    title: const Text('Camera'),
-                                    onTap: () {
-                                      selectImage(true);
-                                    },
+                    onPressed: isSendingAudio
+                        ? null
+                        : () {
+                            // Show Attachment Options
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return SizedBox(
+                                  height: 200,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: [
+                                        // Select image from camera
+                                        ListTile(
+                                          leading: const Icon(Icons.camera),
+                                          title: const Text('Camera'),
+                                          onTap: () {
+                                            selectImage(true);
+                                          },
+                                        ),
+                                        // Select image from gallery
+                                        ListTile(
+                                          leading: const Icon(Icons.image),
+                                          title: const Text('Gallery'),
+                                          onTap: () {
+                                            selectImage(false);
+                                          },
+                                        ),
+                                        // Select a video file from device
+                                        ListTile(
+                                          leading:
+                                              const Icon(Icons.video_library),
+                                          title: const Text('Video'),
+                                          onTap: selectVideo,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  // Select image from gallery
-                                  ListTile(
-                                    leading: const Icon(Icons.image),
-                                    title: const Text('Gallery'),
-                                    onTap: () {
-                                      selectImage(false);
-                                    },
-                                  ),
-                                  // Select a video file from device
-                                  ListTile(
-                                    leading: const Icon(Icons.video_library),
-                                    title: const Text('Video'),
-                                    onTap: () {
-                                      selectImage(false);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
+                                );
+                              },
+                            );
+                          },
                     icon: const Icon(Icons.attachment),
                   ),
                   Expanded(
