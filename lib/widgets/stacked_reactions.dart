@@ -1,5 +1,4 @@
 import 'package:athena_nike/models/message_model.dart';
-import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:flutter/material.dart';
 
 class StackedReactionsWidget extends StatelessWidget {
@@ -18,9 +17,9 @@ class StackedReactionsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     // If reactions are greater than 5, get the first 5 reactions
     final reactionsToShow =
-        reactions.length > 5 ? reactions.sublist(0, 5) : reactions;
+        message.reactions.length > 5 ? message.reactions.sublist(0, 5) : message.reactions;
     // Remaining Reactions
-    final remainingReactions = reactions.length - reactionsToShow.length;
+    final remainingReactions = message.reactions.length - reactionsToShow.length;
     final allReactions = reactionsToShow
         .asMap()
         .map((index, reaction) {
@@ -80,7 +79,7 @@ class StackedReactionsWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(2.0),
                     child: Text(
                       '+$remainingReactions',
-                      style: const TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: 16, color: Colors.black),
                     ),
                   ),
                 ),

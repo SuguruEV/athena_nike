@@ -1,7 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:athena_nike/models/message_model.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
-import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 
 class ReactionsDialog extends StatefulWidget {

@@ -7,7 +7,6 @@ import 'package:athena_nike/widgets/contact_message_widget.dart';
 import 'package:athena_nike/widgets/my_message_widget.dart';
 import 'package:athena_nike/widgets/reactions_dialog.dart';
 import 'package:athena_nike/widgets/stacked_reactions.dart';
-import 'package:date_format/date_format.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -190,6 +189,9 @@ class _ChatListState extends State<ChatList> {
               child: buildDateTime(groupedByValue),
             ),
             itemBuilder: (context, dynamic element) {
+              final padding1 = element.reactions.isEmpty ? 0.0 : 20.0;
+              final padding2 = element.reactions.isEmpty ? 0.0 : 25.0;
+
               // Set message as seen
               if (!element.isSeen && element.senderUID != uid) {
                 context.read<ChatProvider>().setMessageAsSeen(
@@ -210,9 +212,9 @@ class _ChatListState extends State<ChatList> {
                             showReactionsDialogue(message: element, isMe: isMe);
                           },
                           child: Padding(
-                            padding: const EdgeInsets.only(
+                            padding: EdgeInsets.only(
                               top: 8.0,
-                              bottom: 20.0,
+                              bottom: padding1,
                             ),
                             child: MyMessageWidget(
                               message: element,
@@ -251,9 +253,9 @@ class _ChatListState extends State<ChatList> {
                             showReactionsDialogue(message: element, isMe: isMe);
                           },
                           child: Padding(
-                            padding: const EdgeInsets.only(
+                            padding: EdgeInsets.only(
                               top: 8.0,
-                              bottom: 25.0,
+                              bottom: padding2,
                             ),
                             child: ContactMessageWidget(
                               message: element,
@@ -278,7 +280,7 @@ class _ChatListState extends State<ChatList> {
                           ),
                         ),
                         Positioned(
-                          bottom: 4,
+                          bottom: 0,
                           right: 250,
                           child: StackedReactionsWidget(
                               message: element, size: 20, onTap: () {}),

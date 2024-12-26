@@ -112,8 +112,8 @@ class ContactMessageWidget extends StatelessWidget {
                   right: 10,
                   child: Text(
                     time,
-                    style: const TextStyle(
-                      color: Colors.white60,
+                    style: TextStyle(
+                      color: isDarkMode ? Colors.white60 : Colors.grey.shade500,
                       fontSize: 10,
                     ),
                   ),
