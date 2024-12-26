@@ -16,7 +16,12 @@ class StackedReactionsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final allReactions = reactions
+    // If reactions are greater than 5, get the first 5 reactions
+    final reactionsToShow =
+        reactions.length > 5 ? reactions.sublist(0, 5) : reactions;
+    // Remaining Reactions
+    final remainingReactions = reactions.length - reactionsToShow.length;
+    final allReactions = reactionsToShow
         .asMap()
         .map((index, reaction) {
           final value = Container(
@@ -47,8 +52,42 @@ class StackedReactionsWidget extends StatelessWidget {
         .toList();
     return GestureDetector(
       onTap: () => onTap(),
-      child: Stack(
-        children: allReactions,
+      child: Row(
+        children: [
+          Stack(
+            children: allReactions,
+          ),
+          // Show this only if there are more than 5 reactions
+          if (remainingReactions > 0) ...{
+            Positioned(
+              left: 100,
+              child: Container(
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(25.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.shade500,
+                      spreadRadius: 1,
+                      blurRadius: 2,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
+                ),
+                child: ClipOval(
+                  child: Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Text(
+                      '+$remainingReactions',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ),
+              ),
+            )
+          }
+        ],
       ),
     );
   }

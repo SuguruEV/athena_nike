@@ -239,55 +239,51 @@ class _ChatListState extends State<ChatList> {
                         Positioned(
                           bottom: 4,
                           right: 90,
-                          child: Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(25)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.shade400,
-                                  spreadRadius: 1,
-                                  blurRadius: 2,
-                                  offset: const Offset(0, 1),
-                                ),
-                              ],
-                            ),
-                            child: StackedReactionsWidget(
-                                message: element, size: 20, onTap: () {}),
-                          ),
+                          child: StackedReactionsWidget(
+                              message: element, size: 20, onTap: () {}),
                         ),
                       ],
                     )
-                  : InkWell(
-                      onLongPress: () {
-                        showReactionsDialogue(message: element, isMe: isMe);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: 8.0,
-                          bottom: 8.0,
-                        ),
-                        child: ContactMessageWidget(
-                          message: element,
-                          onRightSwipe: () {
-                            // Set the message reply to true
-                            final messageReply = MessageReplyModel(
-                              message: element.message,
-                              senderUID: element.senderUID,
-                              senderName: element.senderName,
-                              senderImage: element.senderImage,
-                              messageType: element.messageType,
-                              isMe: isMe,
-                            );
-
-                            context.read<ChatProvider>().setMessageReplyModel(
-                                  messageReply,
-                                );
+                  : Stack(
+                      children: [
+                        InkWell(
+                          onLongPress: () {
+                            showReactionsDialogue(message: element, isMe: isMe);
                           },
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 8.0,
+                              bottom: 25.0,
+                            ),
+                            child: ContactMessageWidget(
+                              message: element,
+                              onRightSwipe: () {
+                                // Set the message reply to true
+                                final messageReply = MessageReplyModel(
+                                  message: element.message,
+                                  senderUID: element.senderUID,
+                                  senderName: element.senderName,
+                                  senderImage: element.senderImage,
+                                  messageType: element.messageType,
+                                  isMe: isMe,
+                                );
+
+                                context
+                                    .read<ChatProvider>()
+                                    .setMessageReplyModel(
+                                      messageReply,
+                                    );
+                              },
+                            ),
+                          ),
                         ),
-                      ),
+                        Positioned(
+                          bottom: 4,
+                          right: 250,
+                          child: StackedReactionsWidget(
+                              message: element, size: 20, onTap: () {}),
+                        ),
+                      ],
                     );
             },
             groupComparator: (value1, value2) => value2.compareTo(value1),
