@@ -24,7 +24,6 @@ class ReactionsDialog extends StatefulWidget {
 
 class _ReactionsDialogState extends State<ReactionsDialog> {
   bool reactionClicked = false;
-  bool contextMenuClicked = false;
   int? clickedReactionIndex;
   int? clickedContextMenuIndex;
 
@@ -78,32 +77,22 @@ class _ReactionsDialogState extends State<ReactionsDialog> {
                                 },
                               );
                             },
-                            child: reactionClicked &&
-                                    clickedReactionIndex ==
-                                        reactions.indexOf(reaction)
-                                ? Pulse(
-                                    infinite: false,
-                                    duration: const Duration(milliseconds: 500),
-                                    animate: reactionClicked,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        reaction,
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      reaction,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                      ),
-                                    ),
+                            child: Pulse(
+                              infinite: false,
+                              duration: const Duration(milliseconds: 500),
+                              animate: reactionClicked &&
+                                  clickedReactionIndex ==
+                                      reactions.indexOf(reaction),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  reaction,
+                                  style: const TextStyle(
+                                    fontSize: 20,
                                   ),
+                                ),
+                              ),
+                            ),
                           ),
                       ],
                     ),
@@ -137,7 +126,6 @@ class _ReactionsDialogState extends State<ReactionsDialog> {
                             onTap: () {
                               widget.onContextMenuTap(menu);
                               setState(() {
-                                contextMenuClicked = true;
                                 clickedContextMenuIndex =
                                     contextMenu.indexOf(menu);
                               });
@@ -152,25 +140,17 @@ class _ReactionsDialogState extends State<ReactionsDialog> {
                                     menu,
                                     style: const TextStyle(fontSize: 20),
                                   ),
-                                  contextMenuClicked &&
-                                          clickedContextMenuIndex ==
-                                              contextMenu.indexOf(menu)
-                                      ? Pulse(
-                                          infinite: false,
-                                          duration:
-                                              const Duration(milliseconds: 500),
-                                          animate: contextMenuClicked,
-                                          child: Icon(menu == 'Reply'
-                                              ? Icons.reply
-                                              : menu == 'Copy'
-                                                  ? Icons.copy
-                                                  : Icons.delete),
-                                        )
-                                      : Icon(menu == 'Reply'
-                                          ? Icons.reply
-                                          : menu == 'Copy'
-                                              ? Icons.copy
-                                              : Icons.delete),
+                                  Pulse(
+                                    infinite: false,
+                                    duration: const Duration(milliseconds: 500),
+                                    animate: clickedContextMenuIndex ==
+                                        contextMenu.indexOf(menu),
+                                    child: Icon(menu == 'Reply'
+                                        ? Icons.reply
+                                        : menu == 'Copy'
+                                            ? Icons.copy
+                                            : Icons.delete),
+                                  )
                                 ],
                               ),
                             ),

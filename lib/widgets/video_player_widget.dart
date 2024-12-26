@@ -58,18 +58,18 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                 isPlaying ? Icons.pause : Icons.play_arrow,
                 color: widget.color,
               ),
-              onPressed: widget.viewOnly
-                  ? null
-                  : () {
-                      setState(() {
-                        isPlaying = !isPlaying;
-                        isPlaying
-                            ? videoPlayerController.play()
-                            : videoPlayerController.pause();
-                      });
-                    },
+              onPressed: () {
+                setState(
+                  () {
+                    isPlaying = !isPlaying;
+                    isPlaying
+                        ? videoPlayerController.play()
+                        : videoPlayerController.pause();
+                  },
+                );
+              },
             ),
-          ),
+          )
         ],
       ),
     );

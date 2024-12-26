@@ -37,12 +37,16 @@ class MyMessageWidget extends StatelessWidget {
             maxWidth: MediaQuery.of(context).size.width * 0.7,
             minWidth: MediaQuery.of(context).size.width * 0.3,
           ),
-          child: Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: Colors.deepPurple,
-              borderRadius: BorderRadius.circular(10.0),
+          child: Card(
+            elevation: 5,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15),
+                topRight: Radius.circular(15),
+                bottomLeft: Radius.circular(15),
+              ),
             ),
+            color: Colors.deepPurple,
             child: Stack(
               children: [
                 Padding(
@@ -78,7 +82,7 @@ class MyMessageWidget extends StatelessWidget {
                                 Text(
                                   message.repliedTo,
                                   style: const TextStyle(
-                                    color: Colors.white,
+                                    color: Colors.white70,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -112,7 +116,7 @@ class MyMessageWidget extends StatelessWidget {
                       Text(
                         time,
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: Colors.white60,
                           fontSize: 10,
                         ),
                       ),
