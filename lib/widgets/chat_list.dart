@@ -79,47 +79,61 @@ class _ChatListState extends State<ChatList> {
         isMyMessage: isMe,
         message: message,
         onReactionsTap: (reaction) {
-          Future.delayed(const Duration(milliseconds: 500), () {
-            Navigator.pop(context);
-            print('Pressed $reaction');
-            // If it's a plus reaction, show bottom with emoji keyboard
-            if (reaction == '➕') {
-              // TODO Show emoji keyboard
-              showEmojiContainer();
-              // showEmojiKeyboard(
-              //   context: context,
-              //   onEmojiSelected: (emoji) {
-              //     // Add the emoji to the message
-              //     context.read<ChatProvider>().addEmojiToMessage(emoji: emoji, message: message);
-              //   }
-              // );
-            } else {
-              // TODO Add the reaction to the message
-              // context.read<ChatProvider>().addReactionToMessage(
-              //   reaction: reaction,
-              //   message: message,
-              // );
-            }
-          });
+          // If it's a plus reaction, show bottom with emoji keyboard
+          if (reaction == '➕') {
+            Future.delayed(const Duration(milliseconds: 500), () {
+              Navigator.pop(context);
+              showEmojiContainer(messageID: message.messageID);
+            });
+          } else {
+            Future.delayed(const Duration(milliseconds: 500), () {
+              Navigator.pop(context);
+              sendReactionToMessage(
+                  reaction: reaction, messageID: message.messageID);
+            });
+          }
         },
         onContextMenuTap: (item) {
-          Future.delayed(const Duration(milliseconds: 500), () {
-            Navigator.pop(context);
-            onContextMenuClicked(item: item, message: message);
-          });
+          Future.delayed(
+            const Duration(milliseconds: 500),
+            () {
+              Navigator.pop(context);
+              onContextMenuClicked(item: item, message: message);
+            },
+          );
         },
       ),
     );
   }
 
-  void showEmojiContainer() {
+  void sendReactionToMessage({
+    required String reaction,
+    required String messageID,
+  }) {
+    // Get the Sender UID
+    final senderUID = context.read<AuthenticationProvider>().userModel!.uid;
+
+    context.read<ChatProvider>().sendReactionToMessage(
+          senderUID: senderUID,
+          contactUID: widget.contactUID,
+          messageID: messageID,
+          reaction: reaction,
+          groupID: widget.groupID.isNotEmpty,
+        );
+  }
+
+  void showEmojiContainer({
+    required String messageID,
+  }) {
     showModalBottomSheet(
       context: context,
       builder: (context) => SizedBox(
         height: 300,
         child: EmojiPicker(onEmojiSelected: (category, emoji) {
           Navigator.pop(context);
-          print(emoji);
+
+          // Add the emoji to the message
+          sendReactionToMessage(reaction: emoji.emoji, messageID: messageID);
         }),
       ),
     );
