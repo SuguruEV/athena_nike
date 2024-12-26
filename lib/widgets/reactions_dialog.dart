@@ -7,13 +7,13 @@ import 'package:flutter/material.dart';
 class ReactionsDialog extends StatefulWidget {
   const ReactionsDialog({
     super.key,
-    required this.uid,
+    required this.isMyMessage,
     required this.message,
     required this.onReactionsTap,
     required this.onContextMenuTap,
   });
 
-  final String uid;
+  final bool isMyMessage;
   final MessageModel message;
   final Function(String) onReactionsTap;
   final Function(String) onContextMenuTap;
@@ -30,7 +30,6 @@ class _ReactionsDialogState extends State<ReactionsDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final isMyMessage = widget.uid == widget.message.senderUID;
     return Align(
       alignment: Alignment.centerRight,
       child: Padding(
@@ -118,13 +117,13 @@ class _ReactionsDialogState extends State<ReactionsDialog> {
                   child: Container(
                     margin: const EdgeInsets.symmetric(vertical: 10.0),
                     decoration: BoxDecoration(
-                      color: isMyMessage
+                      color: widget.isMyMessage
                           ? Theme.of(context).colorScheme.primary
-                          : Colors.grey[400],
+                          : Colors.grey.shade500,
                       borderRadius: BorderRadius.circular(20.0),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.shade400,
+                          color: Colors.grey.shade800,
                           spreadRadius: 1,
                           blurRadius: 2,
                           offset: const Offset(0, 1),

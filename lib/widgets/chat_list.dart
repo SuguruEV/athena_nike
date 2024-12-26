@@ -6,6 +6,7 @@ import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:athena_nike/widgets/contact_message_widget.dart';
 import 'package:athena_nike/widgets/my_message_widget.dart';
 import 'package:athena_nike/widgets/reactions_dialog.dart';
+import 'package:athena_nike/widgets/stacked_reactions.dart';
 import 'package:date_format/date_format.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
@@ -72,11 +73,11 @@ class _ChatListState extends State<ChatList> {
     }
   }
 
-  showReactionsDialogue({required MessageModel message, required String uid}) {
+  showReactionsDialogue({required MessageModel message, required bool isMe}) {
     showDialog(
       context: context,
       builder: (context) => ReactionsDialog(
-        uid: uid,
+        isMyMessage: isMe,
         message: message,
         onReactionsTap: (reaction) {
           Future.delayed(const Duration(milliseconds: 500), () {
@@ -85,7 +86,7 @@ class _ChatListState extends State<ChatList> {
             // If it's a plus reaction, show bottom with emoji keyboard
             if (reaction == '➕') {
               // TODO Show emoji keyboard
-              showEmojiContainer(); 
+              showEmojiContainer();
               // showEmojiKeyboard(
               //   context: context,
               //   onEmojiSelected: (emoji) {
@@ -113,15 +114,15 @@ class _ChatListState extends State<ChatList> {
   }
 
   void showEmojiContainer() {
-    showModalBottomSheet(context: context, builder: (context) => SizedBox(
-      height: 300,
-      child: EmojiPicker(
-        onEmojiSelected: (category, emoji) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => SizedBox(
+        height: 300,
+        child: EmojiPicker(onEmojiSelected: (category, emoji) {
           Navigator.pop(context);
           print(emoji);
-        }
+        }),
       ),
-    ),
     );
   }
 
@@ -202,16 +203,73 @@ class _ChatListState extends State<ChatList> {
               // Check if we sent the message
               final isMe = element.senderUID == uid;
               return isMe
-                  ? InkWell(
+                  ? Stack(
+                      children: [
+                        InkWell(
+                          onLongPress: () {
+                            showReactionsDialogue(message: element, isMe: isMe);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 8.0,
+                              bottom: 20.0,
+                            ),
+                            child: MyMessageWidget(
+                              message: element,
+                              onRightSwipe: () {
+                                // Set the message reply to true
+                                final messageReply = MessageReplyModel(
+                                  message: element.message,
+                                  senderUID: element.senderUID,
+                                  senderName: element.senderName,
+                                  senderImage: element.senderImage,
+                                  messageType: element.messageType,
+                                  isMe: isMe,
+                                );
+
+                                context
+                                    .read<ChatProvider>()
+                                    .setMessageReplyModel(
+                                      messageReply,
+                                    );
+                              },
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 4,
+                          right: 90,
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(25)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.shade400,
+                                  spreadRadius: 1,
+                                  blurRadius: 2,
+                                  offset: const Offset(0, 1),
+                                ),
+                              ],
+                            ),
+                            child: StackedReactionsWidget(
+                                message: element, size: 20, onTap: () {}),
+                          ),
+                        ),
+                      ],
+                    )
+                  : InkWell(
                       onLongPress: () {
-                        showReactionsDialogue(message: element, uid: uid);
+                        showReactionsDialogue(message: element, isMe: isMe);
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(
                           top: 8.0,
                           bottom: 8.0,
                         ),
-                        child: MyMessageWidget(
+                        child: ContactMessageWidget(
                           message: element,
                           onRightSwipe: () {
                             // Set the message reply to true
@@ -229,30 +287,6 @@ class _ChatListState extends State<ChatList> {
                                 );
                           },
                         ),
-                      ),
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.only(
-                        top: 8.0,
-                        bottom: 8.0,
-                      ),
-                      child: ContactMessageWidget(
-                        message: element,
-                        onRightSwipe: () {
-                          // Set the message reply to true
-                          final messageReply = MessageReplyModel(
-                            message: element.message,
-                            senderUID: element.senderUID,
-                            senderName: element.senderName,
-                            senderImage: element.senderImage,
-                            messageType: element.messageType,
-                            isMe: isMe,
-                          );
-
-                          context.read<ChatProvider>().setMessageReplyModel(
-                                messageReply,
-                              );
-                        },
                       ),
                     );
             },
