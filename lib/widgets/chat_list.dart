@@ -7,6 +7,7 @@ import 'package:athena_nike/widgets/contact_message_widget.dart';
 import 'package:athena_nike/widgets/my_message_widget.dart';
 import 'package:athena_nike/widgets/reactions_dialog.dart';
 import 'package:date_format/date_format.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -45,7 +46,7 @@ class _ChatListState extends State<ChatList> {
           senderUID: message.senderUID,
           senderName: message.senderName,
           senderImage: message.senderImage,
-          isMe: true, 
+          isMe: true,
           messageType: message.messageType,
         );
 
@@ -78,56 +79,49 @@ class _ChatListState extends State<ChatList> {
         uid: uid,
         message: message,
         onReactionsTap: (reaction) {
-          Navigator.pop(context);
-          print('Pressed $reaction');
-          // If it's a plus reaction, show bottom with emoji keyboard
+          Future.delayed(const Duration(milliseconds: 500), () {
+            Navigator.pop(context);
+            print('Pressed $reaction');
+            // If it's a plus reaction, show bottom with emoji keyboard
             if (reaction == '➕') {
-            // TODO Show emoji keyboard
-            // showEmojiKeyboard(
-            //   context: context,
-            //   onEmojiSelected: (emoji) {
-            //     // Add the emoji to the message
-            //     context.read<ChatProvider>().addEmojiToMessage(emoji: emoji, message: message);
-            //   }
-            // );
+              // TODO Show emoji keyboard
+              showEmojiContainer(); 
+              // showEmojiKeyboard(
+              //   context: context,
+              //   onEmojiSelected: (emoji) {
+              //     // Add the emoji to the message
+              //     context.read<ChatProvider>().addEmojiToMessage(emoji: emoji, message: message);
+              //   }
+              // );
             } else {
-            // TODO Add the reaction to the message
-            // context.read<ChatProvider>().addReactionToMessage(
-            //   reaction: reaction,
-            //   message: message,
-            // );
+              // TODO Add the reaction to the message
+              // context.read<ChatProvider>().addReactionToMessage(
+              //   reaction: reaction,
+              //   message: message,
+              // );
             }
+          });
         },
         onContextMenuTap: (item) {
-          Navigator.pop(context);
-            // TODO Handle the context menu tap
-            // if (item == 'Reply') {
-            //   // Set the message reply to true
-            //   final messageReply = MessageReplyModel(
-            //     message: message.message,
-            //     senderUID: message.senderUID,
-            //     senderName: message.senderName,
-            //     senderImage: message.senderImage,
-            //     messageType: message.messageType,
-            //     isMe: uid == message.senderUID,
-            //   );
-            //   context.read<ChatProvider>().setMessageReplyModel(
-            //         messageReply,
-            //       );
-            // } else if (item == 'Copy') {
-            //   // Copy the message to the clipboard
-            //   GlobalMethods.copyToClipboard(message.message);
-            // } else if (item == 'Delete') {
-            //   // Delete the message
-            //   context.read<ChatProvider>().deleteMessage(
-            //         userUID: uid,
-            //         contactUID: widget.contactUID,
-            //         messageID: message.messageID,
-            //         groupID: widget.groupID,
-            //       );
-            // }
+          Future.delayed(const Duration(milliseconds: 500), () {
+            Navigator.pop(context);
+            onContextMenuClicked(item: item, message: message);
+          });
         },
       ),
+    );
+  }
+
+  void showEmojiContainer() {
+    showModalBottomSheet(context: context, builder: (context) => SizedBox(
+      height: 300,
+      child: EmojiPicker(
+        onEmojiSelected: (category, emoji) {
+          Navigator.pop(context);
+          print(emoji);
+        }
+      ),
+    ),
     );
   }
 
@@ -212,7 +206,7 @@ class _ChatListState extends State<ChatList> {
                       onLongPress: () {
                         showReactionsDialogue(message: element, uid: uid);
                       },
-                    child: Padding(
+                      child: Padding(
                         padding: const EdgeInsets.only(
                           top: 8.0,
                           bottom: 8.0,
@@ -229,14 +223,14 @@ class _ChatListState extends State<ChatList> {
                               messageType: element.messageType,
                               isMe: isMe,
                             );
-                    
+
                             context.read<ChatProvider>().setMessageReplyModel(
                                   messageReply,
                                 );
                           },
                         ),
                       ),
-                  )
+                    )
                   : Padding(
                       padding: const EdgeInsets.only(
                         top: 8.0,
