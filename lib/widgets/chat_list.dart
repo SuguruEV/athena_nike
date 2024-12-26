@@ -8,6 +8,7 @@ import 'package:athena_nike/widgets/my_message_widget.dart';
 import 'package:athena_nike/widgets/reactions_dialog.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:provider/provider.dart';
@@ -32,14 +33,100 @@ class _ChatListState extends State<ChatList> {
     super.dispose();
   }
 
+  void onContextMenuClicked({
+    required String item,
+    required MessageModel message,
+  }) {
+    switch (item) {
+      case 'Reply':
+        // Set the message reply to true
+        final messageReply = MessageReplyModel(
+          message: message.message,
+          senderUID: message.senderUID,
+          senderName: message.senderName,
+          senderImage: message.senderImage,
+          isMe: true, 
+          messageType: message.messageType,
+        );
+
+        context.read<ChatProvider>().setMessageReplyModel(
+              messageReply,
+            );
+        break;
+      case 'Copy':
+        // Copy message to clipboard
+        Clipboard.setData(ClipboardData(text: message.message));
+        showSnackBar(context, 'Message copied to clipboard');
+        break;
+      case 'Delete':
+        // Delete the message
+        // TODO Delete the message
+        // context.read<ChatProvider>().deleteMessage(
+        //       userUID: context.read<AuthenticationProvider>().userModel!.uid,
+        //       contactUID: widget.contactUID,
+        //       messageID: message.messageID,
+        //       groupID: widget.groupID,
+        //     );
+        break;
+    }
+  }
+
   showReactionsDialogue({required MessageModel message, required String uid}) {
     showDialog(
       context: context,
       builder: (context) => ReactionsDialog(
         uid: uid,
         message: message,
-        onReactionsTap: (reaction) {},
-        onContextMenuTap: (item) {},
+        onReactionsTap: (reaction) {
+          Navigator.pop(context);
+          print('Pressed $reaction');
+          // If it's a plus reaction, show bottom with emoji keyboard
+            if (reaction == '➕') {
+            // TODO Show emoji keyboard
+            // showEmojiKeyboard(
+            //   context: context,
+            //   onEmojiSelected: (emoji) {
+            //     // Add the emoji to the message
+            //     context.read<ChatProvider>().addEmojiToMessage(emoji: emoji, message: message);
+            //   }
+            // );
+            } else {
+            // TODO Add the reaction to the message
+            // context.read<ChatProvider>().addReactionToMessage(
+            //   reaction: reaction,
+            //   message: message,
+            // );
+            }
+        },
+        onContextMenuTap: (item) {
+          Navigator.pop(context);
+            // TODO Handle the context menu tap
+            // if (item == 'Reply') {
+            //   // Set the message reply to true
+            //   final messageReply = MessageReplyModel(
+            //     message: message.message,
+            //     senderUID: message.senderUID,
+            //     senderName: message.senderName,
+            //     senderImage: message.senderImage,
+            //     messageType: message.messageType,
+            //     isMe: uid == message.senderUID,
+            //   );
+            //   context.read<ChatProvider>().setMessageReplyModel(
+            //         messageReply,
+            //       );
+            // } else if (item == 'Copy') {
+            //   // Copy the message to the clipboard
+            //   GlobalMethods.copyToClipboard(message.message);
+            // } else if (item == 'Delete') {
+            //   // Delete the message
+            //   context.read<ChatProvider>().deleteMessage(
+            //         userUID: uid,
+            //         contactUID: widget.contactUID,
+            //         messageID: message.messageID,
+            //         groupID: widget.groupID,
+            //       );
+            // }
+        },
       ),
     );
   }
