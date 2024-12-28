@@ -13,6 +13,7 @@ class DisplayMessageType extends StatelessWidget {
     required this.isReply,
     this.maxLines,
     this.overflow,
+    required this.viewOnly,
   });
 
   final String message;
@@ -21,6 +22,7 @@ class DisplayMessageType extends StatelessWidget {
   final bool isReply;
   final int? maxLines;
   final TextOverflow? overflow;
+  final bool viewOnly;
 
   @override
   Widget build(BuildContext context) {

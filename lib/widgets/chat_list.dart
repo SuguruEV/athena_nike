@@ -222,18 +222,26 @@ class _ChatListState extends State<ChatList> {
               return Stack(
                 children: [
                   InkWell(
-                    onLongPress: () {
+                    onLongPress: () async {
                       // showReactionsDialogue(message: element, isMe: isMe);
-                      Navigator.of(context).push(
+                      bool? value = await Navigator.of(context).push(
                         HeroDialogRoute(
                           builder: (context) {
                             return ReactionsContextMenu(
                               isMyMessage: isMe,
                               message: element,
+                              contactUID: widget.contactUID,
+                              groupID: widget.groupID,
                             );
                           },
                         ),
                       );
+
+                      if (value != null && value) {
+                        Future.delayed(const Duration(milliseconds: 300), () {
+                          showEmojiContainer(messageID: element.messageID);
+                        });
+                      }
                     },
                     child: Padding(
                       padding: EdgeInsets.only(
@@ -254,7 +262,7 @@ class _ChatListState extends State<ChatList> {
                               messageType: element.messageType,
                               isMe: isMe,
                             );
-                        
+
                             context.read<ChatProvider>().setMessageReplyModel(
                                   messageReply,
                                 );
