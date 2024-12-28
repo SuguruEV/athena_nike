@@ -1,9 +1,10 @@
+import 'package:athena_nike/minor_screens/reactions_context_menu.dart';
 import 'package:athena_nike/models/message_model.dart';
 import 'package:athena_nike/models/message_reply_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/providers/chat_provider.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
-import 'package:athena_nike/widgets/contact_message_widget.dart';
+import 'package:athena_nike/utilities/hero_dialog_route.dart';
 import 'package:athena_nike/widgets/message_widget.dart';
 import 'package:athena_nike/widgets/reactions_dialog.dart';
 import 'package:athena_nike/widgets/stacked_reactions.dart';
@@ -222,41 +223,67 @@ class _ChatListState extends State<ChatList> {
                 children: [
                   InkWell(
                     onLongPress: () {
-                      showReactionsDialogue(message: element, isMe: isMe);
+                      // showReactionsDialogue(message: element, isMe: isMe);
+                      Navigator.of(context).push(
+                        HeroDialogRoute(
+                          builder: (context) {
+                            return ReactionsContextMenu(
+                              isMyMessage: isMe,
+                              message: element,
+                            );
+                          },
+                        ),
+                      );
                     },
                     child: Padding(
                       padding: EdgeInsets.only(
                         top: 8.0,
                         bottom: isMe ? padding1 : padding2,
                       ),
-                      child: MessageWidget(
-                        message: element,
-                        onRightSwipe: () {
-                          // Set the message reply to true
-                          final messageReply = MessageReplyModel(
-                            message: element.message,
-                            senderUID: element.senderUID,
-                            senderName: element.senderName,
-                            senderImage: element.senderImage,
-                            messageType: element.messageType,
-                            isMe: isMe,
-                          );
-
-                          context.read<ChatProvider>().setMessageReplyModel(
-                                messageReply,
-                              );
-                        },
-                        isViewOnly: false,
-                        isMe: isMe,
+                      child: Hero(
+                        tag: element.messageID,
+                        child: MessageWidget(
+                          message: element,
+                          onRightSwipe: () {
+                            // Set the message reply to true
+                            final messageReply = MessageReplyModel(
+                              message: element.message,
+                              senderUID: element.senderUID,
+                              senderName: element.senderName,
+                              senderImage: element.senderImage,
+                              messageType: element.messageType,
+                              isMe: isMe,
+                            );
+                        
+                            context.read<ChatProvider>().setMessageReplyModel(
+                                  messageReply,
+                                );
+                          },
+                          isViewOnly: false,
+                          isMe: isMe,
+                        ),
                       ),
                     ),
                   ),
-                  Positioned(
-                    bottom: isMe ? 4 : 0,
-                    right: isMe ? 90 : 250,
-                    child: StackedReactionsWidget(
-                        message: element, size: 20, onTap: () {}),
-                  ),
+                  isMe
+                      ? Positioned(
+                          bottom: 4,
+                          right: 90,
+                          child: StackedReactionsWidget(
+                            message: element,
+                            size: 20,
+                            onTap: () {},
+                          ),
+                        )
+                      : Positioned(
+                          bottom: 0,
+                          left: 50,
+                          child: StackedReactionsWidget(
+                            message: element,
+                            size: 20,
+                            onTap: () {},
+                          ),
+                        ),
                 ],
               );
             },

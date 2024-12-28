@@ -58,42 +58,59 @@ class _ReactionsDialogState extends State<ReactionsDialog> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         for (final reaction in reactions)
-                          InkWell(
-                            onTap: () {
-                              widget.onReactionsTap(reaction);
-                              setState(() {
-                                reactionClicked = true;
-                                clickedReactionIndex =
-                                    reactions.indexOf(reaction);
-                              });
-                              // Set Back to False after 500 milliseconds
-                              Future.delayed(
-                                const Duration(milliseconds: 500),
-                                () {
-                                  setState(() {
-                                    reactionClicked = false;
-                                  });
-                                },
-                              );
-                            },
-                            child: Pulse(
-                              infinite: false,
-                              duration: const Duration(milliseconds: 500),
-                              animate: reactionClicked &&
-                                  clickedReactionIndex ==
-                                      reactions.indexOf(reaction),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  reaction,
-                                  style: const TextStyle(
-                                    fontSize: 20,
+                          FadeInRight(
+                            from: 0 + (reactions.indexOf(reaction) * 20),
+                            duration: const Duration(milliseconds: 500),
+                            child: InkWell(
+                              onTap: () {
+                                widget.onReactionsTap(reaction);
+                                setState(() {
+                                  reactionClicked = true;
+                                  clickedReactionIndex =
+                                      reactions.indexOf(reaction);
+                                });
+                                // Set Back to False after 500 milliseconds
+                                Future.delayed(
+                                  const Duration(milliseconds: 500),
+                                  () {
+                                    setState(() {
+                                      reactionClicked = false;
+                                    });
+                                  },
+                                );
+                              },
+                              child: Pulse(
+                                infinite: false,
+                                duration: const Duration(milliseconds: 500),
+                                animate: reactionClicked &&
+                                    clickedReactionIndex ==
+                                        reactions.indexOf(reaction),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    reaction,
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
                       ],
+                    ),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Material(
+                  color: Colors.transparent,
+                  child: FadeInRight(
+                    duration: const Duration(milliseconds: 500),
+                    child: AlignMessageRightWidget(
+                      message: widget.message,
+                      viewOnly: true,
                     ),
                   ),
                 ),
@@ -158,7 +175,7 @@ class _ReactionsDialogState extends State<ReactionsDialog> {
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
