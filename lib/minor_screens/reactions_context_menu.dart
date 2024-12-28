@@ -55,12 +55,13 @@ class _ReactionsContextMenuState extends State<ReactionsContextMenu> {
         child: Padding(
           padding: const EdgeInsets.only(
             right: 20.0,
+            left: 20.0,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Align(
-                alignment: Alignment.centerRight,
+                alignment: widget.isMyMessage ? Alignment.centerRight : Alignment.centerLeft,
                 child: Material(
                   color: Colors.transparent,
                   child: Container(
@@ -97,7 +98,7 @@ class _ReactionsContextMenuState extends State<ReactionsContextMenu> {
                                   Future.delayed(
                                     const Duration(milliseconds: 500),
                                     () {
-                                      Navigator.pop(context);
+                                      Navigator.pop(context, '➕');
                                     },
                                   );
                                 } else {
@@ -149,13 +150,16 @@ class _ReactionsContextMenuState extends State<ReactionsContextMenu> {
               ),
               Hero(
                 tag: widget.message.messageID,
-                child: AlignMessageRightWidget(
+                child: widget.isMyMessage ? AlignMessageRightWidget(
+                  message: widget.message,
+                  viewOnly: true,
+                ) : AlignMessageLeftWidget(
                   message: widget.message,
                   viewOnly: true,
                 ),
               ),
               Align(
-                alignment: Alignment.centerRight,
+                alignment: widget.isMyMessage ? Alignment.centerRight : Alignment.centerLeft,
                 child: Material(
                   color: Colors.transparent,
                   child: Container(
@@ -183,6 +187,12 @@ class _ReactionsContextMenuState extends State<ReactionsContextMenu> {
                                 clickedContextMenuIndex =
                                     contextMenu.indexOf(menu);
                               });
+                              Future.delayed(
+                                const Duration(milliseconds: 500),
+                                () {
+                                  Navigator.pop(context, menu);
+                                },
+                              );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),

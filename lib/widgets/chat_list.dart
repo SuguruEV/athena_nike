@@ -224,7 +224,7 @@ class _ChatListState extends State<ChatList> {
                   InkWell(
                     onLongPress: () async {
                       // showReactionsDialogue(message: element, isMe: isMe);
-                      bool? value = await Navigator.of(context).push(
+                      String? item = await Navigator.of(context).push(
                         HeroDialogRoute(
                           builder: (context) {
                             return ReactionsContextMenu(
@@ -237,9 +237,15 @@ class _ChatListState extends State<ChatList> {
                         ),
                       );
 
-                      if (value != null && value) {
+                      if (item == null) return;
+
+                      if (item == '➕') {
                         Future.delayed(const Duration(milliseconds: 300), () {
                           showEmojiContainer(messageID: element.messageID);
+                        });
+                      } else {
+                        Future.delayed(const Duration(milliseconds: 300), () {
+                          onContextMenuClicked(item: item, message: element);
                         });
                       }
                     },
