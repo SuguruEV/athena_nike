@@ -1,4 +1,3 @@
-import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/providers/chat_provider.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:flutter/cupertino.dart';
