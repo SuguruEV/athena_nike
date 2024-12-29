@@ -8,6 +8,7 @@ import 'package:athena_nike/firebase_options.dart';
 import 'package:athena_nike/main_screen/chat_screen.dart';
 import 'package:athena_nike/main_screen/friend_requests_screen.dart';
 import 'package:athena_nike/main_screen/friends_screen.dart';
+import 'package:athena_nike/main_screen/group_settings_screen.dart';
 import 'package:athena_nike/main_screen/home_screen.dart';
 import 'package:athena_nike/main_screen/profile_screen.dart';
 import 'package:athena_nike/main_screen/settings_screen.dart';
@@ -73,6 +74,7 @@ class MyApp extends StatelessWidget {
           Constants.friendRequestsScreen: (context) =>
               const FriendRequestsScreen(),
           Constants.chatScreen: (context) => const ChatScreen(),
+          Constants.groupSettingsScreen: (context) => const GroupSettingsScreen(),
         },
       ),
     );

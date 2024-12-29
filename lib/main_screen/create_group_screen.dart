@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/enums/enums.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:athena_nike/widgets/app_bar_back_button.dart';
@@ -182,6 +183,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                   iconContainerColor: Colors.deepPurple,
                   onTap: () {
                     // Navigate to GroupSettingsScreen
+                    Navigator.pushNamed(context, Constants.groupSettingsScreen);
                   },
                 ),
               ),
