@@ -61,7 +61,9 @@ class _ReactionsContextMenuState extends State<ReactionsContextMenu> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Align(
-                alignment: widget.isMyMessage ? Alignment.centerRight : Alignment.centerLeft,
+                alignment: widget.isMyMessage
+                    ? Alignment.centerRight
+                    : Alignment.centerLeft,
                 child: Material(
                   color: Colors.transparent,
                   child: Container(
@@ -150,16 +152,20 @@ class _ReactionsContextMenuState extends State<ReactionsContextMenu> {
               ),
               Hero(
                 tag: widget.message.messageID,
-                child: widget.isMyMessage ? AlignMessageRightWidget(
-                  message: widget.message,
-                  viewOnly: true,
-                ) : AlignMessageLeftWidget(
-                  message: widget.message,
-                  viewOnly: true,
-                ),
+                child: widget.isMyMessage
+                    ? AlignMessageRightWidget(
+                        message: widget.message,
+                        viewOnly: true,
+                      )
+                    : AlignMessageLeftWidget(
+                        message: widget.message,
+                        viewOnly: true,
+                      ),
               ),
               Align(
-                alignment: widget.isMyMessage ? Alignment.centerRight : Alignment.centerLeft,
+                alignment: widget.isMyMessage
+                    ? Alignment.centerRight
+                    : Alignment.centerLeft,
                 child: Material(
                   color: Colors.transparent,
                   child: Container(
@@ -202,18 +208,24 @@ class _ReactionsContextMenuState extends State<ReactionsContextMenu> {
                                 children: [
                                   Text(
                                     menu,
-                                    style: const TextStyle(fontSize: 20),
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                   Pulse(
                                     infinite: false,
                                     duration: const Duration(milliseconds: 500),
                                     animate: clickedContextMenuIndex ==
                                         contextMenu.indexOf(menu),
-                                    child: Icon(menu == 'Reply'
-                                        ? Icons.reply
-                                        : menu == 'Copy'
-                                            ? Icons.copy
-                                            : Icons.delete),
+                                    child: Icon(
+                                      menu == 'Reply'
+                                          ? Icons.reply
+                                          : menu == 'Copy'
+                                              ? Icons.copy
+                                              : Icons.delete,
+                                      color: Colors.black,
+                                    ),
                                   )
                                 ],
                               ),

@@ -58,6 +58,10 @@ class Constants {
   static const String groups = 'groups'; 
 
   static const chatFiles = 'chatFiles';
+
+  static const String isTyping = 'isTyping';
+  static const String private = 'private';
+  static const String public = 'public';
 }
 
 enum FriendViewType {

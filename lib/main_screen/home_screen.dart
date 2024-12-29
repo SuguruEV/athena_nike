@@ -104,6 +104,14 @@ class _HomeScreenState extends State<HomeScreen>
         },
         children: pages,
       ),
+      floatingActionButton: currentIndex == 1
+          ? FloatingActionButton(
+              onPressed: () {
+                // Navigate to Create Group Screen
+              },
+              child: const Icon(CupertinoIcons.add),
+            )
+          : null,
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(

@@ -6,7 +6,6 @@ import 'package:athena_nike/providers/chat_provider.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:athena_nike/utilities/hero_dialog_route.dart';
 import 'package:athena_nike/widgets/message_widget.dart';
-import 'package:athena_nike/widgets/reactions_dialog.dart';
 import 'package:athena_nike/widgets/stacked_reactions.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
@@ -71,40 +70,6 @@ class _ChatListState extends State<ChatList> {
         //     );
         break;
     }
-  }
-
-  showReactionsDialogue({required MessageModel message, required bool isMe}) {
-    showDialog(
-      context: context,
-      builder: (context) => ReactionsDialog(
-        isMyMessage: isMe,
-        message: message,
-        onReactionsTap: (reaction) {
-          // If it's a plus reaction, show bottom with emoji keyboard
-          if (reaction == '➕') {
-            Future.delayed(const Duration(milliseconds: 500), () {
-              Navigator.pop(context);
-              showEmojiContainer(messageID: message.messageID);
-            });
-          } else {
-            Future.delayed(const Duration(milliseconds: 500), () {
-              Navigator.pop(context);
-              sendReactionToMessage(
-                  reaction: reaction, messageID: message.messageID);
-            });
-          }
-        },
-        onContextMenuTap: (item) {
-          Future.delayed(
-            const Duration(milliseconds: 500),
-            () {
-              Navigator.pop(context);
-              onContextMenuClicked(item: item, message: message);
-            },
-          );
-        },
-      ),
-    );
   }
 
   void sendReactionToMessage({
