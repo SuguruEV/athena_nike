@@ -1,15 +1,8 @@
 import 'package:athena_nike/constants.dart';
-import 'package:athena_nike/models/message_model.dart';
-import 'package:athena_nike/providers/authentication_provider.dart';
-import 'package:athena_nike/providers/chat_provider.dart';
 import 'package:athena_nike/widgets/bottom_chat_field.dart';
 import 'package:athena_nike/widgets/chat_app_bar.dart';
 import 'package:athena_nike/widgets/chat_list.dart';
-import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:grouped_list/grouped_list.dart';
-import 'package:provider/provider.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});

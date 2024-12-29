@@ -1,4 +1,3 @@
-import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/enums/enums.dart';
 import 'package:athena_nike/models/message_model.dart';
 import 'package:athena_nike/widgets/display_message_type.dart';

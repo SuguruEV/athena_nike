@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/enums/enums.dart';
 import 'package:athena_nike/utilities/assets_manager.dart';
 import 'package:cached_network_image/cached_network_image.dart';

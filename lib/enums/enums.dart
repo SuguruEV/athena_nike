@@ -3,6 +3,7 @@ enum FriendViewType {
   friends,
   friendRequests,
   groupView,
+  allUsers,
 }
 
 enum MessageEnum {

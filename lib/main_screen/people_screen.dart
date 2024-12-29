@@ -1,6 +1,9 @@
 import 'package:athena_nike/constants.dart';
+import 'package:athena_nike/enums/enums.dart';
+import 'package:athena_nike/models/user_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
+import 'package:athena_nike/widgets/friend_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -62,29 +65,31 @@ class _PeopleScreenState extends State<PeopleScreen> {
                 return ListView(
                   children:
                       snapshot.data!.docs.map((DocumentSnapshot document) {
-                    Map<String, dynamic> data =
-                        document.data()! as Map<String, dynamic>;
-                    return ListTile(
-                      leading: userImageWidget(
-                        imageUrl: data[Constants.image],
-                        radius: 40,
-                        onTap: () {},
-                      ),
-                      title: Text(data[Constants.name]),
-                      subtitle: Text(
-                        data[Constants.aboutMe],
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      onTap: () {
-                        // Navigate to This User's Profile
-                        Navigator.pushNamed(
-                          context,
-                          Constants.profileScreen,
-                          arguments: document.id,
-                        );
-                      },
-                    );
+                    final data = UserModel.fromMap(document.data()! as Map<String, dynamic>);
+
+                    return FriendWidget(friend: data, viewType: FriendViewType.allUsers);
+
+                    // ListTile(
+                    //   leading: userImageWidget(
+                    //     imageUrl: data[Constants.image],
+                    //     radius: 40,
+                    //     onTap: () {},
+                    //   ),
+                    //   title: Text(data[Constants.name]),
+                    //   subtitle: Text(
+                    //     data[Constants.aboutMe],
+                    //     maxLines: 1,
+                    //     overflow: TextOverflow.ellipsis,
+                    //   ),
+                    //   onTap: () {
+                    //     // Navigate to This User's Profile
+                    //     Navigator.pushNamed(
+                    //       context,
+                    //       Constants.profileScreen,
+                    //       arguments: document.id,
+                    //     );
+                    //   },
+                    // );
                   }).toList(),
                 );
               },

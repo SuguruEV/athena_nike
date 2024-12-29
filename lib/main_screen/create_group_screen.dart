@@ -9,7 +9,6 @@ import 'package:athena_nike/widgets/group_type_list_tile.dart';
 import 'package:athena_nike/widgets/settings_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 class CreateGroupScreen extends StatefulWidget {
