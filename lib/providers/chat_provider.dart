@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:athena_nike/constants.dart';
+import 'package:athena_nike/enums/enums.dart';
 import 'package:athena_nike/models/last_message_model.dart';
 import 'package:athena_nike/models/message_model.dart';
 import 'package:athena_nike/models/message_reply_model.dart';

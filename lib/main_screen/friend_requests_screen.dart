@@ -1,4 +1,5 @@
 import 'package:athena_nike/constants.dart';
+import 'package:athena_nike/enums/enums.dart';
 import 'package:athena_nike/widgets/app_bar_back_button.dart';
 import 'package:athena_nike/widgets/friends_list.dart';
 import 'package:flutter/cupertino.dart';

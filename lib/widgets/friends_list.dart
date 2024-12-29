@@ -1,4 +1,5 @@
 import 'package:athena_nike/constants.dart';
+import 'package:athena_nike/enums/enums.dart';
 import 'package:athena_nike/models/user_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/utilities/global_methods.dart';

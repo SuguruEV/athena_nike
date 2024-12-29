@@ -71,8 +71,8 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
     showModalBottomSheet(
       context: context,
       builder: (context) => SizedBox(
-        height: MediaQuery.of(context).size.height / 5,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
               onTap: () {

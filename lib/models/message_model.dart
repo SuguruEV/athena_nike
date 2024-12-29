@@ -1,4 +1,5 @@
 import 'package:athena_nike/constants.dart';
+import 'package:athena_nike/enums/enums.dart';
 
 class MessageModel {
   final String senderUID;

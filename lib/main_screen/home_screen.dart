@@ -1,4 +1,5 @@
 import 'package:athena_nike/constants.dart';
+import 'package:athena_nike/main_screen/create_group_screen.dart';
 import 'package:athena_nike/main_screen/my_chats_screen.dart';
 import 'package:athena_nike/main_screen/groups_screen.dart';
 import 'package:athena_nike/main_screen/people_screen.dart';
@@ -108,6 +109,11 @@ class _HomeScreenState extends State<HomeScreen>
           ? FloatingActionButton(
               onPressed: () {
                 // Navigate to Create Group Screen
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const CreateGroupScreen(),
+                  ),
+                );
               },
               child: const Icon(CupertinoIcons.add),
             )

@@ -63,34 +63,3 @@ class Constants {
   static const String private = 'private';
   static const String public = 'public';
 }
-
-enum FriendViewType {
-  friends,
-  friendRequests,
-  groupView,
-}
-
-enum MessageEnum {
-  text,
-  image,
-  video,
-  audio,
-}
-
-// Extension Convert MessageEnum to String
-extension MessageEnumExtension on String {
-  MessageEnum toMessageEnum() {
-    switch (this) {
-      case 'text':
-        return MessageEnum.text;
-      case 'image':
-        return MessageEnum.image;
-      case 'video':
-        return MessageEnum.video;
-      case 'audio':
-        return MessageEnum.audio;
-      default:
-        return MessageEnum.text;
-    }
-  }
-}
