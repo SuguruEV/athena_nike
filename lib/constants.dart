@@ -62,4 +62,17 @@ class Constants {
   static const String isTyping = 'isTyping';
   static const String private = 'private';
   static const String public = 'public';
+
+  static const String creatorUID = 'creatorUID';
+  static const String groupName = 'groupName';
+  static const String groupDescription = 'groupDescription';
+  static const String groupImage = 'groupImage';
+  static const String isPrivate = 'isPrivate';
+  static const String editSettings = 'editSettings';
+  static const String approveMembers = 'approveMembers';
+  static const String lockMessages = 'lockMessages';
+  static const String requestToJoin = 'requestToJoin';
+  static const String membersUIDs = 'membersUIDs';
+  static const String adminsUIDs = 'adminsUIDs';
+  static const String awaitingApprovalUIDs = 'awaitingApprovalUIDs';
 }
