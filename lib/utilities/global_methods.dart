@@ -3,6 +3,7 @@ import 'package:athena_nike/enums/enums.dart';
 import 'package:athena_nike/utilities/assets_manager.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:date_format/date_format.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -187,3 +188,14 @@ List<String> contextMenu = [
   'Copy',
   'Delete',
 ];
+
+  // Store File to Storage and Return File URL
+  Future<String> storeFileToStorage({
+    required File file,
+    required String reference,
+  }) async {
+    UploadTask uploadTask = FirebaseStorage.instance.ref().child(reference).putFile(file);
+    TaskSnapshot storageTaskSnapshot = await uploadTask;
+    String fileUrl = await storageTaskSnapshot.ref.getDownloadURL();
+    return fileUrl;
+  }

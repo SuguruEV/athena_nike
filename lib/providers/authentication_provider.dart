@@ -207,16 +207,7 @@ class AuthenticationProvider extends ChangeNotifier {
     }
   }
 
-  // Store File to Storage and Return File URL
-  Future<String> storeFileToStorage({
-    required File file,
-    required String reference,
-  }) async {
-    UploadTask uploadTask = _storage.ref().child(reference).putFile(file);
-    TaskSnapshot storageTaskSnapshot = await uploadTask;
-    String fileUrl = await storageTaskSnapshot.ref.getDownloadURL();
-    return fileUrl;
-  }
+
 
   // Get User Stream
   Stream<DocumentSnapshot> userStream({required String userID}) {

@@ -76,4 +76,6 @@ class Constants {
   static const String membersUIDs = 'membersUIDs';
   static const String adminsUIDs = 'adminsUIDs';
   static const String awaitingApprovalUIDs = 'awaitingApprovalUIDs';
+
+  static const String groupImages = 'groupImages';
 }

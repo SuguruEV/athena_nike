@@ -1,6 +1,12 @@
+import 'dart:io';
+
+import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/models/group_model.dart';
 import 'package:athena_nike/models/user_model.dart';
+import 'package:athena_nike/utilities/global_methods.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class GroupProvider extends ChangeNotifier {
   bool _isLoading = false;
@@ -12,6 +18,9 @@ class GroupProvider extends ChangeNotifier {
   GroupModel? _groupModel;
   final List<UserModel> _groupMembersList = [];
   final List<UserModel> _groupAdminsList = [];
+
+  // Firebase Initialization
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Getters
   bool get isLoading => _isLoading;
@@ -88,5 +97,69 @@ class GroupProvider extends ChangeNotifier {
   Future<void> clearGroupAdminsList() async {
     _groupAdminsList.clear();
     notifyListeners();
+  }
+
+  // Get a list of UIDs from group members list
+  List<String> getGroupMembersUIDs() {
+    return _groupMembersList.map((e) => e.uid).toList();
+  }
+
+  // Get a list of UIDs from group admins list
+  List<String> getGroupAdminsUIDs() {
+    return _groupAdminsList.map((e) => e.uid).toList();
+  }
+
+  // Create Group
+  Future<void> createGroup({
+    required GroupModel groupModel,
+    required File? fileImage,
+    required Function onSuccess,
+    required Function(String) onError,
+  }) async {
+    setLoading(value: true);
+
+    try {
+      var groupID = const Uuid().v4();
+      groupModel.groupID = groupID;
+
+      // Check if the file image is not null
+      if (fileImage != null) {
+        // Upload the image to Firebase Storage
+        final String imageUrl = await storeFileToStorage(file: fileImage, reference: '${Constants.groupImages}/$groupID');
+
+        // Set the group image URL
+        groupModel.groupImage = imageUrl;
+
+        // Add the group admins
+        groupModel.adminsUIDs = [groupModel.creatorUID, ...getGroupAdminsUIDs()];
+
+        // Add the group members
+        groupModel.membersUIDs = [groupModel.creatorUID, ...getGroupMembersUIDs()];
+
+        // Add edit settings
+        groupModel.editSettings = editSettings;
+
+        // Add approve new members
+        groupModel.approveMembers = approveNewMembers;
+
+        // Add request to join
+        groupModel.requestToJoin = requestToJoin;
+
+        // Add lock messages
+        groupModel.lockMessages = lockMessages;
+
+        // Add the group to the database
+        await _firestore.collection(Constants.groups).doc(groupID).set(groupModel.toMap());
+
+        // Set Loading
+        setLoading(value: false);
+        // Set onSuccess
+        onSuccess();
+      }
+      
+    } catch (e) {
+      setLoading(value: false);
+      onError(e.toString());
+    }
   }
 }

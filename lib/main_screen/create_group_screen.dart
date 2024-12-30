@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/enums/enums.dart';
+import 'package:athena_nike/models/group_model.dart';
+import 'package:athena_nike/providers/authentication_provider.dart';
+import 'package:athena_nike/providers/group_provider.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:athena_nike/widgets/app_bar_back_button.dart';
 import 'package:athena_nike/widgets/display_user_image.dart';
@@ -11,6 +14,7 @@ import 'package:athena_nike/widgets/settings_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:provider/provider.dart';
 
 class CreateGroupScreen extends StatefulWidget {
   const CreateGroupScreen({super.key});
@@ -104,6 +108,65 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
 
   GroupType groupValue = GroupType.private;
 
+  // Create group
+  void createGroup() {
+    final uid = context.read<AuthenticationProvider>().userModel!.uid;
+    final groupProvider = context.read<GroupProvider>();
+
+    // Check if the group name is empty
+    if (groupNameController.text.isEmpty) {
+      showSnackBar(context, 'Please enter a group name');
+      return;
+    }
+
+    // Name is less than 3 characters
+    if (groupNameController.text.length < 3) {
+      showSnackBar(context, 'Group name must be at least 3 characters');
+      return;
+    }
+
+    // Check if the group description is empty
+    if (groupDescriptionController.text.isEmpty) {
+      showSnackBar(context, 'Please enter a group description');
+      return;
+    }
+
+    GroupModel groupModel = GroupModel(
+      creatorUID: uid,
+      groupName: groupNameController.text,
+      groupDescription: groupDescriptionController.text,
+      groupImage: '',
+      groupID: '',
+      lastMessage: '',
+      senderUID: '',
+      messageType: MessageEnum.text,
+      messageID: '',
+      timeSent: DateTime.now(),
+      createdAt: DateTime.now(),
+      isPrivate: groupValue == GroupType.private ? true : false,
+      editSettings: true,
+      approveMembers: false,
+      lockMessages: false,
+      requestToJoin: false,
+      membersUIDs: [],
+      adminsUIDs: [],
+      awaitingApprovalUIDs: [],
+    );
+
+    // Create Group
+    groupProvider.createGroup(
+      groupModel: groupModel,
+      fileImage: finalFileImage,
+      onSuccess: () {
+        showSnackBar(context, 'Group created successfully');
+        Navigator.pop(context);
+      },
+      onError: (error) {
+        showSnackBar(context, error);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,6 +178,21 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
         ),
         title: const Text('Create Group'),
         centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircleAvatar(
+              child: context.watch<GroupProvider>().isLoading
+                  ? const CircularProgressIndicator()
+                  : IconButton(
+                      onPressed: () {
+                        createGroup();
+                      },
+                      icon: const Icon(Icons.check),
+                    ),
+            ),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(
