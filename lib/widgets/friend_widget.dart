@@ -12,16 +12,19 @@ class FriendWidget extends StatelessWidget {
     super.key,
     required this.friend,
     required this.viewType,
+    this.isAdminView = false,
   });
 
   final UserModel friend;
   final FriendViewType viewType;
+  final bool isAdminView;
 
   @override
   Widget build(BuildContext context) {
-
     bool getValue() {
-      return context.watch<GroupProvider>().groupMembersList.contains(friend);
+      return isAdminView
+          ? context.watch<GroupProvider>().groupAdminsList.contains(friend)
+          : context.watch<GroupProvider>().groupMembersList.contains(friend);
     }
 
     return ListTile(
@@ -61,14 +64,26 @@ class FriendWidget extends StatelessWidget {
                   value: getValue(),
                   onChanged: (value) {
                     // Check The Check Box
-                    if (value == true) {
-                      context
-                          .read<GroupProvider>()
-                          .setGroupMembersList(groupMember: friend);
+                    if (isAdminView) {
+                      if (value == true) {
+                        context
+                            .read<GroupProvider>()
+                            .addMemberToAdmins(groupAdmin: friend);
+                      } else {
+                        context
+                            .read<GroupProvider>()
+                            .removeGroupAdmin(groupAdmin: friend);
+                      }
                     } else {
-                      context
-                          .read<GroupProvider>()
-                          .removeGroupMember(groupMember: friend);
+                      if (value == true) {
+                        context
+                            .read<GroupProvider>()
+                            .addMemberToGroup(groupMember: friend);
+                      } else {
+                        context
+                            .read<GroupProvider>()
+                            .removeGroupMember(groupMember: friend);
+                      }
                     }
                   },
                 )
