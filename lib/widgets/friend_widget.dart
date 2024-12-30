@@ -2,6 +2,7 @@ import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/enums/enums.dart';
 import 'package:athena_nike/models/user_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
+import 'package:athena_nike/providers/group_provider.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,11 @@ class FriendWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool getValue() {
+      return context.watch<GroupProvider>().groupMembersList.contains(friend);
+    }
+
     return ListTile(
       minLeadingWidth: 0.0,
       contentPadding: const EdgeInsets.only(
@@ -52,9 +58,18 @@ class FriendWidget extends StatelessWidget {
             )
           : viewType == FriendViewType.groupView
               ? Checkbox(
-                  value: false,
+                  value: getValue(),
                   onChanged: (value) {
                     // Check The Check Box
+                    if (value == true) {
+                      context
+                          .read<GroupProvider>()
+                          .setGroupMembersList(groupMember: friend);
+                    } else {
+                      context
+                          .read<GroupProvider>()
+                          .removeGroupMember(groupMember: friend);
+                    }
                   },
                 )
               : null,

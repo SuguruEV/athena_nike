@@ -14,6 +14,7 @@ import 'package:athena_nike/main_screen/profile_screen.dart';
 import 'package:athena_nike/main_screen/settings_screen.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/providers/chat_provider.dart';
+import 'package:athena_nike/providers/group_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
         ChangeNotifierProvider(create: (_) => ChatProvider()),
+        ChangeNotifierProvider(create: (_) => GroupProvider()),
       ],
       child: MyApp(savedThemeMode: savedThemeMode),
     ),
