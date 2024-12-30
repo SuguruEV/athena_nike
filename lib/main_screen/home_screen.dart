@@ -4,6 +4,7 @@ import 'package:athena_nike/main_screen/my_chats_screen.dart';
 import 'package:athena_nike/main_screen/groups_screen.dart';
 import 'package:athena_nike/main_screen/people_screen.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
+import 'package:athena_nike/providers/group_provider.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -108,11 +109,25 @@ class _HomeScreenState extends State<HomeScreen>
       floatingActionButton: currentIndex == 1
           ? FloatingActionButton(
               onPressed: () {
-                // Navigate to Create Group Screen
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const CreateGroupScreen(),
-                  ),
+                context
+                    .read<GroupProvider>()
+                    .clearGroupMembersList()
+                    .whenComplete(
+                  () {
+                    context
+                        .read<GroupProvider>()
+                        .clearGroupAdminsList()
+                        .whenComplete(
+                      () {
+                        // Navigate to Create Group Screen
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const CreateGroupScreen(),
+                          ),
+                        );
+                      },
+                    );
+                  },
                 );
               },
               child: const Icon(CupertinoIcons.add),

@@ -67,12 +67,26 @@ class GroupProvider extends ChangeNotifier {
   // Remove member from group
   void removeGroupMember({required UserModel groupMember}) {
     _groupMembersList.remove(groupMember);
+    // Also remove this member from the admins list if they're an admin
+    _groupAdminsList.remove(groupMember);
     notifyListeners();
   }
 
   // Remove admin from group
   void removeGroupAdmin({required UserModel groupAdmin}) {
     _groupAdminsList.remove(groupAdmin);
+    notifyListeners();
+  }
+
+  // Clear Group Members List
+  Future<void> clearGroupMembersList() async {
+    _groupMembersList.clear();
+    notifyListeners();
+  }
+
+  // Clear Group Admins List
+  Future<void> clearGroupAdminsList() async {
+    _groupAdminsList.clear();
     notifyListeners();
   }
 }

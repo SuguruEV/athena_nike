@@ -63,6 +63,10 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    // Get the list of group admins
+    List<UserModel> groupAdminsList = context.read<GroupProvider>().groupAdminsList;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
