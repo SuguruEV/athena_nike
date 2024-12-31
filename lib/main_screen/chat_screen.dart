@@ -2,6 +2,7 @@ import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/widgets/bottom_chat_field.dart';
 import 'package:athena_nike/widgets/chat_app_bar.dart';
 import 'package:athena_nike/widgets/chat_list.dart';
+import 'package:athena_nike/widgets/group_chat_app_bar.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -29,7 +30,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: ChatAppBar(contactUID: contactUID),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        title: isGroupChat
+            ? GroupChatAppBar(groupID: groupID)
+            : ChatAppBar(contactUID: contactUID),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

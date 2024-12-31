@@ -109,6 +109,24 @@ class GroupProvider extends ChangeNotifier {
     return _groupAdminsList.map((e) => e.uid).toList();
   }
 
+  // Stream Group Data
+  Stream<DocumentSnapshot> groupStream({required String groupID}) {
+    return _firestore.collection(Constants.groups).doc(groupID).snapshots();
+  }
+
+  // Stream Users Data from Firestore
+  streamGroupMembersData({required List<String> membersUIDs}) {
+    return Stream.fromFuture(
+      Future.wait<DocumentSnapshot>(
+        membersUIDs.map<Future<DocumentSnapshot>>(
+          (uid) async {
+            return await _firestore.collection(Constants.users).doc(uid).get();
+          },
+        ),
+      ),
+    );
+  }
+
   // Create Group
   Future<void> createGroup({
     required GroupModel groupModel,
