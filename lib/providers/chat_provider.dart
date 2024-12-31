@@ -31,7 +31,6 @@ class ChatProvider extends ChangeNotifier {
 
   // Firebase Initialization
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   // Send Text Message To Firestore
   Future<void> sendTextMessage({
@@ -75,6 +74,8 @@ class ChatProvider extends ChangeNotifier {
         repliedTo: repliedTo,
         repliedMessageType: repliedMessageType,
         reactions: [],
+        isSeenBy: [],
+        deletedBy: [],
       );
 
       // 3. Check if its a group message and send to group else send to contact
@@ -147,6 +148,8 @@ class ChatProvider extends ChangeNotifier {
         repliedTo: repliedTo,
         repliedMessageType: repliedMessageType,
         reactions: [],
+        isSeenBy: [],
+        deletedBy: [],
       );
 
       // 4. Check if its a group message and send to group else send to contact
@@ -382,7 +385,7 @@ class ChatProvider extends ChangeNotifier {
 
         // 4. Check if the reaction list is empty
         if (message.reactions.isEmpty) {
-          // 5. Add the reaction to the message 
+          // 5. Add the reaction to the message
           await _firestore
               .collection(Constants.groups)
               .doc(contactUID)
@@ -433,7 +436,7 @@ class ChatProvider extends ChangeNotifier {
 
         // 4. Check if the reaction list is empty
         if (message.reactions.isEmpty) {
-          // 5. Add the reaction to the message 
+          // 5. Add the reaction to the message
           await _firestore
               .collection(Constants.users)
               .doc(senderUID)
@@ -535,6 +538,47 @@ class ChatProvider extends ChangeNotifier {
           return MessageModel.fromMap(doc.data());
         }).toList();
       });
+    }
+  }
+
+  // Stream the unread messages for this user
+  Stream<int> getUnreadMessagesStream({
+    required String userID,
+    required String contactUID,
+    required bool isGroup,
+  }) {
+    // 1. Check if it's a group message
+    if (isGroup) {
+      // Handle Group Message
+      return _firestore
+          .collection(Constants.groups)
+          .doc(contactUID)
+          .collection(Constants.messages)
+          .snapshots()
+          .asyncMap(
+        (event) {
+          int count = 0;
+          for (var doc in event.docs) {
+            final message = MessageModel.fromMap(doc.data());
+            if (!message.isSeenBy.contains(userID)) {
+              count++;
+            }
+          }
+          return count;
+        },
+      );
+    } else {
+      // Handle Contact Message
+      return _firestore
+          .collection(Constants.users)
+          .doc(userID)
+          .collection(Constants.chats)
+          .doc(contactUID)
+          .collection(Constants.messages)
+          .where(Constants.isSeen, isEqualTo: false)
+          .where(Constants.senderUID, isNotEqualTo: userID)
+          .snapshots()
+          .map((event) => event.docs.length);
     }
   }
 }

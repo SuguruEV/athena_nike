@@ -55,38 +55,10 @@ class _MyChatsScreenState extends State<MyChatsScreen> {
                       itemCount: chatsList.length,
                       itemBuilder: (context, index) {
                         final chat = chatsList[index];
-                        final dateTime =
-                            formatDate(chat.timeSent, [hh, ':', nn, ' ', am]);
-                        // Check if we sent the last message
-                        final isMe = chat.senderUID == uid;
-                        final lastMessage =
-                            isMe ? 'You: ${chat.message}' : chat.message;
 
-                        return ListTile(
-                          leading: userImageWidget(
-                            imageUrl: chat.contactImage,
-                            radius: 40,
-                            onTap: () {},
-                          ),
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(chat.contactName),
-                          subtitle: messageToShow(
-                            type: chat.messageType,
-                            message: lastMessage,
-                          ),
-                          trailing: Text(dateTime),
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              Constants.chatScreen,
-                              arguments: {
-                                Constants.contactUID: chat.contactUID,
-                                Constants.contactName: chat.contactName,
-                                Constants.contactImage: chat.contactImage,
-                                Constants.groupID: '',
-                              },
-                            );
-                          },
+                        return UserWidget(
+                          chat: chat,
+                          uid: uid,
                         );
                       },
                     );
@@ -100,6 +72,56 @@ class _MyChatsScreenState extends State<MyChatsScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class UserWidget extends StatelessWidget {
+  const UserWidget({
+    super.key,
+    required this.chat,
+    required this.uid,
+  });
+
+  final LastMessageModel chat;
+  final String uid;
+
+  @override
+  Widget build(BuildContext context) {
+    final dateTime = formatDate(chat.timeSent, [hh, ':', nn, ' ', am]);
+    // Check if we sent the last message
+    final isMe = chat.senderUID == uid;
+    final lastMessage = isMe ? 'You: ${chat.message}' : chat.message;
+
+    return ListTile(
+      leading: userImageWidget(
+        imageUrl: chat.contactImage,
+        radius: 40,
+        onTap: () {},
+      ),
+      contentPadding: EdgeInsets.zero,
+      title: Text(chat.contactName),
+      subtitle: messageToShow(
+        type: chat.messageType,
+        message: lastMessage,
+      ),
+      trailing: Column(
+        children: [
+          Text(dateTime),
+        ],
+      ),
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          Constants.chatScreen,
+          arguments: {
+            Constants.contactUID: chat.contactUID,
+            Constants.contactName: chat.contactName,
+            Constants.contactImage: chat.contactImage,
+            Constants.groupID: '',
+          },
+        );
+      },
     );
   }
 }

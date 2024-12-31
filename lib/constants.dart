@@ -52,6 +52,8 @@ class Constants {
   static const String repliedMessageType = 'repliedMessageType';
   static const String isMe = 'isMe';
   static const String reactions = 'reactions';
+  static const String isSeenBy = 'isSeenBy';
+  static const String deletedBy = 'deletedBy';
 
   static const String lastMessage = 'lastMessage';
   static const String chats = 'chats';

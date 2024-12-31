@@ -15,6 +15,8 @@ class MessageModel {
   final String repliedTo;
   final MessageEnum repliedMessageType;
   final List<String> reactions;
+  final List<String> isSeenBy;
+  final List<String> deletedBy;
 
   MessageModel({
     required this.senderUID,
@@ -30,6 +32,8 @@ class MessageModel {
     required this.repliedTo,
     required this.repliedMessageType,
     required this.reactions,
+    required this.isSeenBy,
+    required this.deletedBy,
   });
 
   // To Map (Constants)
@@ -48,6 +52,8 @@ class MessageModel {
       Constants.repliedTo: repliedTo,
       Constants.repliedMessageType: repliedMessageType.name,
       Constants.reactions: reactions,
+      Constants.isSeenBy: isSeenBy,
+      Constants.deletedBy: deletedBy,
     };
   }
 
@@ -67,6 +73,8 @@ class MessageModel {
       repliedTo: map[Constants.repliedTo] ?? '',
       repliedMessageType: map[Constants.repliedMessageType].toString().toMessageEnum(),
       reactions: List<String>.from(map[Constants.reactions] ?? []),
+      isSeenBy: List<String>.from(map[Constants.isSeenBy] ?? []),
+      deletedBy: List<String>.from(map[Constants.deletedBy] ?? []),
     );
   }
 
@@ -85,6 +93,8 @@ class MessageModel {
       repliedTo: repliedTo,
       repliedMessageType: repliedMessageType,
       reactions: reactions,
+      isSeenBy: isSeenBy,
+      deletedBy: deletedBy,
     );
   }
 }
