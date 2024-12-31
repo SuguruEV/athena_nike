@@ -125,16 +125,23 @@ class GroupProvider extends ChangeNotifier {
       // Check if the file image is not null
       if (fileImage != null) {
         // Upload the image to Firebase Storage
-        final String imageUrl = await storeFileToStorage(file: fileImage, reference: '${Constants.groupImages}/$groupID');
+        final String imageUrl = await storeFileToStorage(
+            file: fileImage, reference: '${Constants.groupImages}/$groupID');
 
         // Set the group image URL
         groupModel.groupImage = imageUrl;
 
         // Add the group admins
-        groupModel.adminsUIDs = [groupModel.creatorUID, ...getGroupAdminsUIDs()];
+        groupModel.adminsUIDs = [
+          groupModel.creatorUID,
+          ...getGroupAdminsUIDs()
+        ];
 
         // Add the group members
-        groupModel.membersUIDs = [groupModel.creatorUID, ...getGroupMembersUIDs()];
+        groupModel.membersUIDs = [
+          groupModel.creatorUID,
+          ...getGroupMembersUIDs()
+        ];
 
         // Add edit settings
         groupModel.editSettings = editSettings;
@@ -149,17 +156,52 @@ class GroupProvider extends ChangeNotifier {
         groupModel.lockMessages = lockMessages;
 
         // Add the group to the database
-        await _firestore.collection(Constants.groups).doc(groupID).set(groupModel.toMap());
+        await _firestore
+            .collection(Constants.groups)
+            .doc(groupID)
+            .set(groupModel.toMap());
 
         // Set Loading
         setLoading(value: false);
         // Set onSuccess
         onSuccess();
       }
-      
     } catch (e) {
       setLoading(value: false);
       onError(e.toString());
     }
+  }
+
+  // Get a stream of all private groups that contain our userID
+  Stream<List<GroupModel>> getPrivateGroupsStream({required String userID}) {
+    return _firestore
+        .collection(Constants.groups)
+        .where(Constants.membersUIDs, arrayContains: userID)
+        .where(Constants.isPrivate, isEqualTo: true)
+        .snapshots()
+        .asyncMap((event) {
+      List<GroupModel> groups = [];
+      for (var group in event.docs) {
+        groups.add(GroupModel.fromMap(group.data()));
+      }
+
+      return groups;
+    });
+  }
+
+  // Get a stream of all public groups that contain our userID
+  Stream<List<GroupModel>> getPublicGroupsStream({required String userID}) {
+    return _firestore
+        .collection(Constants.groups)
+        .where(Constants.isPrivate, isEqualTo: false)
+        .snapshots()
+        .asyncMap((event) {
+      List<GroupModel> groups = [];
+      for (var group in event.docs) {
+        groups.add(GroupModel.fromMap(group.data()));
+      }
+
+      return groups;
+    });
   }
 }
