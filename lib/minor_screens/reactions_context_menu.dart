@@ -5,6 +5,7 @@ import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/providers/chat_provider.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:athena_nike/widgets/align_message_right_widget.dart';
+import 'package:athena_nike/widgets/align_message_left_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

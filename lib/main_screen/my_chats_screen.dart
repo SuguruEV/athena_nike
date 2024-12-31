@@ -1,3 +1,6 @@
+
+import 'dart:developer';
+
 import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/models/last_message_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
@@ -108,6 +111,46 @@ class UserWidget extends StatelessWidget {
       trailing: Column(
         children: [
           Text(dateTime),
+          StreamBuilder<int>(
+            stream: context.read<ChatProvider>().getUnreadMessagesStream(
+                  userID: uid,
+                  contactUID: chat.contactUID,
+                  isGroup: false,
+                ),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const SizedBox();
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SizedBox();
+              }
+              final unreadMessages = snapshot.data!;
+              log('Unread Messages: $unreadMessages');
+              return unreadMessages > 0
+                  ? Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(25),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black12,
+                              spreadRadius: 1,
+                              blurRadius: 6.0,
+                              offset: Offset(0, 1),
+                            ),
+                          ]),
+                      child: Text(
+                        unreadMessages.toString(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                      ),
+                    )
+                  : const SizedBox();
+            },
+          )
         ],
       ),
       onTap: () {

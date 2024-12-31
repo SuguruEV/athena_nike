@@ -87,6 +87,7 @@ class ContactMessageWidget extends StatelessWidget {
                                 isReply: true,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
+                                viewOnly: true, // Add the required argument
                               ),
                             ],
                           ),
@@ -98,6 +99,7 @@ class ContactMessageWidget extends StatelessWidget {
                       type: message.messageType,
                       color: isDarkMode ? Colors.white : Colors.black,
                       isReply: false,
+                      viewOnly: false, // Add the required argument
                     )
                   ],
                 ),

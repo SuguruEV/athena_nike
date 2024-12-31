@@ -63,7 +63,7 @@ dependencies:
   audioplayers: ^6.1.0
   path_provider: ^2.1.5
   cached_video_player: ^2.0.4
-  emoji_picker_flutter: ^3.1.0
+  emoji_picker_flutter: ^4.2.0
   animate_do: ^3.3.4
 
 dev_dependencies:
@@ -75,7 +75,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
