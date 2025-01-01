@@ -57,7 +57,7 @@ class _MyChatsScreenState extends State<MyChatsScreen> {
 
                         return ChatWidget(
                           chat: chat,
-                          uid: uid,
+                          isGroup: false,
                           onTap: () {
                             Navigator.pushNamed(
                               context,
