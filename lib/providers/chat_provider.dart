@@ -96,7 +96,8 @@ class ChatProvider extends ChangeNotifier {
           Constants.messageType: messageType.name,
         });
 
-        setLoading(true);
+        setLoading(false);
+        onSuccess();
 
         // Set message reply model to null
         setMessageReplyModel(null);
@@ -115,7 +116,7 @@ class ChatProvider extends ChangeNotifier {
         setMessageReplyModel(null);
       }
     } catch (e) {
-      setLoading(true);
+      setLoading(false);
       onError(e.toString());
     }
   }
@@ -191,7 +192,8 @@ class ChatProvider extends ChangeNotifier {
           Constants.messageType: messageType.name,
         });
 
-        setLoading(true);
+        setLoading(false);
+        onSuccess();
 
         // Set message reply model to null
         setMessageReplyModel(null);
@@ -210,7 +212,7 @@ class ChatProvider extends ChangeNotifier {
         setMessageReplyModel(null);
       }
     } catch (e) {
-      setLoading(true);
+      setLoading(false);
       onError(e.toString());
     }
   }
@@ -342,57 +344,6 @@ class ChatProvider extends ChangeNotifier {
     } catch (e) {
       setLoading(false);
       onError(e.toString());
-    }
-  }
-
-  // Set Message as seen
-  Future<void> setMessageAsSeen({
-    required String userUID,
-    required String contactUID,
-    required String messageID,
-    required String groupID,
-  }) async {
-    try {
-      // 1. Check if its a group message
-      if (groupID.isNotEmpty) {
-        // Handle Group Message
-      } else {
-        // Handle Contact Message
-        // 2. Update the current message as seen
-        await _firestore
-            .collection(Constants.users)
-            .doc(userUID)
-            .collection(Constants.chats)
-            .doc(contactUID)
-            .collection(Constants.messages)
-            .doc(messageID)
-            .update({Constants.isSeen: true});
-        // 3. Update the contact message as seen
-        await _firestore
-            .collection(Constants.users)
-            .doc(contactUID)
-            .collection(Constants.chats)
-            .doc(userUID)
-            .collection(Constants.messages)
-            .doc(messageID)
-            .update({Constants.isSeen: true});
-        // 4. Update the last message as seen for current user
-        await _firestore
-            .collection(Constants.users)
-            .doc(userUID)
-            .collection(Constants.chats)
-            .doc(contactUID)
-            .update({Constants.isSeen: true});
-        // 5. Update the last message as seen for contact user
-        await _firestore
-            .collection(Constants.users)
-            .doc(contactUID)
-            .collection(Constants.chats)
-            .doc(userUID)
-            .update({Constants.isSeen: true});
-      }
-    } catch (e) {
-      print(e.toString());
     }
   }
 
@@ -620,6 +571,83 @@ class ChatProvider extends ChangeNotifier {
           .where(Constants.senderUID, isNotEqualTo: userID)
           .snapshots()
           .map((event) => event.docs.length);
+    }
+  }
+
+  // Set Message Status
+  Future<void> setMessageStatus({
+    required String currentUserId,
+    required String contactUID,
+    required String messageID,
+    required List<String> isSeenByList,
+    required bool isGroupChat,
+  }) async {
+    // Check if its a group chat
+    if (isGroupChat) {
+      if (isSeenByList.contains(currentUserId)) {
+        return;
+      } else {
+        // Add the current user to the seenByList in all messages
+        await _firestore
+            .collection(Constants.groups)
+            .doc(contactUID)
+            .collection(Constants.messages)
+            .doc(messageID)
+            .update({
+          Constants.isSeenBy: FieldValue.arrayUnion([currentUserId])
+        });
+      }
+    } else {
+        // Set Message as seen
+  Future<void> setMessageAsSeen({
+    required String userUID,
+    required String contactUID,
+    required String messageID,
+    required String groupID,
+  }) async {
+    try {
+      // 1. Check if its a group message
+      if (groupID.isNotEmpty) {
+        // Handle Group Message
+      } else {
+        // Handle Contact Message
+        // 2. Update the current message as seen
+        await _firestore
+            .collection(Constants.users)
+            .doc(currentUserId)
+            .collection(Constants.chats)
+            .doc(contactUID)
+            .collection(Constants.messages)
+            .doc(messageID)
+            .update({Constants.isSeen: true});
+        // 3. Update the contact message as seen
+        await _firestore
+            .collection(Constants.users)
+            .doc(contactUID)
+            .collection(Constants.chats)
+            .doc(currentUserId)
+            .collection(Constants.messages)
+            .doc(messageID)
+            .update({Constants.isSeen: true});
+        // 4. Update the last message as seen for current user
+        await _firestore
+            .collection(Constants.users)
+            .doc(currentUserId)
+            .collection(Constants.chats)
+            .doc(contactUID)
+            .update({Constants.isSeen: true});
+        // 5. Update the last message as seen for contact user
+        await _firestore
+            .collection(Constants.users)
+            .doc(contactUID)
+            .collection(Constants.chats)
+            .doc(currentUserId)
+            .update({Constants.isSeen: true});
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
     }
   }
 }

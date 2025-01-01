@@ -172,14 +172,27 @@ class _ChatListState extends State<ChatList> {
               final padding1 = element.reactions.isEmpty ? 8.0 : 20.0;
               final padding2 = element.reactions.isEmpty ? 8.0 : 25.0;
 
-              // Set message as seen
-              if (!element.isSeen && element.senderUID != uid) {
-                context.read<ChatProvider>().setMessageAsSeen(
-                      userUID: uid,
+              final message = element as MessageModel;
+
+              // Check if it's groupChat
+              if (widget.groupID.isNotEmpty) {
+                context.read<ChatProvider>().setMessageStatus(
+                      currentUserId: uid,
                       contactUID: widget.contactUID,
-                      messageID: element.messageID,
-                      groupID: widget.groupID,
+                      messageID: message.messageID,
+                      isSeenByList: message.isSeenBy,
+                      isGroupChat: widget.groupID.isNotEmpty,
                     );
+              } else {
+                if (!message.isSeen && message.senderUID != uid) {
+                  context.read<ChatProvider>().setMessageStatus(
+                    currentUserId: uid,
+                    contactUID: widget.contactUID,
+                    messageID: message.messageID,
+                    isSeenByList: message.isSeenBy,
+                    isGroupChat: widget.groupID.isNotEmpty,
+                  );
+                }
               }
 
               // Check if we sent the message
