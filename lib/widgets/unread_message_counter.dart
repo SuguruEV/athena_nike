@@ -7,10 +7,12 @@ class UnreadMessageCounter extends StatelessWidget {
     super.key,
     required this.uid,
     required this.contactUID,
+    required this.isGroup,
   });
 
   final String uid;
   final String contactUID;
+  final bool isGroup;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,7 @@ class UnreadMessageCounter extends StatelessWidget {
       stream: context.read<ChatProvider>().getUnreadMessagesStream(
             userID: uid,
             contactUID: contactUID,
-            isGroup: false,
+            isGroup: isGroup,
           ),
       builder: (context, snapshot) {
         if (snapshot.hasError) {

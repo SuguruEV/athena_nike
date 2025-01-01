@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class ChatWidget extends StatelessWidget {
   const ChatWidget({
     super.key,
-    required this.chat,
+    this.chat,
     this.group,
     required this.isGroup,
     required this.onTap,
@@ -50,22 +50,30 @@ class ChatWidget extends StatelessWidget {
         children: [
           uid == senderUID
               ? const Text(
-                  'You',
+                  'You: ',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 )
               : const SizedBox(),
+          const SizedBox(width: 5),
           messageToShow(
             type: messageType,
             message: lastMessage,
           ),
         ],
       ),
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(dateTime),
-          UnreadMessageCounter(uid: uid, contactUID: contactUID)
-        ],
+      trailing: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(dateTime),
+            UnreadMessageCounter(
+              uid: uid,
+              contactUID: contactUID,
+              isGroup: isGroup,
+            ),
+          ],
+        ),
       ),
       onTap: onTap,
     );

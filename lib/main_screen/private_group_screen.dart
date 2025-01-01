@@ -3,6 +3,7 @@ import 'package:athena_nike/models/group_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/providers/group_provider.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
+import 'package:athena_nike/widgets/chat_widget.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -52,44 +53,29 @@ class _PrivateGroupScreenState extends State<PrivateGroupScreen> {
                 );
               }
               return Expanded(
-                  child: ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  final chat = snapshot.data![index];
-                  final dateTime =
-                            formatDate(chat.timeSent, [hh, ':', nn, ' ', am]);
-                        // Check if we sent the last message
-                        final isMe = chat.senderUID == uid;
-                        final lastMessage =
-                            isMe ? 'You: ${chat.lastMessage}' : chat.lastMessage;
-                  return ListTile(
-                          leading: userImageWidget(
-                            imageUrl: chat.groupImage,
-                            radius: 40,
-                            onTap: () {},
-                          ),
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(chat.groupName),
-                          subtitle: messageToShow(
-                            type: chat.messageType,
-                            message: lastMessage,
-                          ),
-                          trailing: Text(dateTime),
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              Constants.chatScreen,
-                              arguments: {
-                                Constants.contactUID: chat.groupID,
-                                Constants.contactName: chat.groupName,
-                                Constants.contactImage: chat.groupImage,
-                                Constants.groupID: chat.groupID,
-                              },
-                            );
+                child: ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    final groupModel = snapshot.data![index];
+                    return ChatWidget(
+                      group: groupModel,
+                      isGroup: true,
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/chat_screen',
+                          arguments: {
+                            Constants.contactUID: groupModel.groupID,
+                            Constants.groupName: groupModel.groupName,
+                            Constants.groupImage: groupModel.groupImage,
+                            Constants.groupID: groupModel.groupID,
                           },
                         );
-                },
-              ));
+                      },
+                    );
+                  },
+                ),
+              );
             },
           )
         ],

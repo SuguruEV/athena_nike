@@ -19,69 +19,66 @@ class _MyChatsScreenState extends State<MyChatsScreen> {
   Widget build(BuildContext context) {
     final uid = context.read<AuthenticationProvider>().userModel!.uid;
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            // Cupertino Search Bar
-            CupertinoSearchTextField(
-              placeholder: 'Search',
-              style: const TextStyle(
-                color: Colors.white,
-              ),
-              onChanged: (value) {
-                print(value);
+      body: Column(
+        children: [
+          // Cupertino Search Bar
+          CupertinoSearchTextField(
+            placeholder: 'Search',
+            style: const TextStyle(
+              color: Colors.white,
+            ),
+            onChanged: (value) {
+              print(value);
+            },
+          ),
+      
+          Expanded(
+            child: StreamBuilder<List<LastMessageModel>>(
+              stream: context.read<ChatProvider>().getChatsListStream(uid),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(
+                    child: Text('Something went wrong'),
+                  );
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (snapshot.hasData) {
+                  final chatsList = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: chatsList.length,
+                    itemBuilder: (context, index) {
+                      final chat = chatsList[index];
+      
+                      return ChatWidget(
+                        chat: chat,
+                        isGroup: false,
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            Constants.chatScreen,
+                            arguments: {
+                              Constants.contactUID: chat.contactUID,
+                              Constants.contactName: chat.contactName,
+                              Constants.contactImage: chat.contactImage,
+                              Constants.groupID: '',
+                            },
+                          );
+                        },
+                      );
+                    },
+                  );
+                }
+                return const Center(
+                  child: Text('No chats yet'),
+                );
               },
             ),
-
-            Expanded(
-              child: StreamBuilder<List<LastMessageModel>>(
-                stream: context.read<ChatProvider>().getChatsListStream(uid),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('Something went wrong'),
-                    );
-                  }
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  if (snapshot.hasData) {
-                    final chatsList = snapshot.data!;
-                    return ListView.builder(
-                      itemCount: chatsList.length,
-                      itemBuilder: (context, index) {
-                        final chat = chatsList[index];
-
-                        return ChatWidget(
-                          chat: chat,
-                          isGroup: false,
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              Constants.chatScreen,
-                              arguments: {
-                                Constants.contactUID: chat.contactUID,
-                                Constants.contactName: chat.contactName,
-                                Constants.contactImage: chat.contactImage,
-                                Constants.groupID: '',
-                              },
-                            );
-                          },
-                        );
-                      },
-                    );
-                  }
-                  return const Center(
-                    child: Text('No chats yet'),
-                  );
-                },
-              ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
