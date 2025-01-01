@@ -238,8 +238,8 @@ class _ChatListState extends State<ChatList> {
                                   messageReply,
                                 );
                           },
-                          isViewOnly: false,
                           isMe: isMe,
+                          isGroupChat: widget.groupID.isNotEmpty,
                         ),
                       ),
                     ),

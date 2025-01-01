@@ -74,13 +74,32 @@ class ChatProvider extends ChangeNotifier {
         repliedTo: repliedTo,
         repliedMessageType: repliedMessageType,
         reactions: [],
-        isSeenBy: [],
+        isSeenBy: [sender.uid],
         deletedBy: [],
       );
 
       // 3. Check if its a group message and send to group else send to contact
       if (groupID.isNotEmpty) {
         // Handle Group Message
+        await _firestore
+            .collection(Constants.groups)
+            .doc(groupID)
+            .collection(Constants.messages)
+            .doc(messageID)
+            .set(messageModel.toMap());
+
+        // Update the last message for the group
+        await _firestore.collection(Constants.groups).doc(groupID).update({
+          Constants.lastMessage: message,
+          Constants.timeSent: DateTime.now().millisecondsSinceEpoch,
+          Constants.senderUID: sender.uid,
+          Constants.messageType: messageType.name,
+        });
+
+        setLoading(true);
+
+        // Set message reply model to null
+        setMessageReplyModel(null);
       } else {
         // Handle Contact Message
         await handleContactMessage(
@@ -96,6 +115,7 @@ class ChatProvider extends ChangeNotifier {
         setMessageReplyModel(null);
       }
     } catch (e) {
+      setLoading(true);
       onError(e.toString());
     }
   }
@@ -148,13 +168,33 @@ class ChatProvider extends ChangeNotifier {
         repliedTo: repliedTo,
         repliedMessageType: repliedMessageType,
         reactions: [],
-        isSeenBy: [],
+        isSeenBy: [sender.uid],
         deletedBy: [],
       );
 
       // 4. Check if its a group message and send to group else send to contact
       if (groupID.isNotEmpty) {
         // Handle Group Message
+
+        await _firestore
+            .collection(Constants.groups)
+            .doc(groupID)
+            .collection(Constants.messages)
+            .doc(messageID)
+            .set(messageModel.toMap());
+
+        // Update the last message for the group
+        await _firestore.collection(Constants.groups).doc(groupID).update({
+          Constants.lastMessage: fileURL,
+          Constants.timeSent: DateTime.now().millisecondsSinceEpoch,
+          Constants.senderUID: sender.uid,
+          Constants.messageType: messageType.name,
+        });
+
+        setLoading(true);
+
+        // Set message reply model to null
+        setMessageReplyModel(null);
       } else {
         // Handle Contact Message
         await handleContactMessage(
@@ -170,6 +210,7 @@ class ChatProvider extends ChangeNotifier {
         setMessageReplyModel(null);
       }
     } catch (e) {
+      setLoading(true);
       onError(e.toString());
     }
   }

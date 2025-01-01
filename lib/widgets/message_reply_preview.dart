@@ -1,3 +1,5 @@
+import 'package:athena_nike/models/message_model.dart';
+import 'package:athena_nike/models/message_reply_model.dart';
 import 'package:athena_nike/providers/chat_provider.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,7 +8,16 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class MessageReplyPreview extends StatelessWidget {
-  const MessageReplyPreview({super.key});
+  const MessageReplyPreview({
+    super.key,
+    this.replyMessageModel,
+    this.message,
+    this.viewOnly = false,
+  });
+  
+  final MessageReplyModel? replyMessageModel;
+  final MessageModel? message;
+  final bool viewOnly;
 
   @override
   Widget build(BuildContext context) {

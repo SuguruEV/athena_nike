@@ -9,10 +9,12 @@ class AlignMessageRightWidget extends StatelessWidget {
     super.key,
     required this.message,
     this.viewOnly = false,
+    required this.isGroupChat,
   });
 
   final MessageModel message;
   final bool viewOnly;
+  final bool isGroupChat;
 
   @override
   Widget build(BuildContext context) {

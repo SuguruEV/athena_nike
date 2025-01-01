@@ -157,10 +157,12 @@ class _ReactionsContextMenuState extends State<ReactionsContextMenu> {
                     ? AlignMessageRightWidget(
                         message: widget.message,
                         viewOnly: true,
+                        isGroupChat: widget.groupID.isNotEmpty,
                       )
                     : AlignMessageLeftWidget(
                         message: widget.message,
                         viewOnly: true,
+                        isGroupChat: widget.groupID.isNotEmpty,
                       ),
               ),
               Align(

@@ -9,35 +9,22 @@ class MessageWidget extends StatelessWidget {
     super.key,
     required this.message,
     required this.onRightSwipe,
-    required this.isViewOnly,
     required this.isMe,
+    required this.isGroupChat,
   });
 
   final MessageModel message;
   final Function() onRightSwipe;
-  final bool isViewOnly;
   final bool isMe;
+  final bool isGroupChat;
 
   @override
   Widget build(BuildContext context) {
-    return isMe
-        ? isViewOnly
-            ? MyMessageWidget(
-                message: message,
-              )
-            : SwipeToWidget(
-                onRightSwipe: onRightSwipe,
-                message: message,
-                isMe: isMe,
-              )
-        : isViewOnly
-            ? ContactMessageWidget(
-                message: message,
-              )
-            : SwipeToWidget(
-                onRightSwipe: onRightSwipe,
-                message: message,
-                isMe: isMe,
-              );
+    return SwipeToWidget(
+      onRightSwipe: onRightSwipe,
+      message: message,
+      isMe: isMe,
+      isGroupChat: isGroupChat,
+    );
   }
 }
