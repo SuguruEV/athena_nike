@@ -114,18 +114,10 @@ class _HomeScreenState extends State<HomeScreen>
                     .clearGroupMembersList()
                     .whenComplete(
                   () {
-                    context
-                        .read<GroupProvider>()
-                        .clearGroupAdminsList()
-                        .whenComplete(
-                      () {
-                        // Navigate to Create Group Screen
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const CreateGroupScreen(),
-                          ),
-                        );
-                      },
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const CreateGroupScreen(),
+                      ),
                     );
                   },
                 );
