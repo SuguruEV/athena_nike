@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:athena_nike/enums/enums.dart';
 import 'package:athena_nike/models/user_model.dart';
+import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/providers/group_provider.dart';
 import 'package:athena_nike/widgets/friend_widget.dart';
 import 'package:athena_nike/widgets/settings_list_tile.dart';
@@ -15,45 +18,48 @@ class GroupSettingsScreen extends StatefulWidget {
 }
 
 class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
-  String getGroupAdminNames({
+  String getGroupAdminsNames({
     required GroupProvider groupProvider,
+    required String uid,
   }) {
-    // Check if there are group members
+    // check if there are group members
     if (groupProvider.groupMembersList.isEmpty) {
-      return 'Please add members to the group to assign Admins roles';
+      return 'To asign Admin roles, Please add group members in the previous screen';
     } else {
-      List<String> groupAdminNames = ['You'];
+      List<String> groupAdminsNames = [];
 
-      // Get the list of group members
+      // get the list of group admins
       List<UserModel> groupAdminsList = groupProvider.groupAdminsList;
 
-      // Get a list of naames from the group admins list
-      List<String> groupAdminNamesList =
-          groupAdminsList.map((groupAdmin) => groupAdmin.name).toList();
+      // get a list of names from the group admins list
+      List<String> groupAdminsNamesList = groupAdminsList.map((groupAdmin) {
+        return groupAdmin.uid == uid ? 'You' : groupAdmin.name;
+      }).toList();
 
-      // Add the names to the groupAdminNames list
-      groupAdminNames.addAll(groupAdminNamesList);
+      // add these names to the groupAdminsNames list
+      groupAdminsNames.addAll(groupAdminsNamesList);
 
-      // If there are just two, separate them with 'and', else separate them with a comma and the last one with 'and'
+      // if they are just two, seperate them with 'and', if they are more than 2
+      // seperate the last one with 'and' and the rest with comma
       // if (groupAdminsList.length == 1) {
-      //   return groupAdminNames.first;
-      // } else if (groupAdminNames.length == 2) {
-      //   return groupAdminNames.join(' and ');
+      //   return groupAdminsNames.first;
+      // } else if (groupAdminsNames.length == 2) {
+      //   return groupAdminsNames.join(' and ');
       // } else {
-      //   return '${groupAdminNames.sublist(0, groupAdminNames.length - 1).join(', ')} and ${groupAdminNames.last}';
+      //   return '${groupAdminsNames.sublist(0, groupAdminsNames.length - 1).join(', ')} and ${groupAdminsNames.last}';
       // }
-      return groupAdminNames.length == 2
-          ? '${groupAdminNames[0]} and ${groupAdminNames[1]}'
-          : groupAdminNames.length > 2
-              ? '${groupAdminNames.sublist(0, groupAdminNames.length - 1).join(', ')} and ${groupAdminNames.last}'
-              : groupAdminNames.first;
+      return groupAdminsNames.length == 2
+          ? '${groupAdminsNames[0]} and ${groupAdminsNames[1]}'
+          : groupAdminsNames.length > 2
+              ? '${groupAdminsNames.sublist(0, groupAdminsNames.length - 1).join(', ')} and ${groupAdminsNames.last}'
+              : 'You';
     }
   }
 
   Color getAdminsContainerColor({
     required GroupProvider groupProvider,
   }) {
-    // Check if there are group members
+    // check if there are group members
     if (groupProvider.groupMembersList.isEmpty) {
       return Theme.of(context).disabledColor;
     } else {
@@ -63,31 +69,42 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // get the list of group admins
+    List<UserModel> groupAdminsList =
+        context.read<GroupProvider>().groupAdminsList;
 
-    // Get the list of group admins
-    List<UserModel> groupAdminsList = context.read<GroupProvider>().groupAdminsList;
+    final uid = context.read<AuthenticationProvider>().userModel!.uid;
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Group Settings'),
+        leading: IconButton(
+          onPressed: () {
+            context
+                .read<GroupProvider>()
+                .removeTempLists(isAdmins: true)
+                .whenComplete(() {
+              Navigator.pop(context);
+            });
+          },
+          icon: Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
+        ),
       ),
       body: Consumer<GroupProvider>(
         builder: (context, groupProvider, child) {
           return Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 20.0,
-              horizontal: 10.0,
-            ),
+            padding:
+                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
             child: Column(
               children: [
                 SettingsSwitchListTile(
                   title: 'Edit Group Settings',
                   subtitle:
-                      'Only Admins can change the group info, name, image and description',
+                      'Only Admins can change group info, name, image and description',
                   icon: Icons.edit,
                   containerColor: Colors.green,
-                  value: groupProvider.editSettings,
+                  value: groupProvider.groupModel.editSettings,
                   onChanged: (value) {
                     groupProvider.setEditSettings(value: value);
                   },
@@ -96,23 +113,23 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
                 SettingsSwitchListTile(
                   title: 'Approve New Members',
                   subtitle:
-                      'New Members will need to be approved by Admins before they can join the group',
+                      'New Members will be added only after admin approval',
                   icon: Icons.approval,
                   containerColor: Colors.blue,
-                  value: groupProvider.approveNewMembers,
+                  value: groupProvider.groupModel.approveMembers,
                   onChanged: (value) {
                     groupProvider.setApproveNewMembers(value: value);
                   },
                 ),
                 const SizedBox(height: 10),
-                groupProvider.approveNewMembers
+                groupProvider.groupModel.approveMembers
                     ? SettingsSwitchListTile(
                         title: 'Request to Join',
                         subtitle:
-                            'Request incoming members to send a request to join the group',
+                            'Request incoming members to join the group, before viewing group content',
                         icon: Icons.request_page,
                         containerColor: Colors.orange,
-                        value: groupProvider.requestToJoin,
+                        value: groupProvider.groupModel.requestToJoin,
                         onChanged: (value) {
                           groupProvider.setRequestToJoin(value: value);
                         },
@@ -122,10 +139,10 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
                 SettingsSwitchListTile(
                   title: 'Lock Messages',
                   subtitle:
-                      'Only Admins can send messages in the group, other members can only read',
+                      'Only Admins can send messages, other members can only read messages',
                   icon: Icons.lock,
                   containerColor: Colors.deepPurple,
-                  value: groupProvider.lockMessages,
+                  value: groupProvider.groupModel.lockMessages,
                   onChanged: (value) {
                     groupProvider.setLockMessages(value: value);
                   },
@@ -134,22 +151,20 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
                 Card(
                   color: getAdminsContainerColor(groupProvider: groupProvider),
                   child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 8.0,
-                      right: 8.0,
-                    ),
+                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                     child: SettingsListTile(
                       title: 'Group Admins',
-                      subtitle:
-                          getGroupAdminNames(groupProvider: groupProvider),
+                      subtitle: getGroupAdminsNames(
+                          groupProvider: groupProvider, uid: uid),
                       icon: Icons.admin_panel_settings,
                       iconContainerColor: Colors.red,
                       onTap: () {
-                        // Check if there are group members
+                        // check if there are group members
                         if (groupProvider.groupMembersList.isEmpty) {
                           return;
                         }
-                        // Show Bottom Sheet to Select Admins
+                        groupProvider.setEmptyTemps();
+                        // show bottom sheet to select admins
                         showBottomSheet(
                           context: context,
                           builder: (context) {
@@ -166,21 +181,24 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
                                         const Text(
                                           'Select Group Admins',
                                           style: TextStyle(
-                                            fontSize: 18.0,
+                                            fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                         TextButton(
                                           onPressed: () {
-                                            Navigator.pop(context);
+                                            groupProvider
+                                                .updateGroupDataInFireStoreIfNeeded()
+                                                .whenComplete(() {
+                                              Navigator.pop(context);
+                                            });
                                           },
                                           child: const Text(
                                             'Done',
                                             style: TextStyle(
-                                              color: Colors.blue,
-                                              fontSize: 18.0,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                                color: Colors.blue,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         ),
                                       ],
@@ -200,7 +218,7 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
                                           );
                                         },
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
                               ),

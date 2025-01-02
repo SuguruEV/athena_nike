@@ -4,6 +4,7 @@ import 'package:athena_nike/models/user_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/providers/group_provider.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
+import 'package:athena_nike/utilities/global_methods_temp.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,14 +14,18 @@ class FriendWidget extends StatelessWidget {
     required this.friend,
     required this.viewType,
     this.isAdminView = false,
+    this.groupId = '',
   });
 
   final UserModel friend;
   final FriendViewType viewType;
   final bool isAdminView;
+  final String groupId;
 
   @override
   Widget build(BuildContext context) {
+    final uid = context.watch<AuthenticationProvider>().userModel!.uid;
+    final name = uid == friend.uid ? 'You' : friend.name;
     bool getValue() {
       return isAdminView
           ? context.watch<GroupProvider>().groupAdminsList.contains(friend)
@@ -29,15 +34,10 @@ class FriendWidget extends StatelessWidget {
 
     return ListTile(
       minLeadingWidth: 0.0,
-      contentPadding: const EdgeInsets.only(
-        left: -10,
-      ),
-      leading: userImageWidget(
-        imageUrl: friend.image,
-        radius: 40,
-        onTap: () {},
-      ),
-      title: Text(friend.name),
+      contentPadding: const EdgeInsets.only(left: -10),
+      leading: GlobalMethods.userImageWidget(
+          imageUrl: friend.image, radius: 40, onTap: () {}),
+      title: Text(name),
       subtitle: Text(
         friend.aboutMe,
         maxLines: 2,
@@ -46,16 +46,29 @@ class FriendWidget extends StatelessWidget {
       trailing: viewType == FriendViewType.friendRequests
           ? ElevatedButton(
               onPressed: () async {
-                // Accept friend request
-                await context
-                    .read<AuthenticationProvider>()
-                    .acceptFriendRequest(friendID: friend.uid)
-                    .whenComplete(() {
-                  showSnackBar(
-                    context,
-                    'You are now friends with ${friend.name}',
-                  );
-                });
+                if (groupId.isEmpty) {
+                  // accept friend request
+                  await context
+                      .read<AuthenticationProvider>()
+                      .acceptFriendRequest(friendID: friend.uid)
+                      .whenComplete(() {
+                    GlobalMethods.showSnackBar(
+                        context, 'You are now friends with ${friend.name}');
+                  });
+                } else {
+                  // accept group request
+                  await context
+                      .read<GroupProvider>()
+                      .acceptRequestToJoinGroup(
+                        groupID: groupId,
+                        friendID: friend.uid,
+                      )
+                      .whenComplete(() {
+                    Navigator.pop(context);
+                    GlobalMethods.showSnackBar(context,
+                        '${friend.name} is now a member of this group');
+                  });
+                }
               },
               child: const Text('Accept'),
             )
@@ -63,7 +76,7 @@ class FriendWidget extends StatelessWidget {
               ? Checkbox(
                   value: getValue(),
                   onChanged: (value) {
-                    // Check The Check Box
+                    // check the check box
                     if (isAdminView) {
                       if (value == true) {
                         context
@@ -90,27 +103,30 @@ class FriendWidget extends StatelessWidget {
               : null,
       onTap: () {
         if (viewType == FriendViewType.friends) {
-          // Navigate To Chat Screen With The Following Arguments
-          // 1. Friend Name 2. Friend UID 3. Friend Image 4. GroupID with an empty String
-          Navigator.pushNamed(
-            context,
-            Constants.chatScreen,
-            arguments: {
-              Constants.contactUID: friend.uid,
-              Constants.contactName: friend.name,
-              Constants.contactImage: friend.image,
-              Constants.groupID: '',
-            },
-          );
+          // navigate to chat screen with the folowing arguments
+          // 1. friend uid 2. friend name 3. friend image 4. groupId with an empty string
+          Navigator.pushNamed(context, Constants.chatScreen, arguments: {
+            Constants.contactUID: friend.uid,
+            Constants.contactName: friend.name,
+            Constants.contactImage: friend.image,
+            Constants.groupID: ''
+          });
         } else if (viewType == FriendViewType.allUsers) {
-          // Navigate to this user's profile screen
+          // navite to this user's profile screen
           Navigator.pushNamed(
             context,
             Constants.profileScreen,
             arguments: friend.uid,
           );
         } else {
-          null;
+          if (groupId.isNotEmpty) {
+            // navigate to this person's profile
+            Navigator.pushNamed(
+              context,
+              Constants.profileScreen,
+              arguments: friend.uid,
+            );
+          }
         }
       },
     );

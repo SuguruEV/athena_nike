@@ -2,9 +2,7 @@ import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/models/group_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/providers/group_provider.dart';
-import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:athena_nike/widgets/chat_widget.dart';
-import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +33,7 @@ class _PrivateGroupScreenState extends State<PrivateGroupScreen> {
           StreamBuilder<List<GroupModel>>(
             stream: context
                 .read<GroupProvider>()
-                .getPrivateGroupsStream(userID: uid),
+                .getPrivateGroupsStream(userId: uid),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(

@@ -66,6 +66,7 @@ dependencies:
       ref: downgrade-kotlin
   animate_do: ^3.1.2
   flutter_chat_reactions: ^0.1.0
+  firebase_pagination: ^4.1.0
   rounded_loading_button:
     git:
       url: https://github.com/scopendo/flutter_rounded_loading_button.git

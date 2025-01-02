@@ -80,4 +80,7 @@ class Constants {
   static const String awaitingApprovalUIDs = 'awaitingApprovalUIDs';
 
   static const String groupImages = 'groupImages';
+
+  static const String changeName = 'changeName';
+  static const String changeDesc = 'changeDesc';
 }

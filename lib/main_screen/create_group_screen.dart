@@ -5,11 +5,13 @@ import 'package:athena_nike/enums/enums.dart';
 import 'package:athena_nike/models/group_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/providers/group_provider.dart';
-import 'package:athena_nike/utilities/global_methods.dart';
-import 'package:athena_nike/widgets/app_bar_back_button.dart';
+import 'package:athena_nike/providers/search_provider.dart';
+import 'package:athena_nike/utilities/global_methods_temp.dart';
 import 'package:athena_nike/widgets/display_user_image.dart';
 import 'package:athena_nike/widgets/friends_list.dart';
 import 'package:athena_nike/widgets/group_type_list_tile.dart';
+import 'package:athena_nike/widgets/my_app_bar.dart';
+import 'package:athena_nike/widgets/search_bar_widget.dart';
 import 'package:athena_nike/widgets/settings_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,23 +26,23 @@ class CreateGroupScreen extends StatefulWidget {
 }
 
 class _CreateGroupScreenState extends State<CreateGroupScreen> {
-  // Group Name Controller
+  // group name controller
   final TextEditingController groupNameController = TextEditingController();
-  // Group Description Controller
+  // group description controller
   final TextEditingController groupDescriptionController =
       TextEditingController();
-
   File? finalFileImage;
   String userImage = '';
 
   void selectImage(bool fromCamera) async {
-    finalFileImage = await pickImage(
+    finalFileImage = await GlobalMethods.pickImage(
       fromCamera: fromCamera,
       onFail: (String message) {
-        showSnackBar(context, message);
+        GlobalMethods.showSnackBar(context, message);
       },
     );
-    // Crop image
+
+    // crop image
     await cropImage(finalFileImage?.path);
 
     popContext();
@@ -63,7 +65,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
         setState(() {
           finalFileImage = File(croppedFile.path);
         });
-      } else {}
+      }
     }
   }
 
@@ -108,26 +110,26 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
 
   GroupType groupValue = GroupType.private;
 
-  // Create group
+  // create group
   void createGroup() {
     final uid = context.read<AuthenticationProvider>().userModel!.uid;
     final groupProvider = context.read<GroupProvider>();
-
-    // Check if the group name is empty
+    // check if the group name is empty
     if (groupNameController.text.isEmpty) {
-      showSnackBar(context, 'Please enter a group name');
+      GlobalMethods.showSnackBar(context, 'Please enter group name');
       return;
     }
 
-    // Name is less than 3 characters
+    // name is less than 3 characters
     if (groupNameController.text.length < 3) {
-      showSnackBar(context, 'Group name must be at least 3 characters');
+      GlobalMethods.showSnackBar(
+          context, 'Group name must be at least 3 characters');
       return;
     }
 
-    // Check if the group description is empty
+    // check if the group description is empty
     if (groupDescriptionController.text.isEmpty) {
-      showSnackBar(context, 'Please enter a group description');
+      GlobalMethods.showSnackBar(context, 'Please enter group description');
       return;
     }
 
@@ -153,16 +155,16 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
       awaitingApprovalUIDs: [],
     );
 
-    // Create Group
+    // create group
     groupProvider.createGroup(
-      groupModel: groupModel,
+      newGroupModel: groupModel,
       fileImage: finalFileImage,
       onSuccess: () {
-        showSnackBar(context, 'Group created successfully');
+        GlobalMethods.showSnackBar(context, 'Group created successfully');
         Navigator.pop(context);
       },
-      onError: (error) {
-        showSnackBar(context, error);
+      onFail: (error) {
+        GlobalMethods.showSnackBar(context, error);
       },
     );
   }
@@ -170,126 +172,115 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: AppBarBackButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+      appBar: MyAppBar(
         title: const Text('Create Group'),
-        centerTitle: true,
+        onPressed: () => Navigator.pop(context),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: CircleAvatar(
-              child: context.watch<GroupProvider>().isLoading
+              child: context.watch<GroupProvider>().isSloading
                   ? const CircularProgressIndicator()
                   : IconButton(
                       onPressed: () {
+                        // create group
                         createGroup();
                       },
-                      icon: const Icon(Icons.check),
-                    ),
+                      icon: const Icon(Icons.check)),
             ),
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 10,
-          horizontal: 10,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                DisplayUserImage(
-                  finalFileImage: finalFileImage,
-                  radius: 60,
-                  onPressed: () {
-                    showBottomSheet();
-                  },
-                ),
-                const SizedBox(width: 10),
-                buildGroupType(),
-              ],
-            ),
-
-            const SizedBox(height: 10),
-
-            // TextField for group name
-            TextField(
-              controller: groupNameController,
-              maxLength: 25,
-              textInputAction: TextInputAction.next,
-              decoration: const InputDecoration(
-                hintText: 'Group Name',
-                label: Text('Group Name'),
-                counterText: '',
-                border: OutlineInputBorder(),
+      body: SingleChildScrollView(
+        reverse: true,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 10.0,
+            horizontal: 10.0,
+          ),
+          child: Column(
+            spacing: 10,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  DisplayUserImage(
+                    finalFileImage: finalFileImage,
+                    radius: 60,
+                    onPressed: () {
+                      showBottomSheet();
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  buildGroupType(),
+                ],
               ),
-            ),
 
-            const SizedBox(height: 10),
-
-            // TextField for group description
-            TextField(
-              controller: groupDescriptionController,
-              maxLength: 100,
-              textInputAction: TextInputAction.done,
-              decoration: const InputDecoration(
-                hintText: 'Group Description',
-                label: Text('Group Description'),
-                counterText: '',
-                border: OutlineInputBorder(),
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  left: 8.0,
-                  right: 8.0,
-                ),
-                child: SettingsListTile(
-                  title: 'Group Settings',
-                  icon: Icons.settings,
-                  iconContainerColor: Colors.deepPurple,
-                  onTap: () {
-                    // Navigate to GroupSettingsScreen
-                    Navigator.pushNamed(context, Constants.groupSettingsScreen);
-                  },
+              // texField for group name
+              TextField(
+                controller: groupNameController,
+                maxLength: 25,
+                textInputAction: TextInputAction.next,
+                decoration: const InputDecoration(
+                  hintText: 'Group Name',
+                  label: Text('Group Name'),
+                  counterText: '',
+                  border: OutlineInputBorder(),
                 ),
               ),
-            ),
-
-            const SizedBox(height: 10),
-
-            const Text('Select Group Members',
+              // textField for group description
+              TextField(
+                controller: groupDescriptionController,
+                maxLength: 100,
+                textInputAction: TextInputAction.done,
+                decoration: const InputDecoration(
+                  hintText: 'Group Description',
+                  label: Text('Group Description'),
+                  counterText: '',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 8.0,
+                    right: 8.0,
+                  ),
+                  child: SettingsListTile(
+                      title: 'Group Settings',
+                      icon: Icons.settings,
+                      iconContainerColor: Colors.deepPurple,
+                      onTap: () {
+                        // navigate to group settings screen
+                        Navigator.pushNamed(
+                            context, Constants.groupSettingsScreen);
+                      }),
+                ),
+              ),
+              const Text(
+                'Select Group Members',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                )),
-
-            const SizedBox(height: 10),
-
-            // Cuppertino Search Bar
-            CupertinoSearchTextField(
-              onChanged: (value) {},
-            ),
-
-            const SizedBox(height: 10),
-
-            const Expanded(
-              child: FriendsList(
-                viewType: FriendViewType.groupView,
+                ),
               ),
-            ),
-          ],
+
+              // Search bar
+              SearchBarWidget(
+                onChanged: (value) {
+                  context.read<SearchProvider>().setSearchQuery(value);
+                },
+              ),
+
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.3,
+                child: const FriendsList(
+                  viewType: FriendViewType.groupView,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -324,7 +315,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
               });
             },
           ),
-        )
+        ),
       ],
     );
   }
