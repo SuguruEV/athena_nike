@@ -1,48 +1,47 @@
 import 'package:athena_nike/enums/enums.dart';
-import 'package:athena_nike/widgets/app_bar_back_button.dart';
 import 'package:athena_nike/widgets/friends_list.dart';
+import 'package:athena_nike/widgets/my_app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class FriendRequestsScreen extends StatefulWidget {
-  const FriendRequestsScreen({super.key});
+class FriendRequestScreen extends StatefulWidget {
+  const FriendRequestScreen({super.key, this.groupId = ''});
+
+  final String groupId;
 
   @override
-  State<FriendRequestsScreen> createState() => _FriendRequestsScreenState();
+  State<FriendRequestScreen> createState() => _FriendRequestScreenState();
 }
 
-class _FriendRequestsScreenState extends State<FriendRequestsScreen> {
+class _FriendRequestScreenState extends State<FriendRequestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: AppBarBackButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          centerTitle: true,
-          title: const Text('Friend Requests'),
-        ),
-        body: Column(
+      appBar: MyAppBar(
+        title: const Text('Requests'),
+        onPressed: () => Navigator.pop(context),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
           children: [
-            // Cupertino Search Bar
+            // cupertinosearchbar
             CupertinoSearchTextField(
               placeholder: 'Search',
-              style: const TextStyle(
-                color: Colors.white,
-              ),
+              style: const TextStyle(color: Colors.white),
               onChanged: (value) {
                 print(value);
               },
             ),
 
-            const Expanded(
-              child: FriendsList(
-                viewType: FriendViewType.friendRequests,
-              ),
-            )
+            Expanded(
+                child: FriendsList(
+              viewType: FriendViewType.friendRequests,
+              groupId: widget.groupId,
+            )),
           ],
-        ));
+        ),
+      ),
+    );
   }
 }

@@ -1,4 +1,3 @@
-
 enum FriendViewType {
   friends,
   friendRequests,
@@ -16,9 +15,10 @@ enum MessageEnum {
 enum GroupType {
   private,
   public,
+  none,
 }
 
-// Extension Convert MessageEnum to String
+// extension convertMessageEnumToString on String
 extension MessageEnumExtension on String {
   MessageEnum toMessageEnum() {
     switch (this) {

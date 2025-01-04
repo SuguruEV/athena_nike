@@ -1,63 +1,45 @@
-import 'package:athena_nike/models/group_model.dart';
-import 'package:athena_nike/models/last_message_model.dart';
+import 'package:athena_nike/models/chat_model';
 import 'package:athena_nike/providers/authentication_provider.dart';
-import 'package:athena_nike/utilities/global_methods.dart';
+import 'package:athena_nike/utilities/global_methods_temp.dart';
 import 'package:athena_nike/widgets/unread_message_counter.dart';
-import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ChatWidget extends StatelessWidget {
   const ChatWidget({
     super.key,
-    this.chat,
-    this.group,
+    required this.chatModel,
     required this.isGroup,
     required this.onTap,
   });
 
-  final LastMessageModel? chat;
-  final GroupModel? group;
+  final ChatModel chatModel;
   final bool isGroup;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final uid = context.read<AuthenticationProvider>().userModel!.uid;
-    final lastMessage = chat != null ? chat!.message : group!.lastMessage;
-    final senderUID = chat != null ? chat!.senderUID : group!.senderUID;
-
-    final timeSent = chat != null ? chat!.timeSent : group!.timeSent;
-    final dateTime = formatDate(timeSent, [hh, ':', nn, ' ', am]);
-
-    final imageURL = chat != null ? chat!.contactImage : group!.groupImage;
-
-    final name = chat != null ? chat!.contactName : group!.groupName;
-
-    final contactUID = chat != null ? chat!.contactUID : group!.groupID;
-
-    final messageType = chat != null ? chat!.messageType : group!.messageType;
-
     return ListTile(
-      leading: userImageWidget(
-        imageUrl: imageURL,
+      leading: GlobalMethods.userImageWidget(
+        imageUrl: chatModel.image,
         radius: 40,
         onTap: () {},
       ),
       contentPadding: EdgeInsets.zero,
-      title: Text(name),
+      title: Text(chatModel.name),
       subtitle: Row(
         children: [
-          uid == senderUID
+          uid == chatModel.senderUID
               ? const Text(
-                  'You: ',
+                  'You:',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 )
               : const SizedBox(),
           const SizedBox(width: 5),
-          messageToShow(
-            type: messageType,
-            message: lastMessage,
+          GlobalMethods.messageToShow(
+            type: chatModel.messageType,
+            message: chatModel.lastMessage,
           ),
         ],
       ),
@@ -66,12 +48,12 @@ class ChatWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(dateTime),
+            Text(chatModel.timeSent),
             UnreadMessageCounter(
               uid: uid,
-              contactUID: contactUID,
+              contactUID: chatModel.contactUID,
               isGroup: isGroup,
-            ),
+            )
           ],
         ),
       ),

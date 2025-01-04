@@ -29,12 +29,10 @@ class _GroupsScreenState extends State<GroupsScreen> {
             ],
           ),
         ),
-        body: const TabBarView(
-          children: [
-            PrivateGroupScreen(),
-            PublicGroupScreen(),
-          ],
-        ),
+        body: const TabBarView(children: [
+          PrivateGroupScreen(),
+          PublicGroupScreen(),
+        ]),
       ),
     );
   }

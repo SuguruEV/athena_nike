@@ -15,24 +15,26 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
-    // Get Arguments Passed From Previous Screen
+    // get arguments passed from previous screen
     final arguments = ModalRoute.of(context)!.settings.arguments as Map;
-    // Get ContactUID From Arguments
+    // get the contactUID from the arguments
     final contactUID = arguments[Constants.contactUID];
-    // Get ContactName From Arguments
+    // get the contactName from the arguments
     final contactName = arguments[Constants.contactName];
-    // Get ContactImage From Arguments
+    // get the contactImage from the arguments
     final contactImage = arguments[Constants.contactImage];
-    // Get GroupID From Arguments
-    final groupID = arguments[Constants.groupID];
-    // Check If GroupID is Empty - Then It's A Chat With A User
-    final isGroupChat = groupID.isNotEmpty ? true : false;
+    // get the groupId from the arguments
+    final groupId = arguments[Constants.groupID];
+    // check if the groupId is empty - then its a chat with a friend else its a group chat
+    final isGroupChat = groupId.isNotEmpty ? true : false;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        backgroundColor: // get appBar color from theme
+            Theme.of(context).appBarTheme.backgroundColor,
         title: isGroupChat
-            ? GroupChatAppBar(groupID: groupID)
+            ? GroupChatAppBar(groupId: groupId)
             : ChatAppBar(contactUID: contactUID),
       ),
       body: Padding(
@@ -40,16 +42,17 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           children: [
             Expanded(
-                child: ChatList(
-              contactUID: contactUID,
-              groupID: groupID,
-            )),
+              child: ChatList(
+                contactUID: contactUID,
+                groupID: groupId,
+              ),
+            ),
             BottomChatField(
               contactUID: contactUID,
               contactName: contactName,
               contactImage: contactImage,
-              groupID: groupID,
-            )
+              groupID: groupId,
+            ),
           ],
         ),
       ),

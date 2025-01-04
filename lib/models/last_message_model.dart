@@ -22,7 +22,7 @@ class LastMessageModel {
     required this.isSeen,
   });
 
-  // To Map
+  // to map
   Map<String, dynamic> toMap() {
     return {
       Constants.senderUID: senderUID,
@@ -36,7 +36,7 @@ class LastMessageModel {
     };
   }
 
-  // From Map
+  // from map
   factory LastMessageModel.fromMap(Map<String, dynamic> map) {
     return LastMessageModel(
       senderUID: map[Constants.senderUID] ?? '',
@@ -50,7 +50,6 @@ class LastMessageModel {
     );
   }
 
-  // CopyWith
   copyWith({
     required String contactUID,
     required String contactName,

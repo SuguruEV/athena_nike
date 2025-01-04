@@ -2,7 +2,6 @@ import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/utilities/assets_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
@@ -16,15 +15,15 @@ class LandingScreen extends StatefulWidget {
 class _LandingScreenState extends State<LandingScreen> {
   @override
   void initState() {
-    checkAuthentication();
+    checkAthentication();
     super.initState();
   }
 
-  void checkAuthentication() async {
+  void checkAthentication() async {
     final authProvider = context.read<AuthenticationProvider>();
     bool isAuthenticated = await authProvider.checkAuthenticationState();
 
-    navigate(isAuthenticated: isAuthenticated);   
+    navigate(isAuthenticated: isAuthenticated);
   }
 
   navigate({required bool isAuthenticated}) {
@@ -44,16 +43,7 @@ class _LandingScreenState extends State<LandingScreen> {
           width: 200,
           child: Column(
             children: [
-              Lottie.asset(AssetsManager.greekLoading),
-              const SizedBox(height: 20),
-              Text(
-                'Aegis',
-                style: GoogleFonts.titilliumWeb(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 20),
+              Lottie.asset(AssetsManager.chatBubble),
               const LinearProgressIndicator(),
             ],
           ),

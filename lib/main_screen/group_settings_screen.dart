@@ -126,7 +126,7 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
                     ? SettingsSwitchListTile(
                         title: 'Request to Join',
                         subtitle:
-                            'Request incoming members to join the group, before viewing group content',
+                            'Request incoming members to join the group, before being able of viewing the messages',
                         icon: Icons.request_page,
                         containerColor: Colors.orange,
                         value: groupProvider.groupModel.requestToJoin,

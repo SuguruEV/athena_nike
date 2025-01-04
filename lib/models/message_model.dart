@@ -36,7 +36,7 @@ class MessageModel {
     required this.deletedBy,
   });
 
-  // To Map (Constants)
+  // to map
   Map<String, dynamic> toMap() {
     return {
       Constants.senderUID: senderUID,
@@ -57,7 +57,7 @@ class MessageModel {
     };
   }
 
-  // From Map (Constants)
+  // from map
   factory MessageModel.fromMap(Map<String, dynamic> map) {
     return MessageModel(
       senderUID: map[Constants.senderUID] ?? '',
@@ -71,19 +71,20 @@ class MessageModel {
       isSeen: map[Constants.isSeen] ?? false,
       repliedMessage: map[Constants.repliedMessage] ?? '',
       repliedTo: map[Constants.repliedTo] ?? '',
-      repliedMessageType: map[Constants.repliedMessageType].toString().toMessageEnum(),
+      repliedMessageType:
+          map[Constants.repliedMessageType].toString().toMessageEnum(),
       reactions: List<String>.from(map[Constants.reactions] ?? []),
       isSeenBy: List<String>.from(map[Constants.isSeenBy] ?? []),
       deletedBy: List<String>.from(map[Constants.deletedBy] ?? []),
     );
   }
 
-  copyWith({required String userID}) {
+  copyWith({required String userId}) {
     return MessageModel(
       senderUID: senderUID,
       senderName: senderName,
       senderImage: senderImage,
-      contactUID: userID,
+      contactUID: userId,
       message: message,
       messageType: messageType,
       timeSent: timeSent,

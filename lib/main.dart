@@ -74,7 +74,7 @@ class MyApp extends StatelessWidget {
           Constants.settingsScreen: (context) => const SettingsScreen(),
           Constants.friendsScreen: (context) => const FriendsScreen(),
           Constants.friendRequestsScreen: (context) =>
-              const FriendRequestsScreen(),
+              const FriendRequestScreen(),
           Constants.chatScreen: (context) => const ChatScreen(),
           Constants.groupSettingsScreen: (context) => const GroupSettingsScreen(),
         },

@@ -16,6 +16,7 @@ class Constants {
   static const String termsAndConditionsScreen = '/termsAndConditionsScreen';
   static const String settingsScreen = '/settingsScreen';
   static const String groupSettingsScreen = '/groupSettingsScreen';
+  static const String groupInformationScreen = '/groupInformationScreen';
 
   static const String uid = 'uid';
   static const String name = 'name';

@@ -227,7 +227,7 @@ class ChatProvider extends ChangeNotifier {
     try {
       // 0. Contact MessageModel
       final contactMessageModel = messageModel.copyWith(
-        userID: messageModel.senderUID,
+        userId: messageModel.senderUID,
       );
 
       // 1. Initialize last message for the sender
