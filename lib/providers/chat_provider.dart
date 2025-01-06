@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/enums/enums.dart';
 import 'package:athena_nike/models/last_message_model.dart';
@@ -8,6 +7,7 @@ import 'package:athena_nike/models/message_reply_model.dart';
 import 'package:athena_nike/models/user_model.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -23,15 +23,15 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setMessageReplyModel(MessageReplyModel? messageReplyModel) {
-    _messageReplyModel = messageReplyModel;
+  void setMessageReplyModel(MessageReplyModel? messageReply) {
+    _messageReplyModel = messageReply;
     notifyListeners();
   }
 
-  // Firebase Initialization
+  // firebase initialization
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Send Text Message To Firestore
+// send text message to firestore
   Future<void> sendTextMessage({
     required UserModel sender,
     required String contactUID,
@@ -43,12 +43,12 @@ class ChatProvider extends ChangeNotifier {
     required Function onSuccess,
     required Function(String) onError,
   }) async {
-    // Set loading to true
+    // set loading to true
     setLoading(true);
     try {
       var messageID = const Uuid().v4();
 
-      // 1. Check if its a message reply and add the replied message to the message
+      // 1. check if its a message reply and add the replied message to the message
       String repliedMessage = _messageReplyModel?.message ?? '';
       String repliedTo = _messageReplyModel == null
           ? ''
@@ -58,7 +58,7 @@ class ChatProvider extends ChangeNotifier {
       MessageEnum repliedMessageType =
           _messageReplyModel?.messageType ?? MessageEnum.text;
 
-      // 2. Update/Set the messagemodel
+      // 2. update/set the messagemodel
       final messageModel = MessageModel(
         senderUID: sender.uid,
         senderName: sender.name,
@@ -77,9 +77,9 @@ class ChatProvider extends ChangeNotifier {
         deletedBy: [],
       );
 
-      // 3. Check if its a group message and send to group else send to contact
+      // 3. check if its a group message and send to group else send to contact
       if (groupID.isNotEmpty) {
-        // Handle Group Message
+        // handle group message
         await _firestore
             .collection(Constants.groups)
             .doc(groupID)
@@ -87,7 +87,7 @@ class ChatProvider extends ChangeNotifier {
             .doc(messageID)
             .set(messageModel.toMap());
 
-        // Update the last message for the group
+        // update the last message fo the group
         await _firestore.collection(Constants.groups).doc(groupID).update({
           Constants.lastMessage: message,
           Constants.timeSent: DateTime.now().millisecondsSinceEpoch,
@@ -95,13 +95,13 @@ class ChatProvider extends ChangeNotifier {
           Constants.messageType: messageType.name,
         });
 
+        // set loading to true
         setLoading(false);
         onSuccess();
-
-        // Set message reply model to null
+        // set message reply model to null
         setMessageReplyModel(null);
       } else {
-        // Handle Contact Message
+        // handle contact message
         await handleContactMessage(
           messageModel: messageModel,
           contactUID: contactUID,
@@ -111,16 +111,17 @@ class ChatProvider extends ChangeNotifier {
           onError: onError,
         );
 
-        // Set Message reply model to null
+        // set message reply model to null
         setMessageReplyModel(null);
       }
     } catch (e) {
+      // set loading to true
       setLoading(false);
       onError(e.toString());
     }
   }
 
-  // Send File Message To Firestore
+  // send file message to firestore
   Future<void> sendFileMessage({
     required UserModel sender,
     required String contactUID,
@@ -132,13 +133,12 @@ class ChatProvider extends ChangeNotifier {
     required Function onSuccess,
     required Function(String) onError,
   }) async {
-    // Set loading to true
+    // set loading to true
     setLoading(true);
-
     try {
       var messageID = const Uuid().v4();
 
-      // 1. Check if its a message reply and add the replied message to the message
+      // 1. check if its a message reply and add the replied message to the message
       String repliedMessage = _messageReplyModel?.message ?? '';
       String repliedTo = _messageReplyModel == null
           ? ''
@@ -148,18 +148,19 @@ class ChatProvider extends ChangeNotifier {
       MessageEnum repliedMessageType =
           _messageReplyModel?.messageType ?? MessageEnum.text;
 
-      // 2. Upload the file to firebase storage
+      // 2. upload file to firebase storage
       final ref =
           '${Constants.chatFiles}/${messageType.name}/${sender.uid}/$contactUID/$messageID';
-      String fileURL = await storeFileToStorage(file: file, reference: ref);
+      String fileUrl =
+          await GlobalMethods.storeFileToStorage(file: file, reference: ref);
 
-      // 3. Update/Set the messagemodel
+      // 3. update/set the messagemodel
       final messageModel = MessageModel(
         senderUID: sender.uid,
         senderName: sender.name,
         senderImage: sender.image,
         contactUID: contactUID,
-        message: fileURL,
+        message: fileUrl,
         messageType: messageType,
         timeSent: DateTime.now(),
         messageID: messageID,
@@ -172,10 +173,10 @@ class ChatProvider extends ChangeNotifier {
         deletedBy: [],
       );
 
-      // 4. Check if its a group message and send to group else send to contact
+      // 4. check if its a group message and send to group else send to contact
       if (groupID.isNotEmpty) {
-        // Handle Group Message
-
+        // handle group message
+        // handle group message
         await _firestore
             .collection(Constants.groups)
             .doc(groupID)
@@ -183,21 +184,21 @@ class ChatProvider extends ChangeNotifier {
             .doc(messageID)
             .set(messageModel.toMap());
 
-        // Update the last message for the group
+        // update the last message fo the group
         await _firestore.collection(Constants.groups).doc(groupID).update({
-          Constants.lastMessage: fileURL,
+          Constants.lastMessage: fileUrl,
           Constants.timeSent: DateTime.now().millisecondsSinceEpoch,
           Constants.senderUID: sender.uid,
           Constants.messageType: messageType.name,
         });
 
+        // set loading to true
         setLoading(false);
         onSuccess();
-
-        // Set message reply model to null
+        // set message reply model to null
         setMessageReplyModel(null);
       } else {
-        // Handle Contact Message
+        // handle contact message
         await handleContactMessage(
           messageModel: messageModel,
           contactUID: contactUID,
@@ -207,10 +208,11 @@ class ChatProvider extends ChangeNotifier {
           onError: onError,
         );
 
-        // Set Message reply model to null
+        // set message reply model to null
         setMessageReplyModel(null);
       }
     } catch (e) {
+      // set loading to true
       setLoading(false);
       onError(e.toString());
     }
@@ -225,12 +227,12 @@ class ChatProvider extends ChangeNotifier {
     required Function(String p1) onError,
   }) async {
     try {
-      // 0. Contact MessageModel
+      // 0. contact messageModel
       final contactMessageModel = messageModel.copyWith(
         userId: messageModel.senderUID,
       );
 
-      // 1. Initialize last message for the sender
+      // 1. initialize last message for the sender
       final senderLastMessage = LastMessageModel(
         senderUID: messageModel.senderUID,
         contactUID: contactUID,
@@ -242,14 +244,13 @@ class ChatProvider extends ChangeNotifier {
         isSeen: false,
       );
 
-      // 2. Initialize last message for the contact
+      // 2. initialize last message for the contact
       final contactLastMessage = senderLastMessage.copyWith(
         contactUID: messageModel.senderUID,
         contactName: messageModel.senderName,
         contactImage: messageModel.senderImage,
       );
-
-      // 3. Send Message to Sender Firestore Location
+      // 3. send message to sender firestore location
       await _firestore
           .collection(Constants.users)
           .doc(messageModel.senderUID)
@@ -258,8 +259,7 @@ class ChatProvider extends ChangeNotifier {
           .collection(Constants.messages)
           .doc(messageModel.messageID)
           .set(messageModel.toMap());
-
-      // 4. Send Message to Contact Firestore Location
+      // 4. send message to contact firestore location
       await _firestore
           .collection(Constants.users)
           .doc(contactUID)
@@ -269,7 +269,7 @@ class ChatProvider extends ChangeNotifier {
           .doc(messageModel.messageID)
           .set(contactMessageModel.toMap());
 
-      // 5. Send the Last message to sender firestore location
+      // 5. send the last message to sender firestore location
       await _firestore
           .collection(Constants.users)
           .doc(messageModel.senderUID)
@@ -277,7 +277,7 @@ class ChatProvider extends ChangeNotifier {
           .doc(contactUID)
           .set(senderLastMessage.toMap());
 
-      // 6. Send the last message to contact firestore location
+      // 6. send the last message to contact firestore location
       await _firestore
           .collection(Constants.users)
           .doc(contactUID)
@@ -285,68 +285,22 @@ class ChatProvider extends ChangeNotifier {
           .doc(messageModel.senderUID)
           .set(contactLastMessage.toMap());
 
-      // Run Transaction
-      // await _firestore.runTransaction(
-      //   (transaction) async {
-      //     // 3. Send Message to Sender Firestore Location
-      //     transaction.set(
-      //       _firestore
-      //           .collection(Constants.users)
-      //           .doc(messageModel.senderUID)
-      //           .collection(Constants.chats)
-      //           .doc(contactUID)
-      //           .collection(Constants.messages)
-      //           .doc(messageModel.messageID),
-      //       messageModel.toMap(),
-      //     );
-
-      //     transaction.set(
-      //       _firestore
-      //           .collection(Constants.users)
-      //           .doc(contactUID)
-      //           .collection(Constants.chats)
-      //           .doc(messageModel.senderUID)
-      //           .collection(Constants.messages)
-      //           .doc(messageModel.messageID),
-      //       contactMessageModel.toMap(),
-      //     );
-
-      //     // 5. Send the Last message to sender firestore location
-      //     transaction.set(
-      //       _firestore
-      //           .collection(Constants.users)
-      //           .doc(messageModel.senderUID)
-      //           .collection(Constants.chats)
-      //           .doc(contactUID),
-      //       senderLastMessage.toMap(),
-      //     );
-
-      //     // 6. Send the last message to contact firestore location
-      //     transaction.set(
-      //       _firestore
-      //           .collection(Constants.users)
-      //           .doc(contactUID)
-      //           .collection(Constants.chats)
-      //           .doc(messageModel.senderUID),
-      //       contactLastMessage.toMap(),
-      //     );
-      //   },
-      // );
-
-      // 7. Call onSuccess
-      // Set loading to false
+      // 7.call onSuccess
+      // set loading to false
       setLoading(false);
       onSuccess();
     } on FirebaseException catch (e) {
+      // set loading to false
       setLoading(false);
       onError(e.message ?? e.toString());
     } catch (e) {
+      // set loading to false
       setLoading(false);
       onError(e.toString());
     }
   }
 
-  // Send Reaction to Message
+  // send reaction to message
   Future<void> sendReactionToMessage({
     required String senderUID,
     required String contactUID,
@@ -354,16 +308,15 @@ class ChatProvider extends ChangeNotifier {
     required String reaction,
     required bool groupID,
   }) async {
-    // Set Loading to true
+    // set loading to true
     setLoading(true);
-    // A reaction is saved as senderUID-reaction
-    final reactionToAdd = '$senderUID-$reaction';
+    // a reaction is saved as senderUID=reaction
+    String reactionToAdd = '$senderUID=$reaction';
 
     try {
-      // 1. Check if its a group message
+      // 1. check if its a group message
       if (groupID) {
-        // Handle group message
-        // 2. Get the reaction list from firestore
+        // 2. get the reaction list from firestore
         final messageData = await _firestore
             .collection(Constants.groups)
             .doc(contactUID)
@@ -371,12 +324,12 @@ class ChatProvider extends ChangeNotifier {
             .doc(messageID)
             .get();
 
-        // 3. Add the message data to messageModel
+        // 3. add the meesaage data to messageModel
         final message = MessageModel.fromMap(messageData.data()!);
 
-        // 4. Check if the reaction list is empty
+        // 4. check if the reaction list is empty
         if (message.reactions.isEmpty) {
-          // 5. Add the reaction to the message
+          // 5. add the reaction to the message
           await _firestore
               .collection(Constants.groups)
               .doc(contactUID)
@@ -386,33 +339,31 @@ class ChatProvider extends ChangeNotifier {
             Constants.reactions: FieldValue.arrayUnion([reactionToAdd])
           });
         } else {
-          // 6. Get UIDs list from reactions list
-          final uids = message.reactions.map((e) => e.split('-')[0]).toList();
+          // 6. get UIDs list from reactions list
+          final uids = message.reactions.map((e) => e.split('=')[0]).toList();
 
-          // 7. Check if the reaction is already added
+          // 7. check if the reaction is already added
           if (uids.contains(senderUID)) {
-            // 8. Get the index of the reaction
+            // 8. get the index of the reaction
             final index = uids.indexOf(senderUID);
-            // 9. Replace the reaction
+            // 9. replace the reaction
             message.reactions[index] = reactionToAdd;
           } else {
-            // 10. Add the reaction to the list
+            // 10. add the reaction to the list
             message.reactions.add(reactionToAdd);
           }
 
-          // 11. Update the message reactions
+          // 11. update the message
           await _firestore
               .collection(Constants.groups)
               .doc(contactUID)
               .collection(Constants.messages)
               .doc(messageID)
-              .update({
-            Constants.reactions: message.reactions,
-          });
+              .update({Constants.reactions: message.reactions});
         }
       } else {
-        // Handle contact message
-        // 2. Get the reaction list from firestore
+        // handle contact message
+        // 2. get the reaction list from firestore
         final messageData = await _firestore
             .collection(Constants.users)
             .doc(senderUID)
@@ -422,12 +373,12 @@ class ChatProvider extends ChangeNotifier {
             .doc(messageID)
             .get();
 
-        // 3. Add the message data to messageModel
+        // 3. add the meesaage data to messageModel
         final message = MessageModel.fromMap(messageData.data()!);
 
-        // 4. Check if the reaction list is empty
+        // 4. check if the reaction list is empty
         if (message.reactions.isEmpty) {
-          // 5. Add the reaction to the message
+          // 5. add the reaction to the message
           await _firestore
               .collection(Constants.users)
               .doc(senderUID)
@@ -439,21 +390,21 @@ class ChatProvider extends ChangeNotifier {
             Constants.reactions: FieldValue.arrayUnion([reactionToAdd])
           });
         } else {
-          // 6. Get UIDs list from reactions list
-          final uids = message.reactions.map((e) => e.split('-')[0]).toList();
+          // 6. get UIDs list from reactions list
+          final uids = message.reactions.map((e) => e.split('=')[0]).toList();
 
-          // 7. Check if the reaction is already added
+          // 7. check if the reaction is already added
           if (uids.contains(senderUID)) {
-            // 8. Get the index of the reaction
+            // 8. get the index of the reaction
             final index = uids.indexOf(senderUID);
-            // 9. Replace the reaction
+            // 9. replace the reaction
             message.reactions[index] = reactionToAdd;
           } else {
-            // 10. Add the reaction to the list
+            // 10. add the reaction to the list
             message.reactions.add(reactionToAdd);
           }
 
-          // 11. Update the message reactions
+          // 11. update the message to sender firestore location
           await _firestore
               .collection(Constants.users)
               .doc(senderUID)
@@ -461,119 +412,67 @@ class ChatProvider extends ChangeNotifier {
               .doc(contactUID)
               .collection(Constants.messages)
               .doc(messageID)
-              .update({
-            Constants.reactions: message.reactions,
-          });
+              .update({Constants.reactions: message.reactions});
 
-          // 12. Update the last message reactions
+          // 12. update the message to contact firestore location
           await _firestore
               .collection(Constants.users)
-              .doc(senderUID)
-              .collection(Constants.chats)
               .doc(contactUID)
-              .update({
-            Constants.reactions: message.reactions,
-          });
+              .collection(Constants.chats)
+              .doc(senderUID)
+              .collection(Constants.messages)
+              .doc(messageID)
+              .update({Constants.reactions: message.reactions});
         }
       }
 
-      // Set Loading to false
+      // set loading to false
       setLoading(false);
     } catch (e) {
       print(e.toString());
     }
   }
 
-  // Get ChatsList stream
-  Stream<List<LastMessageModel>> getChatsListStream(String userId) {
-    return _firestore
-        .collection(Constants.users)
-        .doc(userId)
-        .collection(Constants.chats)
-        .orderBy(Constants.timeSent, descending: true)
-        .snapshots()
-        .map((snapshot) {
-      return snapshot.docs.map((doc) {
-        return LastMessageModel.fromMap(doc.data());
-      }).toList();
-    });
-  }
-
-  // Stream messages from chat collection
-  Stream<List<MessageModel>> getMessagesStream({
-    required String userUID,
-    required String contactUID,
-    required String isGroup,
-  }) {
-    if (isGroup.isNotEmpty) {
-      return _firestore
-          .collection(Constants.groups)
-          .doc(contactUID)
-          .collection(Constants.messages)
-          .snapshots()
-          .map((snapshot) {
-        return snapshot.docs.map((doc) {
-          return MessageModel.fromMap(doc.data());
-        }).toList();
-      });
-    } else {
-      return _firestore
-          .collection(Constants.users)
-          .doc(userUID)
-          .collection(Constants.chats)
-          .doc(contactUID)
-          .collection(Constants.messages)
-          .snapshots()
-          .map((snapshot) {
-        return snapshot.docs.map((doc) {
-          return MessageModel.fromMap(doc.data());
-        }).toList();
-      });
-    }
-  }
-
-  // Stream the unread messages for this user
+  // stream the unread messages for this user
   Stream<int> getUnreadMessagesStream({
-    required String userID,
+    required String userId,
     required String contactUID,
     required bool isGroup,
   }) {
-    // 1. Check if it's a group message
+    // 1. check if its a group message
     if (isGroup) {
-      // Handle Group Message
+      // handle group message
       return _firestore
           .collection(Constants.groups)
           .doc(contactUID)
           .collection(Constants.messages)
           .snapshots()
-          .asyncMap(
-        (event) {
-          int count = 0;
-          for (var doc in event.docs) {
-            final message = MessageModel.fromMap(doc.data());
-            if (!message.isSeenBy.contains(userID)) {
-              count++;
-            }
+          .asyncMap((event) {
+        int count = 0;
+        for (var doc in event.docs) {
+          final message = MessageModel.fromMap(doc.data());
+          if (!message.isSeenBy.contains(userId)) {
+            count++;
           }
-          return count;
-        },
-      );
+        }
+        return count;
+      });
     } else {
-      // Handle Contact Message
+      // handle contact message
       return _firestore
           .collection(Constants.users)
-          .doc(userID)
+          .doc(userId)
           .collection(Constants.chats)
           .doc(contactUID)
           .collection(Constants.messages)
           .where(Constants.isSeen, isEqualTo: false)
-          .where(Constants.senderUID, isNotEqualTo: userID)
+          .where(Constants.senderUID, isNotEqualTo: userId)
           .snapshots()
           .map((event) => event.docs.length);
     }
   }
 
-  // Set Message Status
+  // set message status
   Future<void> setMessageStatus({
     required String currentUserId,
     required String contactUID,
@@ -581,72 +480,189 @@ class ChatProvider extends ChangeNotifier {
     required List<String> isSeenByList,
     required bool isGroupChat,
   }) async {
-    // Check if its a group chat
+    // check if its group chat
     if (isGroupChat) {
       if (isSeenByList.contains(currentUserId)) {
         return;
       } else {
-        // Add the current user to the seenByList in all messages
+        // add the current user to the seenByList in all messages
         await _firestore
             .collection(Constants.groups)
             .doc(contactUID)
             .collection(Constants.messages)
             .doc(messageID)
             .update({
-          Constants.isSeenBy: FieldValue.arrayUnion([currentUserId])
+          Constants.isSeenBy: FieldValue.arrayUnion([currentUserId]),
         });
       }
     } else {
-        // Set Message as seen
-  Future<void> setMessageAsSeen({
-    required String userUID,
-    required String contactUID,
-    required String messageID,
-    required String groupID,
-  }) async {
-    try {
-      // 1. Check if its a group message
-      if (groupID.isNotEmpty) {
-        // Handle Group Message
-      } else {
-        // Handle Contact Message
-        // 2. Update the current message as seen
-        await _firestore
-            .collection(Constants.users)
-            .doc(currentUserId)
-            .collection(Constants.chats)
-            .doc(contactUID)
-            .collection(Constants.messages)
-            .doc(messageID)
-            .update({Constants.isSeen: true});
-        // 3. Update the contact message as seen
-        await _firestore
-            .collection(Constants.users)
-            .doc(contactUID)
-            .collection(Constants.chats)
-            .doc(currentUserId)
-            .collection(Constants.messages)
-            .doc(messageID)
-            .update({Constants.isSeen: true});
-        // 4. Update the last message as seen for current user
-        await _firestore
-            .collection(Constants.users)
-            .doc(currentUserId)
-            .collection(Constants.chats)
-            .doc(contactUID)
-            .update({Constants.isSeen: true});
-        // 5. Update the last message as seen for contact user
-        await _firestore
-            .collection(Constants.users)
-            .doc(contactUID)
-            .collection(Constants.chats)
-            .doc(currentUserId)
-            .update({Constants.isSeen: true});
-      }
-    } catch (e) {
-      print(e.toString());
+      // handle contact message
+      // 2. update the current message as seen
+      await _firestore
+          .collection(Constants.users)
+          .doc(currentUserId)
+          .collection(Constants.chats)
+          .doc(contactUID)
+          .collection(Constants.messages)
+          .doc(messageID)
+          .update({Constants.isSeen: true});
+      // 3. update the contact message as seen
+      await _firestore
+          .collection(Constants.users)
+          .doc(contactUID)
+          .collection(Constants.chats)
+          .doc(currentUserId)
+          .collection(Constants.messages)
+          .doc(messageID)
+          .update({Constants.isSeen: true});
+
+      // 4. update the last message as seen for current user
+      await _firestore
+          .collection(Constants.users)
+          .doc(currentUserId)
+          .collection(Constants.chats)
+          .doc(contactUID)
+          .update({Constants.isSeen: true});
+
+      // 5. update the last message as seen for contact
+      await _firestore
+          .collection(Constants.users)
+          .doc(contactUID)
+          .collection(Constants.chats)
+          .doc(currentUserId)
+          .update({Constants.isSeen: true});
     }
   }
+
+  // delete message
+  Future<void> deleteMessage({
+    required String currentUserId,
+    required String contactUID,
+    required String messageID,
+    required String messageType,
+    required bool isGroupChat,
+    required bool deleteForEveryone,
+  }) async {
+    // set loading
+    setLoading(true);
+
+    // check if its group chat
+    if (isGroupChat) {
+      // handle group message
+      await _firestore
+          .collection(Constants.groups)
+          .doc(contactUID)
+          .collection(Constants.messages)
+          .doc(messageID)
+          .update({
+        Constants.deletedBy: FieldValue.arrayUnion([currentUserId])
+      });
+
+      // is is delete for everyone and message type is not text, we also dele the file from storage
+      if (deleteForEveryone) {
+        // get all group members uids and put them in deletedBy list
+        final groupData =
+            await _firestore.collection(Constants.groups).doc(contactUID).get();
+
+        final List<String> groupMembers =
+            List<String>.from(groupData.data()![Constants.membersUIDs]);
+
+        // update the message as deleted for everyone
+        await _firestore
+            .collection(Constants.groups)
+            .doc(contactUID)
+            .collection(Constants.messages)
+            .doc(messageID)
+            .update({Constants.deletedBy: FieldValue.arrayUnion(groupMembers)});
+
+        if (messageType != MessageEnum.text.name) {
+          // delete the file from storage
+          await deleteFileFromStorage(
+            currentUserId: currentUserId,
+            contactUID: contactUID,
+            messageID: messageID,
+            messageType: messageType,
+          );
+        }
+      }
+
+      // set loading to false
+      setLoading(false);
+    } else {
+      // handle contact message
+      // 1. update the current message as deleted
+      await _firestore
+          .collection(Constants.users)
+          .doc(currentUserId)
+          .collection(Constants.chats)
+          .doc(contactUID)
+          .collection(Constants.messages)
+          .doc(messageID)
+          .update({
+        Constants.deletedBy: FieldValue.arrayUnion([currentUserId])
+      });
+      // 2. check if delete for everyone then return if false
+      if (!deleteForEveryone) {
+        // set loading to false
+        setLoading(false);
+        return;
+      }
+
+      // 3. update the contact message as deleted
+      await _firestore
+          .collection(Constants.users)
+          .doc(contactUID)
+          .collection(Constants.chats)
+          .doc(currentUserId)
+          .collection(Constants.messages)
+          .doc(messageID)
+          .update({
+        Constants.deletedBy: FieldValue.arrayUnion([currentUserId])
+      });
+
+      // 4. delete the file from storage
+      if (messageType != MessageEnum.text.name) {
+        await deleteFileFromStorage(
+          currentUserId: currentUserId,
+          contactUID: contactUID,
+          messageID: messageID,
+          messageType: messageType,
+        );
+      }
+
+      // set loading to false
+      setLoading(false);
     }
+  }
+
+  Future<void> deleteFileFromStorage({
+    required String currentUserId,
+    required String contactUID,
+    required String messageID,
+    required String messageType,
+  }) async {
+    final firebaseStorage = FirebaseStorage.instance;
+    // delete the file from storage
+    await firebaseStorage
+        .ref(
+            '${Constants.chatFiles}/$messageType/$currentUserId/$contactUID/$messageID')
+        .delete();
+  }
+
+  // stream the last message collection
+  Stream<QuerySnapshot> getLastMessageStream({
+    required String userId,
+    required String groupID,
+  }) {
+    return groupID.isNotEmpty
+        ? _firestore
+            .collection(Constants.groups)
+            .where(Constants.membersUIDs, arrayContains: userId)
+            .snapshots()
+        : _firestore
+            .collection(Constants.users)
+            .doc(userId)
+            .collection(Constants.chats)
+            .snapshots();
   }
 }

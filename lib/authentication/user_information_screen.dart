@@ -1,7 +1,7 @@
 import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/models/user_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
-import 'package:athena_nike/utilities/global_methods_temp.dart';
+import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:athena_nike/widgets/display_user_image.dart';
 import 'package:athena_nike/widgets/my_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -116,7 +116,7 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
       phoneNumber: authProvider.phoneNumber!,
       image: '',
       token: '',
-      aboutMe: 'Hey there, I\'m using Flutter Chat Pro',
+      aboutMe: 'Hey there, I\'m using Aegis',
       lastSeen: '',
       createdAt: '',
       isOnline: true,

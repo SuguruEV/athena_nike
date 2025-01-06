@@ -1,22 +1,17 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/enums/enums.dart';
 import 'package:athena_nike/models/group_model.dart';
 import 'package:athena_nike/models/message_model.dart';
 import 'package:athena_nike/models/user_model.dart';
-import 'package:athena_nike/utilities/global_methods_temp.dart';
+import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class GroupProvider extends ChangeNotifier {
   bool _isSloading = false;
-  // bool _editSettings = true;
-  // bool _approveNewMembers = false;
-  // bool _requestToJoin = false;
-  // bool _lockMessages = false;
 
   GroupModel _groupModel = GroupModel(
     creatorUID: '',
@@ -193,10 +188,6 @@ class GroupProvider extends ChangeNotifier {
     _tempGroupMembersList.add(groupMember);
     _tempGroupMemberUIDs.add(groupMember.uid);
     notifyListeners();
-
-    // return if groupID is empty - meaning we are creating a new group
-    // if (_groupModel.groupID.isEmpty) return;
-    // updateGroupDataInFireStore();
   }
 
   // add a member as an admin
@@ -207,10 +198,6 @@ class GroupProvider extends ChangeNotifier {
     _tempGoupAdminsList.add(groupAdmin);
     _tempGroupAdminUIDs.add(groupAdmin.uid);
     notifyListeners();
-
-    // return if groupID is empty - meaning we are creating a new group
-    // if (_groupModel.groupID.isEmpty) return;
-    // updateGroupDataInFireStore();
   }
 
   // update image
@@ -347,12 +334,6 @@ class GroupProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // clear group admins list
-  // Future<void> clearGroupAdminsList() async {
-  //   _groupAdminsList.clear();
-  //   notifyListeners();
-  // }
-
   // get a list UIDs from group members list
   List<String> getGroupMembersUIDs() {
     return _groupMembersList.map((e) => e.uid).toList();
@@ -412,18 +393,6 @@ class GroupProvider extends ChangeNotifier {
 
       // update the global groupModel
       setGroupModel(groupModel: newGroupModel);
-
-      // // add edit settings
-      // groupModel.editSettings = editSettings;
-
-      // // add approve new members
-      // groupModel.approveMembers = approveNewMembers;
-
-      // // add request to join
-      // groupModel.requestToJoin = requestToJoin;
-
-      // // add lock messages
-      // groupModel.lockMessages = lockMessages;
 
       // add group to firebase
       await _firestore
@@ -491,8 +460,6 @@ class GroupProvider extends ChangeNotifier {
     await _firestore.collection(Constants.groups).doc(groupID).update({
       Constants.awaitingApprovalUIDs: FieldValue.arrayUnion([uid])
     });
-
-    // TODO  send notification to group admins
   }
 
   // accept request to join group

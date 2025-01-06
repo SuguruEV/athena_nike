@@ -43,7 +43,7 @@ class _LandingScreenState extends State<LandingScreen> {
           width: 200,
           child: Column(
             children: [
-              Lottie.asset(AssetsManager.chatBubble),
+              Lottie.asset(AssetsManager.greekLoading),
               const LinearProgressIndicator(),
             ],
           ),

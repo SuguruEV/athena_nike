@@ -1,11 +1,11 @@
 import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/models/user_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
-import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ChatAppBar extends StatefulWidget {
@@ -41,16 +41,13 @@ class _ChatAppBarState extends State<ChatAppBar> {
 
         return Row(
           children: [
-            userImageWidget(
+            GlobalMethods.userImageWidget(
               imageUrl: userModel.image,
               radius: 20,
               onTap: () {
-                // Navigate To This Friends Profile With UID as Argument
-                Navigator.pushNamed(
-                  context,
-                  Constants.profileScreen,
-                  arguments: userModel.uid,
-                );
+                // navigate to this friends profile with uid as argument
+                Navigator.pushNamed(context, Constants.profileScreen,
+                    arguments: userModel.uid);
               },
             ),
             const SizedBox(width: 10),

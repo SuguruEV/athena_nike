@@ -1,10 +1,8 @@
-import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/enums/enums.dart';
 import 'package:athena_nike/models/user_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/providers/search_provider.dart';
 import 'package:athena_nike/streams/data_repository.dart';
-import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:athena_nike/widgets/friend_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_pagination/firebase_pagination.dart';
@@ -15,14 +13,14 @@ class FriendsList extends StatelessWidget {
   const FriendsList({
     super.key,
     required this.viewType,
-    this.groupId = '',
+    this.groupID = '',
     this.groupMembersUIDs = const [],
     this.limit = 20,
     this.isLive = true,
   });
 
   final FriendViewType viewType;
-  final String groupId;
+  final String groupID;
   final List<String> groupMembersUIDs;
   final int limit;
   final bool isLive;
@@ -37,7 +35,7 @@ class FriendsList extends StatelessWidget {
           future: DataRepository.getFriendsQuery(
             uid: uid,
             viewType: viewType,
-            groupId: groupId,
+            groupID: groupID,
           ),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -113,7 +111,7 @@ class FriendsList extends StatelessWidget {
                 return FriendWidget(
                   friend: friend,
                   viewType: viewType,
-                  groupId: groupId,
+                  groupID: groupID,
                 );
               },
               initialLoader: const Center(

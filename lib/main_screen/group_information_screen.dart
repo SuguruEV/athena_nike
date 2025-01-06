@@ -1,12 +1,12 @@
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/providers/group_provider.dart';
 import 'package:athena_nike/utilities/my_dialogs.dart';
-import 'package:athena_nike/widgets/add_members_widget.dart';
+import 'package:athena_nike/widgets/add_members.dart';
 import 'package:athena_nike/widgets/exit_group_card.dart';
 import 'package:athena_nike/widgets/group_members_card.dart';
 import 'package:athena_nike/widgets/info_details_card.dart';
 import 'package:athena_nike/widgets/my_app_bar.dart';
-import 'package:athena_nike/widgets/settings_and_media_widget.dart';
+import 'package:athena_nike/widgets/settings_and_media.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

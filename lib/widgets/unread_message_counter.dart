@@ -18,7 +18,7 @@ class UnreadMessageCounter extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<int>(
       stream: context.read<ChatProvider>().getUnreadMessagesStream(
-            userID: uid,
+            userId: uid,
             contactUID: contactUID,
             isGroup: isGroup,
           ),

@@ -1,10 +1,7 @@
-import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/models/group_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
-import 'package:athena_nike/providers/group_provider.dart';
 import 'package:athena_nike/providers/search_provider.dart';
 import 'package:athena_nike/streams/chats_stream.dart';
-import 'package:athena_nike/widgets/chat_widget.dart';
 import 'package:athena_nike/widgets/search_bar_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

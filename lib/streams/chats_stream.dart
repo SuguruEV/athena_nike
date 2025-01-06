@@ -1,9 +1,9 @@
 
 
-import 'package:athena_nike/models/chat_model';
+import 'package:athena_nike/models/chat_model.dart';
 import 'package:athena_nike/models/group_model.dart';
 import 'package:athena_nike/streams/data_repository.dart';
-import 'package:athena_nike/utilities/global_methods_temp.dart';
+import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:athena_nike/widgets/chat_widget.dart';
 import 'package:firebase_pagination/firebase_pagination.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +30,7 @@ class ChatsStream extends StatelessWidget {
       limit: limit,
       isLive: isLive,
       query:
-          DataRepository.getChatsListQuery(userId: uid, groupModel: groupModel),
+          DataRepository.getChatsListQuery(userID: uid, groupModel: groupModel),
       itemBuilder: (context, documentSnapshot, index) {
         // Get the document data at index
         final documnets = documentSnapshot[index];

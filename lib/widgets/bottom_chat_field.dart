@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:athena_nike/enums/enums.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/providers/chat_provider.dart';
+import 'package:athena_nike/providers/group_provider.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:athena_nike/widgets/message_reply_preview.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
@@ -42,37 +43,37 @@ class _BottomChatFieldState extends State<BottomChatField> {
   bool isSendingAudio = false;
   bool isShowEmojiPicker = false;
 
-  // Hide Emoji Container
+  // hide emoji container
   void hideEmojiContainer() {
     setState(() {
       isShowEmojiPicker = false;
     });
   }
 
-  // Show Emoji Container
+  // show emoji container
   void showEmojiContainer() {
     setState(() {
       isShowEmojiPicker = true;
     });
   }
 
-  // Show Keyboard
-  void showKeyboard() {
+  // show keyboard
+  void showKeyBoard() {
     _focusNode.requestFocus();
   }
 
-  // Hide Keyboard
-  void hideKeyboard() {
+  // hide keyboard
+  void hideKeyNoard() {
     _focusNode.unfocus();
   }
 
-  // Toggle emoji and keyboard container
+  // toggle emoji and keyboard container
   void toggleEmojiKeyboardContainer() {
     if (isShowEmojiPicker) {
-      showKeyboard();
+      showKeyBoard();
       hideEmojiContainer();
     } else {
-      hideKeyboard();
+      hideKeyNoard();
       showEmojiContainer();
     }
   }
@@ -93,7 +94,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
     super.dispose();
   }
 
-  // Check Microphone Permission
+  // check microphone permission
   Future<bool> checkMicrophonePermission() async {
     bool hasPermission = await Permission.microphone.isGranted;
     final status = await Permission.microphone.request();
@@ -106,7 +107,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
     return hasPermission;
   }
 
-  // Start Recording Audio
+  // start recording audio
   void startRecording() async {
     final hasPermission = await checkMicrophonePermission();
     if (hasPermission) {
@@ -121,37 +122,38 @@ class _BottomChatFieldState extends State<BottomChatField> {
     }
   }
 
-  // Stop Recording Audio
+  // stop recording audio
   void stopRecording() async {
     await _soundRecord!.stop();
     setState(() {
       isRecording = false;
-      isShowSendButton = true;
+      isSendingAudio = true;
     });
-    // Send audio message to Firestore
+    // send audio message to firestore
     sendFileMessage(
       messageType: MessageEnum.audio,
     );
   }
 
   void selectImage(bool fromCamera) async {
-    finalFileImage = await pickImage(
+    finalFileImage = await GlobalMethods.pickImage(
       fromCamera: fromCamera,
       onFail: (String message) {
-        showSnackBar(context, message);
+        GlobalMethods.showSnackBar(context, message);
       },
     );
-    // Crop image
+
+    // crop image
     await cropImage(finalFileImage?.path);
 
     popContext();
   }
 
-  // Select a video file from device
+  // select a video file from device
   void selectVideo() async {
-    File? fileVideo = await pickVideo(
+    File? fileVideo = await GlobalMethods.pickVideo(
       onFail: (String message) {
-        showSnackBar(context, message);
+        GlobalMethods.showSnackBar(context, message);
       },
     );
 
@@ -159,7 +161,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
 
     if (fileVideo != null) {
       filePath = fileVideo.path;
-      // Send video message to Firestore
+      // send video message to firestore
       sendFileMessage(
         messageType: MessageEnum.video,
       );
@@ -181,16 +183,18 @@ class _BottomChatFieldState extends State<BottomChatField> {
 
       if (croppedFile != null) {
         filePath = croppedFile.path;
-        // Send image message to Firestore
+        // send image message to firestore
         sendFileMessage(
           messageType: MessageEnum.image,
         );
-      } else {}
+      }
     }
   }
 
-  // Send Image Message to Firestore
-  void sendFileMessage({required MessageEnum messageType}) {
+  // send image message to firestore
+  void sendFileMessage({
+    required MessageEnum messageType,
+  }) {
     final currentUser = context.read<AuthenticationProvider>().userModel!;
     final chatProvider = context.read<ChatProvider>();
 
@@ -213,35 +217,105 @@ class _BottomChatFieldState extends State<BottomChatField> {
         setState(() {
           isSendingAudio = false;
         });
-        showSnackBar(context, error);
+        GlobalMethods.showSnackBar(context, error);
       },
     );
   }
 
+  // send text message to firestore
   void sendTextMessage() {
     final currentUser = context.read<AuthenticationProvider>().userModel!;
     final chatProvider = context.read<ChatProvider>();
 
     chatProvider.sendTextMessage(
-      sender: currentUser,
-      contactUID: widget.contactUID,
-      contactName: widget.contactName,
-      contactImage: widget.contactImage,
-      message: _textEditingController.text,
-      messageType: MessageEnum.text,
-      groupID: widget.groupID,
-      onSuccess: () {
-        _textEditingController.clear();
-        _focusNode.unfocus();
-      },
-      onError: (error) {
-        showSnackBar(context, error);
-      },
-    );
+        sender: currentUser,
+        contactUID: widget.contactUID,
+        contactName: widget.contactName,
+        contactImage: widget.contactImage,
+        message: _textEditingController.text,
+        messageType: MessageEnum.text,
+        groupID: widget.groupID,
+        onSuccess: () {
+          _textEditingController.clear();
+          _focusNode.unfocus();
+        },
+        onError: (error) {
+          GlobalMethods.showSnackBar(context, error);
+        });
   }
 
   @override
   Widget build(BuildContext context) {
+    return widget.groupID.isNotEmpty
+        ? buildLoackedMessages()
+        : buildBottomChatField();
+  }
+
+  Widget buildLoackedMessages() {
+    final uid = context.read<AuthenticationProvider>().userModel!.uid;
+
+    final groupProvider = context.read<GroupProvider>();
+    // check if is admin
+    final isAdmin = groupProvider.groupModel.adminsUIDs.contains(uid);
+
+    // chec if is member
+    final isMember = groupProvider.groupModel.membersUIDs.contains(uid);
+
+    // check is messages are locked
+    final isLocked = groupProvider.groupModel.lockMessages;
+    return isAdmin
+        ? buildBottomChatField()
+        : isMember
+            ? buildisMember(isLocked)
+            : SizedBox(
+                height: 60,
+                child: Center(
+                  child: TextButton(
+                    onPressed: () async {
+                      // send request to join group
+                      await groupProvider
+                          .sendRequestToJoinGroup(
+                        groupID: groupProvider.groupModel.groupID,
+                        uid: uid,
+                        groupName: groupProvider.groupModel.groupName,
+                        groupImage: groupProvider.groupModel.groupImage,
+                      )
+                          .whenComplete(() {
+                        GlobalMethods.showSnackBar(context, 'Request sent');
+                      });
+                      print('request to join group');
+                    },
+                    child: const Text(
+                      'You are not a member of this group, \n click here to send request to join',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+  }
+
+  buildisMember(bool isLocked) {
+    return isLocked
+        ? const SizedBox(
+            height: 50,
+            child: Center(
+              child: Text(
+                'Messages are locked, only admins can send messages',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          )
+        : buildBottomChatField();
+  }
+
+  Consumer<ChatProvider> buildBottomChatField() {
     return Consumer<ChatProvider>(
       builder: (context, chatProvider, child) {
         final messageReply = chatProvider.messageReplyModel;
@@ -250,29 +324,31 @@ class _BottomChatFieldState extends State<BottomChatField> {
           children: [
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                color: Theme.of(context).cardColor,
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
+                  borderRadius: BorderRadius.circular(30),
+                  color: Theme.of(context).cardColor,
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.primary,
+                  )),
               child: Column(
                 children: [
                   isMessageReply
-                      ? const MessageReplyPreview()
+                      ? MessageReplyPreview(
+                          replyMessageModel: messageReply,
+                        )
                       : const SizedBox.shrink(),
                   Row(
                     children: [
-                      // Emoji Button
+                      // emoji button
                       IconButton(
                         onPressed: toggleEmojiKeyboardContainer,
-                        icon: Icon(isShowEmojiPicker ? Icons.keyboard_alt : Icons.emoji_emotions_outlined),
+                        icon: Icon(isShowEmojiPicker
+                            ? Icons.keyboard_alt
+                            : Icons.emoji_emotions_outlined),
                       ),
                       IconButton(
                         onPressed: isSendingAudio
                             ? null
                             : () {
-                                // Show Attachment Options
                                 showModalBottomSheet(
                                   context: context,
                                   builder: (context) {
@@ -282,15 +358,16 @@ class _BottomChatFieldState extends State<BottomChatField> {
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            // Select image from camera
+                                            // select image from camera
                                             ListTile(
-                                              leading: const Icon(Icons.camera),
+                                              leading:
+                                                  const Icon(Icons.camera_alt),
                                               title: const Text('Camera'),
                                               onTap: () {
                                                 selectImage(true);
                                               },
                                             ),
-                                            // Select image from gallery
+                                            // select image from gallery
                                             ListTile(
                                               leading: const Icon(Icons.image),
                                               title: const Text('Gallery'),
@@ -298,7 +375,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
                                                 selectImage(false);
                                               },
                                             ),
-                                            // Select a video file from device
+                                            // select a video file from device
                                             ListTile(
                                               leading: const Icon(
                                                   Icons.video_library),
@@ -320,8 +397,9 @@ class _BottomChatFieldState extends State<BottomChatField> {
                           focusNode: _focusNode,
                           decoration: const InputDecoration.collapsed(
                             border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30)),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(30),
+                              ),
                               borderSide: BorderSide.none,
                             ),
                             hintText: 'Type a message',
@@ -371,7 +449,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
                 ],
               ),
             ),
-            // Show Emoji Container
+            // show emoji container
             isShowEmojiPicker
                 ? SizedBox(
                     height: 280,
@@ -392,27 +470,6 @@ class _BottomChatFieldState extends State<BottomChatField> {
                             .skipLast(1)
                             .toString();
                       },
-                        // config: const Config(
-                        //   columns: 7,
-                        //   emojiSizeMax: 32.0,
-                        //   verticalSpacing: 0,
-                        //   horizontalSpacing: 0,
-                        //   initCategory: Category.RECENT,
-                        //   bgColor: Color(0xFFF2F2F2),
-                        //   indicatorColor: Colors.blue,
-                        //   iconColor: Colors.grey,
-                        //   iconColorSelected: Colors.blue,
-                        //   progressIndicatorColor: Colors.blue,
-                        //   backspaceColor: Colors.blue,
-                        //   showRecentsTab: true,
-                        //   recentsLimit: 28,
-                        //   noRecentsText: 'No Recents',
-                        //   noRecentsStyle: const TextStyle(
-                        //       fontSize: 20, color: Colors.black26),
-                        //   tabIndicatorAnimDuration: kTabScrollDuration,
-                        //   categoryIcons: const CategoryIcons(),
-                        //   buttonMode: ButtonMode.MATERIAL,
-                        // ),
                     ),
                   )
                 : const SizedBox.shrink(),

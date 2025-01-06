@@ -1,6 +1,6 @@
-import 'package:athena_nike/models/chat_model';
+import 'package:athena_nike/models/chat_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
-import 'package:athena_nike/utilities/global_methods_temp.dart';
+import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:athena_nike/widgets/unread_message_counter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

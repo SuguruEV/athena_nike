@@ -6,10 +6,12 @@ class VideoPlayerWidget extends StatefulWidget {
     super.key,
     required this.videoUrl,
     required this.color,
+    required this.viewOnly,
   });
 
   final String videoUrl;
   final Color color;
+  final bool viewOnly;
 
   @override
   State<VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
@@ -58,18 +60,18 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                 isPlaying ? Icons.pause : Icons.play_arrow,
                 color: widget.color,
               ),
-              onPressed: () {
-                setState(
-                  () {
-                    isPlaying = !isPlaying;
-                    isPlaying
-                        ? videoPlayerController.play()
-                        : videoPlayerController.pause();
-                  },
-                );
-              },
+              onPressed: widget.viewOnly
+                  ? null
+                  : () {
+                      setState(() {
+                        isPlaying = !isPlaying;
+                        isPlaying
+                            ? videoPlayerController.play()
+                            : videoPlayerController.pause();
+                      });
+                    },
             ),
-          )
+          ),
         ],
       ),
     );

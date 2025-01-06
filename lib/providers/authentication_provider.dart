@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
-import 'dart:nativewrappers/_internal/vm/lib/developer.dart';
-
 import 'package:athena_nike/constants.dart';
 import 'package:athena_nike/models/user_model.dart';
-import 'package:athena_nike/utilities/global_methods_temp.dart';
+import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -415,7 +414,7 @@ class AuthenticationProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> cancleFriendRequest({required String friendID}) async {
+  Future<void> cancelFriendRequest({required String friendID}) async {
     try {
       // remove our uid from friends request list
       await _firestore.collection(Constants.users).doc(friendID).update({

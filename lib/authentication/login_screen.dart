@@ -51,11 +51,11 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(
               height: 200,
               width: 200,
-              child: Lottie.asset(AssetsManager.chatBubble),
+              child: Lottie.asset(AssetsManager.temple),
             ),
             Text(
-              'Flutter Chat Pro',
-              style: GoogleFonts.openSans(
+              'Aegis',
+              style: GoogleFonts.titilliumWeb(
                 fontSize: 28,
                 fontWeight: FontWeight.w500,
               ),
@@ -64,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Text(
               'Add your phone number will send you a code to verify',
               textAlign: TextAlign.center,
-              style: GoogleFonts.openSans(
+              style: GoogleFonts.titilliumWeb(
                 fontSize: 16,
               ),
             ),
@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
               decoration: InputDecoration(
                 counterText: '',
                 hintText: 'Phone Number',
-                hintStyle: GoogleFonts.openSans(
+                hintStyle: GoogleFonts.titilliumWeb(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
@@ -107,14 +107,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     child: Text(
                       '${selectedCountry.flagEmoji} +${selectedCountry.phoneCode}',
-                      style: GoogleFonts.openSans(
+                      style: GoogleFonts.titilliumWeb(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
                 ),
-                suffixIcon: _phoneNumberController.text.length > 9
+                suffixIcon: _phoneNumberController.text.length >= 9
                     ? authProvider.isLoading
                         ? const Padding(
                             padding: EdgeInsets.all(8.0),

@@ -98,27 +98,26 @@ class GroupModel {
   }
 
   // Initial empty group constructor
-  factory GroupModel.empty({bool isPrivate = false}) {
-    return GroupModel(
-      creatorUID: '',
-      groupName: '',
-      groupDescription: '',
-      groupImage: '',
-      groupID: '',
-      lastMessage: '',
-      senderUID: '',
-      messageType: MessageEnum.text,
-      messageID: '',
-      timeSent: DateTime.now(),
-      createdAt: DateTime.now(),
-      isPrivate: false,
-      editSettings: false,
-      approveMembers: false,
-      lockMessages: false,
-      requestToJoin: false,
-      membersUIDs: [],
-      adminsUIDs: [],
-      awaitingApprovalUIDs: [],
-    );
-  }
+  GroupModel.empty({bool isPrivate = false})
+      : this(
+          creatorUID: '',
+          groupName: '',
+          groupDescription: '',
+          groupImage: '',
+          groupID: '',
+          lastMessage: '',
+          senderUID: '',
+          messageType: MessageEnum.text,
+          messageID: '',
+          timeSent: DateTime.now(),
+          createdAt: DateTime.now(),
+          isPrivate: isPrivate,
+          editSettings: false,
+          approveMembers: false,
+          lockMessages: false,
+          requestToJoin: false,
+          membersUIDs: [],
+          adminsUIDs: [],
+          awaitingApprovalUIDs: [],
+        );
 }

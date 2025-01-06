@@ -37,7 +37,7 @@ class _OTPScreenState extends State<OTPScreen> {
     final defaultPinTheme = PinTheme(
       width: 56,
       height: 60,
-      textStyle: GoogleFonts.openSans(
+      textStyle: GoogleFonts.titilliumWeb(
         fontSize: 22,
         fontWeight: FontWeight.w600,
       ),
@@ -69,7 +69,7 @@ class _OTPScreenState extends State<OTPScreen> {
                   const SizedBox(height: 50),
                   Text(
                     'Verification',
-                    style: GoogleFonts.openSans(
+                    style: GoogleFonts.titilliumWeb(
                       fontSize: 28,
                       fontWeight: FontWeight.w500,
                     ),
@@ -78,7 +78,7 @@ class _OTPScreenState extends State<OTPScreen> {
                   Text(
                     'Enter the 6-digit code sent the number',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.openSans(
+                    style: GoogleFonts.titilliumWeb(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
                     ),
@@ -87,7 +87,7 @@ class _OTPScreenState extends State<OTPScreen> {
                   Text(
                     phoneNumber,
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.openSans(
+                    style: GoogleFonts.titilliumWeb(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
                     ),
@@ -157,7 +157,7 @@ class _OTPScreenState extends State<OTPScreen> {
                       ? const SizedBox.shrink()
                       : Text(
                           'Didn\'t receive the code?',
-                          style: GoogleFonts.openSans(fontSize: 16),
+                          style: GoogleFonts.titilliumWeb(fontSize: 16),
                         ),
                   const SizedBox(height: 10),
                   authProvider.isLoading
@@ -174,7 +174,7 @@ class _OTPScreenState extends State<OTPScreen> {
                               : null,
                           child: Text(
                             'Resend Code',
-                            style: GoogleFonts.openSans(
+                            style: GoogleFonts.titilliumWeb(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                             ),

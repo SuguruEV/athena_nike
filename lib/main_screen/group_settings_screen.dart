@@ -38,16 +38,6 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
 
       // add these names to the groupAdminsNames list
       groupAdminsNames.addAll(groupAdminsNamesList);
-
-      // if they are just two, seperate them with 'and', if they are more than 2
-      // seperate the last one with 'and' and the rest with comma
-      // if (groupAdminsList.length == 1) {
-      //   return groupAdminsNames.first;
-      // } else if (groupAdminsNames.length == 2) {
-      //   return groupAdminsNames.join(' and ');
-      // } else {
-      //   return '${groupAdminsNames.sublist(0, groupAdminsNames.length - 1).join(', ')} and ${groupAdminsNames.last}';
-      // }
       return groupAdminsNames.length == 2
           ? '${groupAdminsNames[0]} and ${groupAdminsNames[1]}'
           : groupAdminsNames.length > 2
@@ -126,7 +116,7 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
                     ? SettingsSwitchListTile(
                         title: 'Request to Join',
                         subtitle:
-                            'Request incoming members to join the group, before being able of viewing the messages',
+                            'Request incoming members to join the group, before viewing group content',
                         icon: Icons.request_page,
                         containerColor: Colors.orange,
                         value: groupProvider.groupModel.requestToJoin,

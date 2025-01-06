@@ -6,7 +6,7 @@ import 'package:athena_nike/models/group_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/providers/group_provider.dart';
 import 'package:athena_nike/providers/search_provider.dart';
-import 'package:athena_nike/utilities/global_methods_temp.dart';
+import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:athena_nike/widgets/display_user_image.dart';
 import 'package:athena_nike/widgets/friends_list.dart';
 import 'package:athena_nike/widgets/group_type_list_tile.dart';

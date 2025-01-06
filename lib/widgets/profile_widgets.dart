@@ -6,7 +6,7 @@ import 'package:athena_nike/providers/group_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:athena_nike/utilities/global_methods_temp.dart';
+import 'package:athena_nike/utilities/global_methods.dart';
 import 'package:athena_nike/utilities/my_dialogs.dart';
 
 class GroupStatusWidget extends StatelessWidget {
@@ -130,7 +130,7 @@ class FriendsButton extends StatelessWidget {
         );
       } else {
         if (currentUser.uid != userModel.uid) {
-          // show cancle friend request button if the user sent us friend request
+          // show cancel friend request button if the user sent us friend request
           // else show send friend request button
           if (userModel.friendRequestsUIDs.contains(currentUser.uid)) {
             // show send friend request button
@@ -138,13 +138,13 @@ class FriendsButton extends StatelessWidget {
               onPressed: () async {
                 await context
                     .read<AuthenticationProvider>()
-                    .cancleFriendRequest(friendID: userModel.uid)
+                    .cancelFriendRequest(friendID: userModel.uid)
                     .whenComplete(() {
                   GlobalMethods.showSnackBar(
                       context, 'friend request canclled');
                 });
               },
-              label: 'Cancle Request',
+              label: 'Cancel Request',
               width: MediaQuery.of(context).size.width * 0.7,
               backgroundColor: Theme.of(context).cardColor,
               textColor: Theme.of(context).colorScheme.primary,
@@ -243,7 +243,7 @@ class FriendsButton extends StatelessWidget {
                     .read<AuthenticationProvider>()
                     .sendFriendRequest(friendID: userModel.uid)
                     .whenComplete(() {
-                  GlobalMethods.showSnackBar(context, 'friend request sent');
+                  GlobalMethods.showSnackBar(context, 'Friend request sent');
                 });
               },
               label: 'Send Request',
@@ -389,7 +389,7 @@ class MyElevatedButton extends StatelessWidget {
           onPressed: onPressed,
           child: Text(
             label.toUpperCase(),
-            style: GoogleFonts.openSans(
+            style: GoogleFonts.titilliumWeb(
               fontWeight: FontWeight.bold,
               color: textColor,
             ),

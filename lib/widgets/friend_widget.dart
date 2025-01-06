@@ -4,7 +4,6 @@ import 'package:athena_nike/models/user_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/providers/group_provider.dart';
 import 'package:athena_nike/utilities/global_methods.dart';
-import 'package:athena_nike/utilities/global_methods_temp.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,13 +13,13 @@ class FriendWidget extends StatelessWidget {
     required this.friend,
     required this.viewType,
     this.isAdminView = false,
-    this.groupId = '',
+    this.groupID = '',
   });
 
   final UserModel friend;
   final FriendViewType viewType;
   final bool isAdminView;
-  final String groupId;
+  final String groupID;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +45,7 @@ class FriendWidget extends StatelessWidget {
       trailing: viewType == FriendViewType.friendRequests
           ? ElevatedButton(
               onPressed: () async {
-                if (groupId.isEmpty) {
+                if (groupID.isEmpty) {
                   // accept friend request
                   await context
                       .read<AuthenticationProvider>()
@@ -60,7 +59,7 @@ class FriendWidget extends StatelessWidget {
                   await context
                       .read<GroupProvider>()
                       .acceptRequestToJoinGroup(
-                        groupID: groupId,
+                        groupID: groupID,
                         friendID: friend.uid,
                       )
                       .whenComplete(() {
@@ -119,7 +118,7 @@ class FriendWidget extends StatelessWidget {
             arguments: friend.uid,
           );
         } else {
-          if (groupId.isNotEmpty) {
+          if (groupID.isNotEmpty) {
             // navigate to this person's profile
             Navigator.pushNamed(
               context,

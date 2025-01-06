@@ -1,5 +1,14 @@
 import groovy.util.XmlSlurper
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.codehaus.groovy:groovy:3.0.9'
+    }
+}
+
 allprojects {
     repositories {
         google()

@@ -110,7 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     padding: const EdgeInsets.only(left: 8.0),
                                     child: Text(
                                       'Settings',
-                                      style: GoogleFonts.openSans(
+                                      style: GoogleFonts.titilliumWeb(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold),
                                     ),

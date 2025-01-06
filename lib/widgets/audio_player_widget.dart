@@ -2,10 +2,16 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 class AudioPlayerWidget extends StatefulWidget {
-  const AudioPlayerWidget({super.key, required this.audioUrl, required this.color,});
+  const AudioPlayerWidget({
+    super.key,
+    required this.audioUrl,
+    required this.color,
+    required this.viewOnly,
+  });
 
   final String audioUrl;
   final Color color;
+  final bool viewOnly;
 
   @override
   State<AudioPlayerWidget> createState() => _AudioPlayerWidgetState();
@@ -19,7 +25,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
 
   @override
   void initState() {
-    // Listen to changes in player state
+    // listen to changes in player state
     audioPlayer.onPlayerStateChanged.listen((event) {
       if (event == PlayerState.playing) {
         setState(() {
@@ -32,24 +38,23 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
       } else if (event == PlayerState.completed) {
         setState(() {
           isPlaying = false;
+          position = const Duration();
         });
       }
     });
-
-    // Listen to changes in player position
+    // listen to changes in player position
     audioPlayer.onPositionChanged.listen((newPosition) {
       setState(() {
         position = newPosition;
       });
     });
 
-    // Listen to changes in player duration
+    // listen to changes in player duration
     audioPlayer.onDurationChanged.listen((newDuration) {
       setState(() {
         duration = newDuration;
       });
     });
-
     super.initState();
   }
 
@@ -80,17 +85,17 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
             radius: 20,
             backgroundColor: Colors.white,
             child: IconButton(
-              onPressed: () async {
-                if (!isPlaying) {
-                  await audioPlayer.play(UrlSource(widget.audioUrl));
-                } else {
-                  await audioPlayer.pause();
-                }
-              },
-              icon: Icon(
-                isPlaying ? Icons.pause : Icons.play_arrow,
-                color: Colors.black,
-              ),
+              onPressed: widget.viewOnly
+                  ? null
+                  : () async {
+                      if (!isPlaying) {
+                        await audioPlayer.play(UrlSource(widget.audioUrl));
+                      } else {
+                        await audioPlayer.pause();
+                      }
+                    },
+              icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow,
+                  color: Colors.black),
             ),
           ),
         ),
@@ -99,14 +104,16 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
             min: 0.0,
             value: position.inSeconds.toDouble(),
             max: duration.inSeconds.toDouble(),
-            onChanged: seekToPosition,
+            onChanged: widget.viewOnly ? null : seekToPosition,
           ),
         ),
-        Text(formatTime(duration - position),
-            style: TextStyle(
-              color: widget.color,
-              fontSize: 12.0,
-            )),
+        Text(
+          formatTime(duration - position),
+          style: TextStyle(
+            color: widget.color,
+            fontSize: 12.0,
+          ),
+        ),
       ],
     );
   }

@@ -41,5 +41,3 @@ class _MyChatsScreenState extends State<MyChatsScreen> {
     );
   }
 }
-
-
