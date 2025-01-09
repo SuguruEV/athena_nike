@@ -33,23 +33,6 @@ class AllUsersList extends StatelessWidget {
 
         // Apply search filter, if item does not match search query, return empty widget
         if (!user.name.toLowerCase().contains(searchQuery.toLowerCase())) {
-          // Check if this is the last item and no items matched the search
-          if (index == documentSnapshot.length - 1 &&
-              !documentSnapshot.any((doc) {
-                return user.name
-                    .toLowerCase()
-                    .contains(searchQuery.toLowerCase());
-              })) {
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.all(20.0),
-                child: Text(
-                  'No Users Found',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
-                ),
-              ),
-            );
-          }
           return const SizedBox.shrink();
         }
 

@@ -25,24 +25,33 @@ class InfoDetailsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     // Get current user
     final authProvider = context.read<AuthenticationProvider>();
-    final uid = authProvider.userModel!.uid;
-    final phoneNumber = authProvider.userModel!.phoneNumber;
+    final userModel = authProvider.userModel;
+
+    if (userModel == null) {
+      return Center(
+        child: Text('User not found'),
+      );
+    }
+
+    final uid = userModel.uid;
+    final phoneNumber = userModel.phoneNumber;
+
     // Get profile image
-    final profileImage = userModel != null
-        ? userModel!.image
+    final profileImage = this.userModel != null
+        ? this.userModel!.image
         : groupProvider!.groupModel.groupImage;
     // Get profile name
-    final profileName = userModel != null
-        ? userModel!.name
+    final profileName = this.userModel != null
+        ? this.userModel!.name
         : groupProvider!.groupModel.groupName;
 
     // Get group description
-    final aboutMe = userModel != null
-        ? userModel!.aboutMe
+    final aboutMe = this.userModel != null
+        ? this.userModel!.aboutMe
         : groupProvider!.groupModel.groupDescription;
 
     // Determine if it's a group
-    final isGroup = userModel != null ? false : true;
+    final isGroup = this.userModel != null ? false : true;
 
     // Widget to get edit options
     Widget getEditWidget(
@@ -97,7 +106,7 @@ class InfoDetailsCard extends StatelessWidget {
           return const SizedBox();
         }
       } else {
-        if (userModel != null && userModel!.uid != uid) {
+        if (this.userModel != null && this.userModel!.uid != uid) {
           return const SizedBox();
         }
 
@@ -197,7 +206,7 @@ class InfoDetailsCard extends StatelessWidget {
                         ],
                       ),
                       // Display phone number
-                      userModel != null && uid == userModel!.uid
+                      this.userModel != null && uid == this.userModel!.uid
                           ? Text(
                               phoneNumber,
                               style: GoogleFonts.titilliumWeb(
@@ -207,9 +216,9 @@ class InfoDetailsCard extends StatelessWidget {
                             )
                           : const SizedBox.shrink(),
                       const SizedBox(height: 5),
-                      userModel != null
+                      this.userModel != null
                           ? ProfileStatusWidget(
-                              userModel: userModel!,
+                              userModel: this.userModel!,
                               currentUser: authProvider.userModel!,
                             )
                           : GroupStatusWidget(
@@ -230,7 +239,7 @@ class InfoDetailsCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(userModel != null ? 'About Me' : 'Group Description',
+                Text(this.userModel != null ? 'About Me' : 'Group Description',
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

@@ -139,7 +139,7 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
                   subtitle:
                       'Only admins can send messages, other members can only read messages',
                   icon: Icons.lock,
-                  containerColor: Colors.deepPurple,
+                  containerColor: Colors.blueAccent,
                   value: groupProvider.groupModel.lockMessages,
                   onChanged: (value) {
                     groupProvider.setLockMessages(value: value);

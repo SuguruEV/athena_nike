@@ -65,12 +65,12 @@ class MyApp extends StatelessWidget {
       light: ThemeData(
         useMaterial3: true,
         brightness: Brightness.light,
-        colorSchemeSeed: Colors.deepPurple,
+        colorSchemeSeed: Colors.blueAccent,
       ),
       dark: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
-        colorSchemeSeed: Colors.deepPurple,
+        colorSchemeSeed: Colors.blueAccent,
       ),
       initial: savedThemeMode ?? AdaptiveThemeMode.light,
       builder: (theme, darkTheme) => MaterialApp(

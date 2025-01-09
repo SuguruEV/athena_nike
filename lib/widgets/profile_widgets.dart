@@ -45,7 +45,7 @@ class GroupStatusWidget extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
-              color: isAdmin ? Colors.deepPurple : Colors.grey,
+              color: isAdmin ? Colors.blueAccent : Colors.grey,
               borderRadius: BorderRadius.circular(5),
             ),
             child: Text(
@@ -223,7 +223,7 @@ class _FriendsButtonState extends State<FriendsButton> {
                   },
                   label: 'Unfriend',
                   width: MediaQuery.of(context).size.width * 0.4,
-                  backgroundColor: Colors.deepPurple,
+                  backgroundColor: Colors.blueAccent,
                   textColor: Colors.white,
                 ),
                 const SizedBox(width: 10),

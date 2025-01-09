@@ -433,7 +433,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(30),
-                                  color: Colors.deepPurple,
+                                  color: Colors.blueAccent,
                                 ),
                                 margin: const EdgeInsets.all(5),
                                 child: Padding(

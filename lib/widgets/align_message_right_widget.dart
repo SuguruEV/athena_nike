@@ -68,7 +68,7 @@ class AlignMessageRightWidget extends StatelessWidget {
                     bottomLeft: Radius.circular(15),
                   ),
                 ),
-                color: Colors.deepPurple,
+                color: Colors.blueAccent,
                 child: Padding(
                   padding: message.messageType == MessageEnum.text
                       ? const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 10.0)

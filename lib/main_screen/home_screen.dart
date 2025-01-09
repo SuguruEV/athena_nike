@@ -202,14 +202,14 @@ class _HomeScreenState extends State<HomeScreen>
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: GlobalMethods.userImageWidget(
-                imageUrl: authProvider.userModel!.image,
+                imageUrl: authProvider.userModel?.image ?? '',
                 radius: 20,
                 onTap: () {
                   // Navigate to user profile with UID as arguments
                   Navigator.pushNamed(
                     context,
                     Constants.profileScreen,
-                    arguments: authProvider.userModel!.uid,
+                    arguments: authProvider.userModel?.uid ?? '',
                   );
                 },
               ),

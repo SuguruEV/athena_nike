@@ -310,35 +310,35 @@ class AuthenticationProvider extends ChangeNotifier {
     }
   }
 
-  // Verify OTP code
-  Future<void> verifyOTPCode({
-    required String verificationId,
-    required String otpCode,
-    required BuildContext context,
-    required Function onSuccess,
-  }) async {
-    _isLoading = true;
+Future<void> verifyOTPCode({
+  required String verificationId,
+  required String otpCode,
+  required BuildContext context,
+  required Function onSuccess,
+}) async {
+  _isLoading = true;
+  notifyListeners();
+
+  final credential = PhoneAuthProvider.credential(
+    verificationId: verificationId,
+    smsCode: otpCode,
+  );
+
+  await _auth.signInWithCredential(credential).then((value) async {
+    _uid = value.user!.uid;
+    _phoneNumber = value.user!.phoneNumber;
+    _isSuccessful = true;
+    _isLoading = false;
+    await getUserDataFromFirestore(); // Update state with new user data
+    onSuccess();
     notifyListeners();
-
-    final credential = PhoneAuthProvider.credential(
-      verificationId: verificationId,
-      smsCode: otpCode,
-    );
-
-    await _auth.signInWithCredential(credential).then((value) async {
-      _uid = value.user!.uid;
-      _phoneNumber = value.user!.phoneNumber;
-      _isSuccessful = true;
-      _isLoading = false;
-      onSuccess();
-      notifyListeners();
-    }).catchError((e) {
-      _isSuccessful = false;
-      _isLoading = false;
-      notifyListeners();
-      GlobalMethods.showSnackBar(context, e.toString());
-    });
-  }
+  }).catchError((e) {
+    _isSuccessful = false;
+    _isLoading = false;
+    notifyListeners();
+    GlobalMethods.showSnackBar(context, e.toString());
+  });
+}
 
   // Save user data to Firestore
   void saveUserDataToFirestore({
@@ -633,6 +633,10 @@ class AuthenticationProvider extends ChangeNotifier {
 
       // Sign out from Firebase Auth
       await _auth.signOut();
+      _uid = null;
+      _phoneNumber = null;
+      _userModel = null;
+      _finalFileImage = null; // Clear image
       log('Signed out from Firebase Auth');
 
       // Clear shared preferences

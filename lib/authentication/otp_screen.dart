@@ -125,7 +125,7 @@ class _OTPScreenState extends State<OTPScreen> {
                           borderRadius: BorderRadius.circular(8),
                           color: Colors.grey.shade200,
                           border: Border.all(
-                            color: Colors.deepPurple,
+                            color: Colors.blueAccent,
                           ),
                         ),
                       ),

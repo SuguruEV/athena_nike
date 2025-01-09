@@ -122,7 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         SettingsListTile(
                                           title: 'Account',
                                           icon: Icons.person,
-                                          iconContainerColor: Colors.deepPurple,
+                                          iconContainerColor: Colors.blueAccent,
                                           onTap: () {
                                             // Navigate to account settings
                                           },
@@ -181,7 +181,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                       leading: Container(
                                         decoration: BoxDecoration(
-                                          color: Colors.deepPurple,
+                                          color: Colors.blueAccent,
                                           borderRadius:
                                               BorderRadius.circular(10),
                                         ),

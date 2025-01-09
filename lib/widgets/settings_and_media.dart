@@ -24,7 +24,7 @@ class SettingsAndMedia extends StatelessWidget {
             SettingsListTile(
               title: 'Media',
               icon: Icons.image,
-              iconContainerColor: Colors.deepPurple,
+              iconContainerColor: Colors.blueAccent,
               onTap: () {
                 // Navigate to media screen
               },
@@ -36,7 +36,7 @@ class SettingsAndMedia extends StatelessWidget {
             SettingsListTile(
               title: 'Group Settings',
               icon: Icons.settings,
-              iconContainerColor: Colors.deepPurple,
+              iconContainerColor: Colors.blueAccent,
               onTap: () {
                 if (!isAdmin) {
                   // Show snackbar if the user is not an admin
