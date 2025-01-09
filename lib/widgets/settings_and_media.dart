@@ -26,7 +26,7 @@ class SettingsAndMedia extends StatelessWidget {
               icon: Icons.image,
               iconContainerColor: Colors.deepPurple,
               onTap: () {
-                // navigate to media screen
+                // Navigate to media screen
               },
             ),
             const Divider(
@@ -39,12 +39,12 @@ class SettingsAndMedia extends StatelessWidget {
               iconContainerColor: Colors.deepPurple,
               onTap: () {
                 if (!isAdmin) {
-                  // show snackbar
+                  // Show snackbar if the user is not an admin
                   GlobalMethods.showSnackBar(
                       context, 'Only admin can change group settings');
                 } else {
                   groupProvider.updateGroupAdminsList().whenComplete(() {
-                    // navigate to group settings screen
+                    // Navigate to group settings screen
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const GroupSettingsScreen(),

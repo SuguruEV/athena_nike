@@ -67,7 +67,7 @@ class _GroupMembersCardState extends State<GroupMembersCard> {
                       onTap: !widget.isAdmin
                           ? null
                           : () {
-                              // show dialog to remove member
+                              // Show dialog to remove member
                               MyDialogs.showMyAnimatedDialog(
                                 context: context,
                                 title: 'Remove Member',
@@ -76,7 +76,7 @@ class _GroupMembersCardState extends State<GroupMembersCard> {
                                 textAction: 'Remove',
                                 onActionTap: (value, updatedText) async {
                                   if (value) {
-                                    //remove member from group
+                                    // Remove member from group
                                     await widget.groupProvider
                                         .removeGroupMember(
                                       groupMember: member,

@@ -31,23 +31,23 @@ class FriendsList extends StatelessWidget {
       builder: (context, authProvider, searchProvider, child) {
         final uid = authProvider.userModel!.uid;
         final searchQuery = searchProvider.searchQuery;
+
         return FutureBuilder<Query>(
           future: DataRepository.getFriendsQuery(
             uid: uid,
-            viewType: viewType,
             groupID: groupID,
+            viewType: viewType,
           ),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             }
-
             if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
+              return const Center(child: Text("Something went wrong"));
             }
 
             if (!snapshot.hasData) {
-              return const Center(child: Text('No data available'));
+              return const Center(child: Text("No data available"));
             }
 
             return FirestorePagination(
@@ -55,18 +55,22 @@ class FriendsList extends StatelessWidget {
               isLive: isLive,
               query: snapshot.data!,
               itemBuilder: (context, documentSnapshot, index) {
-                final document = documentSnapshot[index];
-                final UserModel friend =
-                    UserModel.fromMap(document.data() as Map<String, dynamic>);
+                // Get the document data at index
+                final documnets = documentSnapshot[index];
 
-                // Apply search filter
+                // Get friend data
+                final UserModel friend =
+                    UserModel.fromMap(documnets.data() as Map<String, dynamic>);
+
+                // Apply search filter, if item does not match search query, return empty widget
                 if (!friend.name
                     .toLowerCase()
                     .contains(searchQuery.toLowerCase())) {
+                  // Check if this is the last item and no items matched the search
                   if (index == documentSnapshot.length - 1 &&
                       !documentSnapshot.any((doc) {
-                        final user = UserModel.fromMap(
-                            doc.data() as Map<String, dynamic>);
+                        final UserModel user = UserModel.fromMap(
+                            documnets.data() as Map<String, dynamic>);
                         return user.name
                             .toLowerCase()
                             .contains(searchQuery.toLowerCase());
@@ -84,25 +88,26 @@ class FriendsList extends StatelessWidget {
                   return const SizedBox.shrink();
                 }
 
-                // Check if all friends are in group
+                // Check if all friends are in group members and if yes
+                // return center text that all friends are already in group
                 if (index == documentSnapshot.length - 1 &&
                     documentSnapshot.every((doc) {
-                      final user =
-                          UserModel.fromMap(doc.data() as Map<String, dynamic>);
+                      final UserModel user = UserModel.fromMap(
+                          documnets.data() as Map<String, dynamic>);
                       return groupMembersUIDs.contains(user.uid);
                     })) {
                   return const Center(
                     child: Padding(
                       padding: EdgeInsets.all(20.0),
                       child: Text(
-                        'All your friends are already in this group',
+                        'All friends are already in group',
                         style: TextStyle(fontSize: 16, color: Colors.grey),
                       ),
                     ),
                   );
                 }
 
-                // Skip if friend is already in group
+                // Skip if friend is in group members
                 if (groupMembersUIDs.isNotEmpty &&
                     groupMembersUIDs.contains(friend.uid)) {
                   return const SizedBox.shrink();
@@ -118,10 +123,7 @@ class FriendsList extends StatelessWidget {
                 child: CircularProgressIndicator(),
               ),
               onEmpty: const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Text('No Friends Yet'),
-                ),
+                child: Text('No data available'),
               ),
               bottomLoader: const Center(
                 child: CircularProgressIndicator(),

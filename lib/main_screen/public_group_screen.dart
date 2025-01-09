@@ -29,6 +29,7 @@ class _PublicGroupScreenState extends State<PublicGroupScreen> {
                 },
               ),
 
+              // Display the list of public group chats based on the search query
               Expanded(
                   child: ChatsStream(
                 uid: uid,

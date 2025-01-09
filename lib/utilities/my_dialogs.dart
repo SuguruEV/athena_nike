@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MyDialogs {
-  // animated dialog
+  // Show an animated dialog
   static void showMyAnimatedDialog({
     required BuildContext context,
     required String title,
@@ -84,7 +84,7 @@ class MyDialogs {
     );
   }
 
-// show bottom sheet with the list of all app users to add them to the group
+  // Show bottom sheet with the list of all app users to add them to the group
   static void showAddMembersBottomSheet({
     required BuildContext context,
     required List<String> groupMembersUIDs,
@@ -95,7 +95,7 @@ class MyDialogs {
         return PopScope(
           onPopInvokedWithResult: (bool didPop, dynamic results) async {
             if (!didPop) return;
-            // do something when the bottom sheet is closed.
+            // Do something when the bottom sheet is closed.
             await context
                 .read<GroupProvider>()
                 .removeTempLists(isAdmins: false);
@@ -124,7 +124,7 @@ class MyDialogs {
                               .read<GroupProvider>()
                               .updateGroupDataInFireStoreIfNeeded()
                               .whenComplete(() {
-                            // close bottom sheet
+                            // Close bottom sheet
                             if (context.mounted) {
                               Navigator.pop(context);
                             }
@@ -232,7 +232,7 @@ class MyDialogs {
                       : const SizedBox.shrink(),
                   ListTile(
                     leading: const Icon(Icons.cancel),
-                    title: const Text('cancel'),
+                    title: const Text('Cancel'),
                     onTap: chatProvider.isLoading
                         ? null
                         : () {

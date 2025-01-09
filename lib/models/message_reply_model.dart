@@ -9,6 +9,7 @@ class MessageReplyModel {
   final MessageEnum messageType;
   final bool isMe;
 
+  // Constructor for MessageReplyModel
   MessageReplyModel({
     required this.message,
     required this.senderUID,
@@ -18,7 +19,7 @@ class MessageReplyModel {
     required this.isMe,
   });
 
-  // To Map
+  // Convert the MessageReplyModel instance to a map
   Map<String, dynamic> toMap() {
     return {
       Constants.message: message,
@@ -30,7 +31,7 @@ class MessageReplyModel {
     };
   }
 
-  // From Map
+  // Create a MessageReplyModel instance from a map
   factory MessageReplyModel.fromMap(Map<String, dynamic> map) {
     return MessageReplyModel(
       message: map[Constants.message] ?? '',

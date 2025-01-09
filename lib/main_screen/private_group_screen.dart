@@ -25,6 +25,7 @@ class PrivateGroupScreen extends StatelessWidget {
                 },
               ),
 
+              // Display the list of private group chats based on the search query
               Expanded(
                   child: ChatsStream(
                 uid: uid,

@@ -32,9 +32,9 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
     super.dispose();
   }
 
-  // Rest the search text in provider
+  // Reset the search text in provider
   void resetSearchText() {
-    // make sure the widget is built
+    // Make sure the widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SearchProvider>().clearSearchQuery();
     });

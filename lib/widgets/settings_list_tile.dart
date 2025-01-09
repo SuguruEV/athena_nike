@@ -21,7 +21,7 @@ class SettingsListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      // added padding
+      // Added padding for better spacing
       contentPadding: const EdgeInsets.only(
         left: 8.0,
         right: 8.0,

@@ -29,6 +29,7 @@ class _MyChatsScreenState extends State<MyChatsScreen> {
                 },
               ),
 
+              // Display the list of chats based on the search query
               Expanded(
                   child: ChatsStream(
                 uid: uid,

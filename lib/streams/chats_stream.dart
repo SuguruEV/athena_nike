@@ -1,5 +1,3 @@
-
-
 import 'package:athena_nike/models/chat_model.dart';
 import 'package:athena_nike/models/group_model.dart';
 import 'package:athena_nike/streams/data_repository.dart';

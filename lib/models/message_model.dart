@@ -36,7 +36,7 @@ class MessageModel {
     required this.deletedBy,
   });
 
-  // to map
+  // Convert the MessageModel instance to a map
   Map<String, dynamic> toMap() {
     return {
       Constants.senderUID: senderUID,
@@ -57,7 +57,7 @@ class MessageModel {
     };
   }
 
-  // from map
+  // Create a MessageModel instance from a map
   factory MessageModel.fromMap(Map<String, dynamic> map) {
     return MessageModel(
       senderUID: map[Constants.senderUID] ?? '',
@@ -79,6 +79,7 @@ class MessageModel {
     );
   }
 
+  // Create a copy of the MessageModel instance with updated values
   copyWith({required String userId}) {
     return MessageModel(
       senderUID: senderUID,

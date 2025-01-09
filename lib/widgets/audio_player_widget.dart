@@ -25,7 +25,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
 
   @override
   void initState() {
-    // listen to changes in player state
+    // Listen to changes in player state
     audioPlayer.onPlayerStateChanged.listen((event) {
       if (event == PlayerState.playing) {
         setState(() {
@@ -42,14 +42,14 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
         });
       }
     });
-    // listen to changes in player position
+    // Listen to changes in player position
     audioPlayer.onPositionChanged.listen((newPosition) {
       setState(() {
         position = newPosition;
       });
     });
 
-    // listen to changes in player duration
+    // Listen to changes in player duration
     audioPlayer.onDurationChanged.listen((newDuration) {
       setState(() {
         duration = newDuration;
@@ -58,6 +58,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
     super.initState();
   }
 
+  // Format the duration to a readable string
   String formatTime(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     final hours = twoDigits(duration.inHours);
@@ -67,6 +68,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
     return [if (duration.inHours > 0) hours, minutes, seconds].join(':');
   }
 
+  // Seek to a specific position in the audio
   void seekToPosition(double seconds) async {
     final newPosition = Duration(seconds: seconds.toInt());
     await audioPlayer.seek(newPosition);

@@ -1,16 +1,14 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 class SearchProvider extends ChangeNotifier {
   String _searchQuery = '';
-
   Timer? _debounce;
 
-  // getters
+  // Getter for search query
   String get searchQuery => _searchQuery;
 
-  // set search query
+  // Set search query with debounce
   void setSearchQuery(String query) {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
@@ -19,7 +17,7 @@ class SearchProvider extends ChangeNotifier {
     });
   }
 
-  // clear search query
+  // Clear search query
   void clearSearchQuery() {
     _searchQuery = '';
     notifyListeners();

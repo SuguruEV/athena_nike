@@ -16,6 +16,7 @@ class GroupMembers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Format the names of the group members
     String getFormatedNames(List<String> names) {
       List<String> newNamesList = names.map((e) {
         return e == context.read<AuthenticationProvider>().userModel!.name

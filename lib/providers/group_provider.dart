@@ -51,58 +51,58 @@ class GroupProvider extends ChangeNotifier {
 
   bool _isSaved = false;
 
-  // getters
+  // Getters
   bool get isSloading => _isSloading;
-  // bool get editSettings => _editSettings;
-  // bool get approveNewMembers => _approveNewMembers;
-  // bool get requestToJoin => _requestToJoin;
-  // bool get lockMessages => _lockMessages;
   GroupModel get groupModel => _groupModel;
   List<UserModel> get groupMembersList => _groupMembersList;
   List<UserModel> get groupAdminsList => _groupAdminsList;
 
-  // firebase initialization
+  // Firebase initialization
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // setters
+  // Set loading state
   void setIsSloading({required bool value}) {
     _isSloading = value;
     notifyListeners();
   }
 
+  // Set edit settings
   void setEditSettings({required bool value}) {
     _groupModel.editSettings = value;
     notifyListeners();
-    // return if groupID is empty - meaning we are creating a new group
+    // Return if groupID is empty - meaning we are creating a new group
     if (_groupModel.groupID.isEmpty) return;
     updateGroupDataInFireStore();
   }
 
+  // Set approve new members
   void setApproveNewMembers({required bool value}) {
     _groupModel.approveMembers = value;
     notifyListeners();
-    // return if groupID is empty - meaning we are creating a new group
+    // Return if groupID is empty - meaning we are creating a new group
     if (_groupModel.groupID.isEmpty) return;
     updateGroupDataInFireStore();
   }
 
+  // Set request to join
   void setRequestToJoin({required bool value}) {
     _groupModel.requestToJoin = value;
     notifyListeners();
-    // return if groupID is empty - meaning we are creating a new group
+    // Return if groupID is empty - meaning we are creating a new group
     if (_groupModel.groupID.isEmpty) return;
     updateGroupDataInFireStore();
   }
 
+  // Set lock messages
   void setLockMessages({required bool value}) {
     _groupModel.lockMessages = value;
     notifyListeners();
-    // return if groupID is empty - meaning we are creating a new group
+    // Return if groupID is empty - meaning we are creating a new group
     if (_groupModel.groupID.isEmpty) return;
     updateGroupDataInFireStore();
   }
 
-  // update group settings in firestore
+  // Update group settings in Firestore
   Future<void> updateGroupDataInFireStore() async {
     try {
       await _firestore
@@ -114,7 +114,7 @@ class GroupProvider extends ChangeNotifier {
     }
   }
 
-  // set the temp lists to empty
+  // Set the temporary lists to empty
   Future<void> setEmptyTemps() async {
     _isSaved = false;
     _tempGoupAdminsList = [];
@@ -131,13 +131,13 @@ class GroupProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // remove temp lists members from members list
+  // Remove temporary lists members from members list
   Future<void> removeTempLists({required bool isAdmins}) async {
     if (_isSaved) return;
     if (isAdmins) {
-      // check if the tem admins list is not empty
+      // Check if the temporary admins list is not empty
       if (_tempGoupAdminsList.isNotEmpty) {
-        // remove the temp admins from the main list of admins
+        // Remove the temporary admins from the main list of admins
         _groupAdminsList.removeWhere((admin) =>
             _tempGoupAdminsList.any((tempAdmin) => tempAdmin.uid == admin.uid));
         _groupModel.adminsUIDs.removeWhere((adminUid) =>
@@ -145,17 +145,17 @@ class GroupProvider extends ChangeNotifier {
         notifyListeners();
       }
 
-      //check  if the tempRemoves list is not empty
+      // Check if the temporary removed list is not empty
       if (_tempRemovedAdminsList.isNotEmpty) {
-        // add  the temp admins to the main list of admins
+        // Add the temporary admins to the main list of admins
         _groupAdminsList.addAll(_tempRemovedAdminsList);
         _groupModel.adminsUIDs.addAll(_tempRemovedAdminsUIDs);
         notifyListeners();
       }
     } else {
-      // check if the tem members list is not empty
+      // Check if the temporary members list is not empty
       if (_tempGroupMembersList.isNotEmpty) {
-        // remove the temp members from the main list of members
+        // Remove the temporary members from the main list of members
         _groupMembersList.removeWhere((member) => _tempGroupMembersList
             .any((tempMember) => tempMember.uid == member.uid));
         _groupModel.membersUIDs.removeWhere((memberUid) =>
@@ -163,9 +163,9 @@ class GroupProvider extends ChangeNotifier {
         notifyListeners();
       }
 
-      //check if the tempRemoves list is not empty
+      // Check if the temporary removed list is not empty
       if (_tempRemovedMembersList.isNotEmpty) {
-        // add the temp members to the main list of members
+        // Add the temporary members to the main list of members
         _groupMembersList.addAll(_tempRemovedMembersList);
         _groupModel.membersUIDs.addAll(_tempGroupMemberUIDs);
         notifyListeners();
@@ -173,105 +173,106 @@ class GroupProvider extends ChangeNotifier {
     }
   }
 
-  // check if there was a change in group members - if there was a member added or removed
+  // Check if there was a change in group members - if there was a member added or removed
   Future<void> updateGroupDataInFireStoreIfNeeded() async {
     _isSaved = true;
     notifyListeners();
     await updateGroupDataInFireStore();
   }
 
-  // add a group member
+  // Add a group member
   void addMemberToGroup({required UserModel groupMember}) {
     _groupMembersList.add(groupMember);
     _groupModel.membersUIDs.add(groupMember.uid);
-    // add data to temp lists
+    // Add data to temporary lists
     _tempGroupMembersList.add(groupMember);
     _tempGroupMemberUIDs.add(groupMember.uid);
     notifyListeners();
   }
 
-  // add a member as an admin
+  // Add a member as an admin
   void addMemberToAdmins({required UserModel groupAdmin}) {
     _groupAdminsList.add(groupAdmin);
     _groupModel.adminsUIDs.add(groupAdmin.uid);
-    //  add data to temp lists
+    // Add data to temporary lists
     _tempGoupAdminsList.add(groupAdmin);
     _tempGroupAdminUIDs.add(groupAdmin.uid);
     notifyListeners();
   }
 
-  // update image
+  // Update group image
   void setGroupImage(String groupImage) {
     _groupModel.groupImage = groupImage;
     notifyListeners();
   }
 
-  // set group name
+  // Set group name
   void setGroupName(String groupName) {
     _groupModel.groupName = groupName;
     notifyListeners();
   }
 
-  // set group description
+  // Set group description
   void setGroupDescription(String groupDescription) {
     _groupModel.groupDescription = groupDescription;
     notifyListeners();
   }
 
+  // Set group model
   Future<void> setGroupModel({required GroupModel groupModel}) async {
     log('groupChat Provider: ${groupModel.groupName}');
     _groupModel = groupModel;
     notifyListeners();
   }
 
-  // remove member from group
+  // Remove member from group
   Future<void> removeGroupMember({required UserModel groupMember}) async {
     _groupMembersList.remove(groupMember);
-    // also remove this member from admins list if he is an admin
+    // Also remove this member from admins list if they are an admin
     _groupAdminsList.remove(groupMember);
     _groupModel.membersUIDs.remove(groupMember.uid);
 
-    // remo from temp lists
+    // Remove from temporary lists
     _tempGroupMembersList.remove(groupMember);
     _tempGroupAdminUIDs.remove(groupMember.uid);
 
-    // add  this member to the list of removed members
+    // Add this member to the list of removed members
     _tempRemovedMembersList.add(groupMember);
     _tempRemovedMemberUIDs.add(groupMember.uid);
 
     notifyListeners();
 
-    // return if groupID is empty - meaning we are creating a new group
+    // Return if groupID is empty - meaning we are creating a new group
     if (_groupModel.groupID.isEmpty) return;
     updateGroupDataInFireStore();
   }
 
-  // remove admin from group
+  // Remove admin from group
   void removeGroupAdmin({required UserModel groupAdmin}) {
     _groupAdminsList.remove(groupAdmin);
     _groupModel.adminsUIDs.remove(groupAdmin.uid);
-    // remo from temp lists
+    // Remove from temporary lists
     _tempGroupAdminUIDs.remove(groupAdmin.uid);
     _groupModel.adminsUIDs.remove(groupAdmin.uid);
 
-    // add the removed admins to temp removed lists
+    // Add the removed admins to temporary removed lists
     _tempRemovedAdminsList.add(groupAdmin);
     _tempRemovedAdminsUIDs.add(groupAdmin.uid);
     notifyListeners();
 
-    // return if groupID is empty - meaning we are creating a new group
+    // Return if groupID is empty - meaning we are creating a new group
     if (_groupModel.groupID.isEmpty) return;
     updateGroupDataInFireStore();
   }
 
-  // get a list of goup members data from firestore
+  // Get a list of group members data from Firestore
   Future<List<UserModel>> getGroupMembersDataFromFirestore({
     required bool isAdmin,
   }) async {
     try {
       List<UserModel> membersData = [];
 
-      // get the list of membersUIDs
+      // Get the list of membersUIDs
       List<String> membersUIDs =
           isAdmin ? _groupModel.adminsUIDs : _groupModel.membersUIDs;
 
@@ -286,7 +287,7 @@ class GroupProvider extends ChangeNotifier {
     }
   }
 
-  // update the groupMembersList
+  // Update the groupMembersList
   Future<void> updateGroupMembersList() async {
     _groupMembersList.clear();
 
@@ -296,7 +297,7 @@ class GroupProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // update the groupAdminsList
+  // Update the groupAdminsList
   Future<void> updateGroupAdminsList() async {
     _groupAdminsList.clear();
 
@@ -306,7 +307,7 @@ class GroupProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // clear group members list
+  // Clear group members list
   Future<void> clearGroupMembersList() async {
     _groupMembersList.clear();
     _groupAdminsList.clear();
@@ -334,22 +335,22 @@ class GroupProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // get a list UIDs from group members list
+  // Get a list of UIDs from group members list
   List<String> getGroupMembersUIDs() {
     return _groupMembersList.map((e) => e.uid).toList();
   }
 
-  // get a list UIDs from group admins list
+  // Get a list of UIDs from group admins list
   List<String> getGroupAdminsUIDs() {
     return _groupAdminsList.map((e) => e.uid).toList();
   }
 
-  // stream group data
+  // Stream group data
   Stream<DocumentSnapshot> groupStream({required String groupID}) {
     return _firestore.collection(Constants.groups).doc(groupID).snapshots();
   }
 
-  // stream users data from fireStore
+  // Stream users data from Firestore
   streamGroupMembersData({required List<String> membersUIDs}) {
     return Stream.fromFuture(Future.wait<DocumentSnapshot>(
       membersUIDs.map<Future<DocumentSnapshot>>((uid) async {
@@ -358,7 +359,7 @@ class GroupProvider extends ChangeNotifier {
     ));
   }
 
-  // create group
+  // Create group
   Future<void> createGroup({
     required GroupModel newGroupModel,
     required File? fileImage,
@@ -371,38 +372,38 @@ class GroupProvider extends ChangeNotifier {
       var groupID = const Uuid().v4();
       newGroupModel.groupID = groupID;
 
-      // check if the file image is null
+      // Check if the file image is null
       if (fileImage != null) {
-        // upload image to firebase storage
+        // Upload image to Firebase Storage
         final String imageUrl = await GlobalMethods.storeFileToStorage(
             file: fileImage, reference: '${Constants.groupImages}/$groupID');
         newGroupModel.groupImage = imageUrl;
       }
 
-      // add the group admins
+      // Add the group admins
       newGroupModel.adminsUIDs = [
         newGroupModel.creatorUID,
         ...getGroupAdminsUIDs()
       ];
 
-      // add the group members
+      // Add the group members
       newGroupModel.membersUIDs = [
         newGroupModel.creatorUID,
         ...getGroupMembersUIDs()
       ];
 
-      // update the global groupModel
+      // Update the global groupModel
       setGroupModel(groupModel: newGroupModel);
 
-      // add group to firebase
+      // Add group to Firebase
       await _firestore
           .collection(Constants.groups)
           .doc(groupID)
           .set(groupModel.toMap());
 
-      // set loading
+      // Set loading to false
       setIsSloading(value: false);
-      // set onSuccess
+      // Call onSuccess
       onSuccess();
     } catch (e) {
       setIsSloading(value: false);
@@ -410,7 +411,7 @@ class GroupProvider extends ChangeNotifier {
     }
   }
 
-  // get a stream all private groups that contains the our userId
+  // Get a stream of all private groups that contain the userId
   Stream<List<GroupModel>> getPrivateGroupsStream({required String userId}) {
     return _firestore
         .collection(Constants.groups)
@@ -427,7 +428,7 @@ class GroupProvider extends ChangeNotifier {
     });
   }
 
-  // get a stream all public groups that contains the our userId
+  // Get a stream of all public groups
   Stream<List<GroupModel>> getPublicGroupsStream({required String userId}) {
     return _firestore
         .collection(Constants.groups)
@@ -443,14 +444,14 @@ class GroupProvider extends ChangeNotifier {
     });
   }
 
-  // change group type
+  // Change group type
   void changeGroupType() {
     _groupModel.isPrivate = !_groupModel.isPrivate;
     notifyListeners();
     updateGroupDataInFireStore();
   }
 
-  // send request to join group
+  // Send request to join group
   Future<void> sendRequestToJoinGroup({
     required String groupID,
     required String uid,
@@ -462,7 +463,7 @@ class GroupProvider extends ChangeNotifier {
     });
   }
 
-  // accept request to join group
+  // Accept request to join group
   Future<void> acceptRequestToJoinGroup({
     required String groupID,
     required String friendID,
@@ -477,7 +478,7 @@ class GroupProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // check if is sender or admin
+  // Check if the user is the sender or an admin
   bool isSenderOrAdmin({required MessageModel message, required String uid}) {
     if (message.senderUID == uid) {
       return true;
@@ -488,11 +489,11 @@ class GroupProvider extends ChangeNotifier {
     }
   }
 
-  // exit group
+  // Exit group
   Future<void> exitGroup({
     required String uid,
   }) async {
-    // check if the user is the admin of the group
+    // Check if the user is an admin of the group
     bool isAdmin = _groupModel.adminsUIDs.contains(uid);
 
     await _firestore
@@ -504,14 +505,14 @@ class GroupProvider extends ChangeNotifier {
           isAdmin ? FieldValue.arrayRemove([uid]) : _groupModel.adminsUIDs,
     });
 
-    // remove the user from group members list
+    // Remove the user from group members list
     _groupMembersList.removeWhere((element) => element.uid == uid);
-    // remove the user from group members uid
+    // Remove the user from group members UID
     _groupModel.membersUIDs.remove(uid);
     if (isAdmin) {
-      // remove the user from group admins list
+      // Remove the user from group admins list
       _groupAdminsList.removeWhere((element) => element.uid == uid);
-      // remove the user from group admins uid
+      // Remove the user from group admins UID
       _groupModel.adminsUIDs.remove(uid);
     }
     notifyListeners();

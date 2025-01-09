@@ -18,6 +18,7 @@ class _OTPScreenState extends State<OTPScreen> {
   final focusNode = FocusNode();
   String? otpCode;
 
+  // Dispose the controllers when the widget is removed from the widget tree
   @override
   void dispose() {
     controller.dispose();
@@ -25,15 +26,17 @@ class _OTPScreenState extends State<OTPScreen> {
     super.dispose();
   }
 
+  // Build the widget tree for the OTP screen
   @override
   Widget build(BuildContext context) {
-    // get the arguments
+    // Get the arguments passed to the screen
     final args = ModalRoute.of(context)!.settings.arguments as Map;
     final verificationId = args[Constants.verificationId] as String;
     final phoneNumber = args[Constants.phoneNumber] as String;
 
     final authProvider = context.watch<AuthenticationProvider>();
 
+    // Define the default theme for the PIN input fields
     final defaultPinTheme = PinTheme(
       width: 56,
       height: 60,
@@ -49,6 +52,7 @@ class _OTPScreenState extends State<OTPScreen> {
         ),
       ),
     );
+
     return Scaffold(
       appBar: MyAppBar(
         title: const Text('OTP Verification'),
@@ -67,6 +71,7 @@ class _OTPScreenState extends State<OTPScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 50),
+                  // Display the verification title
                   Text(
                     'Verification',
                     style: GoogleFonts.titilliumWeb(
@@ -75,8 +80,9 @@ class _OTPScreenState extends State<OTPScreen> {
                     ),
                   ),
                   const SizedBox(height: 50),
+                  // Display instructions for entering the OTP code
                   Text(
-                    'Enter the 6-digit code sent the number',
+                    'Please enter the 6-digit code sent to your phone number',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.titilliumWeb(
                       fontSize: 18,
@@ -84,6 +90,7 @@ class _OTPScreenState extends State<OTPScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
+                  // Display the phone number
                   Text(
                     phoneNumber,
                     textAlign: TextAlign.center,
@@ -93,6 +100,7 @@ class _OTPScreenState extends State<OTPScreen> {
                     ),
                   ),
                   const SizedBox(height: 30),
+                  // Input field for the OTP code
                   SizedBox(
                     height: 68,
                     child: Pinput(
@@ -104,7 +112,7 @@ class _OTPScreenState extends State<OTPScreen> {
                         setState(() {
                           otpCode = pin;
                         });
-                        // verify otp code
+                        // Verify the OTP code
                         verifyOTPCode(
                           verificationId: verificationId,
                           otpCode: otpCode!,
@@ -135,9 +143,11 @@ class _OTPScreenState extends State<OTPScreen> {
                     ),
                   ),
                   const SizedBox(height: 30),
+                  // Display a loading indicator if the authentication provider is loading
                   authProvider.isLoading
                       ? const CircularProgressIndicator()
                       : const SizedBox.shrink(),
+                  // Display a success icon if the authentication is successful
                   authProvider.isSuccessful
                       ? Container(
                           height: 50,
@@ -153,6 +163,7 @@ class _OTPScreenState extends State<OTPScreen> {
                           ),
                         )
                       : const SizedBox.shrink(),
+                  // Display a message if the code was not received
                   authProvider.isLoading
                       ? const SizedBox.shrink()
                       : Text(
@@ -160,12 +171,13 @@ class _OTPScreenState extends State<OTPScreen> {
                           style: GoogleFonts.titilliumWeb(fontSize: 16),
                         ),
                   const SizedBox(height: 10),
+                  // Display a button to resend the code if the timer has expired
                   authProvider.isLoading
                       ? const SizedBox.shrink()
                       : TextButton(
-                          onPressed: authProvider.secondsRemaing == 0
+                          onPressed: authProvider.secondsRemaining == 0
                               ? () {
-                                  // reset the code to send again
+                                  // Resend the code
                                   authProvider.resendCode(
                                     context: context,
                                     phone: phoneNumber,
@@ -188,6 +200,7 @@ class _OTPScreenState extends State<OTPScreen> {
     );
   }
 
+  // Verify the OTP code
   void verifyOTPCode({
     required String verificationId,
     required String otpCode,
@@ -198,38 +211,37 @@ class _OTPScreenState extends State<OTPScreen> {
       otpCode: otpCode,
       context: context,
       onSuccess: () async {
-        // 1. check if user exists in firestore
+        // Check if the user exists in Firestore
         bool userExists = await authProvider.checkUserExists();
 
         if (userExists) {
-          // 2. if user exists,
+          // If the user exists, get user information from Firestore
+          await authProvider.getUserDataFromFirestore();
 
-          // * get user information from firestore
-          await authProvider.getUserDataFromFireStore();
-
-          // * save user information to provider / shared preferences
+          // Save user information to provider / shared preferences
           await authProvider.saveUserDataToSharedPreferences();
 
-          // * navigate to home screen
+          // Navigate to the home screen
           navigate(userExits: true);
         } else {
-          // 3. if user doesn't exist, navigate to user information screen
+          // If the user doesn't exist, navigate to the user information screen
           navigate(userExits: false);
         }
       },
     );
   }
 
+  // Navigate to the appropriate screen based on user existence
   void navigate({required bool userExits}) {
     if (userExits) {
-      // navigate to home and remove all previous routes
+      // Navigate to home and remove all previous routes
       Navigator.pushNamedAndRemoveUntil(
         context,
         Constants.homeScreen,
         (route) => false,
       );
     } else {
-      // navigate to user information screen
+      // Navigate to user information screen
       Navigator.pushNamed(
         context,
         Constants.userInformationScreen,

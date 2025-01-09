@@ -54,22 +54,25 @@ class _GroupInformationScreenState extends State<GroupInformationScreen> {
                       child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      // Display group information details
                       InfoDetailsCard(
                         groupProvider: groupProvider,
                         isAdmin: isAdmin,
                       ),
                       const SizedBox(height: 10),
+                      // Display group settings and media
                       SettingsAndMedia(
                         groupProvider: groupProvider,
                         isAdmin: isAdmin,
                       ),
                       const SizedBox(height: 20),
+                      // Button to add new members to the group
                       AddMembers(
                         groupProvider: groupProvider,
                         isAdmin: isAdmin,
                         onPressed: () {
                           groupProvider.setEmptyTemps();
-                          // show  bottom sheet to add members
+                          // Show bottom sheet to add members
                           MyDialogs.showAddMembersBottomSheet(
                             context: context,
                             groupMembersUIDs:
@@ -78,6 +81,7 @@ class _GroupInformationScreenState extends State<GroupInformationScreen> {
                         },
                       ),
                       const SizedBox(height: 20),
+                      // Display group members and exit group option if the user is a member
                       isMember
                           ? Column(
                               children: [

@@ -26,6 +26,7 @@ class DisplayMessageType extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Determine the widget to display based on the message type
     Widget messageToShow() {
       switch (type) {
         case MessageEnum.text:

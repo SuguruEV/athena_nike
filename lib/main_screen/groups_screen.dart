@@ -17,18 +17,22 @@ class _GroupsScreenState extends State<GroupsScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          // TabBar for switching between private and public groups
           title: TabBar(
             indicatorSize: TabBarIndicatorSize.label,
             tabs: [
+              // Tab for private groups
               Tab(
                 text: Constants.private.toUpperCase(),
               ),
+              // Tab for public groups
               Tab(
                 text: Constants.public.toUpperCase(),
               ),
             ],
           ),
         ),
+        // TabBarView to display the corresponding screen for each tab
         body: const TabBarView(children: [
           PrivateGroupScreen(),
           PublicGroupScreen(),

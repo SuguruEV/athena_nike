@@ -22,7 +22,7 @@ class AuthenticationProvider extends ChangeNotifier {
   UserModel? _userModel;
 
   Timer? _timer;
-  int _secondsRemaing = 60;
+  int _secondsRemaining = 60;
 
   File? _finalFileImage;
   String _userImage = '';
@@ -33,7 +33,7 @@ class AuthenticationProvider extends ChangeNotifier {
   String? get uid => _uid;
   String? get phoneNumber => _phoneNumber;
   UserModel? get userModel => _userModel;
-  int get secondsRemaing => _secondsRemaing;
+  int get secondsRemaining => _secondsRemaining;
 
   File? get finalFileImage => _finalFileImage;
   String get userImage => _userImage;
@@ -42,11 +42,12 @@ class AuthenticationProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  void setfinalFileImage(File? file) {
+  void setFinalFileImage(File? file) {
     _finalFileImage = file;
     notifyListeners();
   }
 
+  // Show bottom sheet for image selection
   void showBottomSheet({
     required BuildContext context,
     required Function() onSuccess,
@@ -62,7 +63,6 @@ class AuthenticationProvider extends ChangeNotifier {
                 selectImage(
                   fromCamera: true,
                   onSuccess: () {
-                    // pop the bottom sheet and call the onSuccess function
                     Navigator.pop(context);
                     onSuccess();
                   },
@@ -79,7 +79,6 @@ class AuthenticationProvider extends ChangeNotifier {
                 selectImage(
                   fromCamera: false,
                   onSuccess: () {
-                    // pop the bottom sheet and call the onSuccess function
                     Navigator.pop(context);
                     onSuccess();
                   },
@@ -97,6 +96,7 @@ class AuthenticationProvider extends ChangeNotifier {
     );
   }
 
+  // Select image from camera or gallery
   void selectImage({
     required bool fromCamera,
     required Function() onSuccess,
@@ -111,18 +111,19 @@ class AuthenticationProvider extends ChangeNotifier {
       return;
     }
 
-    // crop image
+    // Crop image
     await cropImage(
       filePath: finalFileImage!.path,
       onSuccess: onSuccess,
     );
   }
 
+  // Crop the selected image
   Future<void> cropImage({
     required String filePath,
     required Function() onSuccess,
   }) async {
-    setfinalFileImage(File(filePath));
+    setFinalFileImage(File(filePath));
     CroppedFile? croppedFile = await ImageCropper().cropImage(
       sourcePath: filePath,
       maxHeight: 800,
@@ -131,22 +132,22 @@ class AuthenticationProvider extends ChangeNotifier {
     );
 
     if (croppedFile != null) {
-      setfinalFileImage(File(croppedFile.path));
+      setFinalFileImage(File(croppedFile.path));
       onSuccess();
     }
   }
 
-  // chech authentication state
+  // Check authentication state
   Future<bool> checkAuthenticationState() async {
     bool isSignedIn = false;
     await Future.delayed(const Duration(seconds: 2));
 
     if (_auth.currentUser != null) {
       _uid = _auth.currentUser!.uid;
-      // get user data from firestore
-      await getUserDataFromFireStore();
+      // Get user data from Firestore
+      await getUserDataFromFirestore();
 
-      // save user data to shared preferences
+      // Save user data to shared preferences
       await saveUserDataToSharedPreferences();
 
       notifyListeners();
@@ -159,18 +160,14 @@ class AuthenticationProvider extends ChangeNotifier {
     return isSignedIn;
   }
 
-  // chech if user exists
+  // Check if user exists in Firestore
   Future<bool> checkUserExists() async {
     DocumentSnapshot documentSnapshot =
         await _firestore.collection(Constants.users).doc(_uid).get();
-    if (documentSnapshot.exists) {
-      return true;
-    } else {
-      return false;
-    }
+    return documentSnapshot.exists;
   }
 
-  // update user status
+  // Update user status (online/offline)
   Future<void> updateUserStatus({required bool value}) async {
     await _firestore
         .collection(Constants.users)
@@ -178,8 +175,8 @@ class AuthenticationProvider extends ChangeNotifier {
         .update({Constants.isOnline: value});
   }
 
-  // get user data from firestore
-  Future<void> getUserDataFromFireStore() async {
+  // Get user data from Firestore
+  Future<void> getUserDataFromFirestore() async {
     DocumentSnapshot documentSnapshot =
         await _firestore.collection(Constants.users).doc(_uid).get();
     _userModel =
@@ -187,14 +184,14 @@ class AuthenticationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // save user data to shared preferences
+  // Save user data to shared preferences
   Future<void> saveUserDataToSharedPreferences() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences.setString(
         Constants.userModel, jsonEncode(userModel!.toMap()));
   }
 
-  // get data from shared preferences
+  // Get user data from shared preferences
   Future<void> getUserDataFromSharedPreferences() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String userModelString =
@@ -204,7 +201,7 @@ class AuthenticationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // sign in with phone number
+  // Sign in with phone number
   Future<void> signInWithPhoneNumber({
     required String phoneNumber,
     required BuildContext context,
@@ -233,10 +230,10 @@ class AuthenticationProvider extends ChangeNotifier {
       codeSent: (String verificationId, int? resendToken) async {
         _isLoading = false;
         _resendToken = resendToken;
-        _secondsRemaing = 60;
+        _secondsRemaining = 60;
         _startTimer();
         notifyListeners();
-        // navigate to otp screen
+        // Navigate to OTP screen
         Navigator.of(context).pushNamed(
           Constants.otpScreen,
           arguments: {
@@ -251,37 +248,32 @@ class AuthenticationProvider extends ChangeNotifier {
     );
   }
 
+  // Start the timer for OTP resend
   void _startTimer() {
-    // cancel timer if any exist
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_secondsRemaing > 0) {
-        _secondsRemaing--;
+      if (_secondsRemaining > 0) {
+        _secondsRemaining--;
         notifyListeners();
       } else {
-        // cancel timer
         _timer?.cancel();
         notifyListeners();
       }
     });
   }
 
-// dispose timer
   @override
   void dispose() {
     _timer?.cancel();
     super.dispose();
   }
 
-  // // resend code
+  // Resend OTP code
   Future<void> resendCode({
     required BuildContext context,
     required String phone,
   }) async {
-    if (_secondsRemaing == 0 || _resendToken != null) {
-      // allow user to resend code only if timer is not running and resend token exists
-      _isLoading = true;
-      notifyListeners();
+    if (_secondsRemaining == 0 || _resendToken != null) {
       _isLoading = true;
       notifyListeners();
 
@@ -306,7 +298,7 @@ class AuthenticationProvider extends ChangeNotifier {
           _isLoading = false;
           _resendToken = resendToken;
           notifyListeners();
-          GlobalMethods.showSnackBar(context, 'Successful sent code');
+          GlobalMethods.showSnackBar(context, 'Code sent successfully');
         },
         codeAutoRetrievalTimeout: (String verificationId) {},
         timeout: const Duration(seconds: 60),
@@ -314,11 +306,11 @@ class AuthenticationProvider extends ChangeNotifier {
       );
     } else {
       GlobalMethods.showSnackBar(
-          context, 'Please wait $_secondsRemaing seconds to resend');
+          context, 'Please wait $_secondsRemaining seconds to resend');
     }
   }
 
-  // verify otp code
+  // Verify OTP code
   Future<void> verifyOTPCode({
     required String verificationId,
     required String otpCode,
@@ -348,10 +340,9 @@ class AuthenticationProvider extends ChangeNotifier {
     });
   }
 
-  // save user data to firestore
-  void saveUserDataToFireStore({
+  // Save user data to Firestore
+  void saveUserDataToFirestore({
     required UserModel userModel,
-    //required File? fileImage,
     required Function onSuccess,
     required Function onFail,
   }) async {
@@ -360,7 +351,7 @@ class AuthenticationProvider extends ChangeNotifier {
 
     try {
       if (_finalFileImage != null) {
-        // upload image to storage
+        // Upload image to storage
         String imageUrl = await GlobalMethods.storeFileToStorage(
             file: _finalFileImage!,
             reference: '${Constants.userImages}/${userModel.uid}');
@@ -374,7 +365,7 @@ class AuthenticationProvider extends ChangeNotifier {
       _userModel = userModel;
       _uid = userModel.uid;
 
-      // save user data to firestore
+      // Save user data to Firestore
       await _firestore
           .collection(Constants.users)
           .doc(userModel.uid)
@@ -390,22 +381,22 @@ class AuthenticationProvider extends ChangeNotifier {
     }
   }
 
-  // get user stream
+  // Get user stream
   Stream<DocumentSnapshot> userStream({required String userID}) {
     return _firestore.collection(Constants.users).doc(userID).snapshots();
   }
 
-  // send friend request
+  // Send friend request
   Future<void> sendFriendRequest({
     required String friendID,
   }) async {
     try {
-      // add our uid to friends request list
+      // Add our UID to friend's request list
       await _firestore.collection(Constants.users).doc(friendID).update({
         Constants.friendRequestsUIDs: FieldValue.arrayUnion([_uid]),
       });
 
-      // add friend uid to our friend requests sent list
+      // Add friend's UID to our sent friend requests list
       await _firestore.collection(Constants.users).doc(_uid).update({
         Constants.sentFriendRequestsUIDs: FieldValue.arrayUnion([friendID]),
       });
@@ -414,14 +405,15 @@ class AuthenticationProvider extends ChangeNotifier {
     }
   }
 
+  // Cancel friend request
   Future<void> cancelFriendRequest({required String friendID}) async {
     try {
-      // remove our uid from friends request list
+      // Remove our UID from friend's request list
       await _firestore.collection(Constants.users).doc(friendID).update({
         Constants.friendRequestsUIDs: FieldValue.arrayRemove([_uid]),
       });
 
-      // remove friend uid from our friend requests sent list
+      // Remove friend's UID from our sent friend requests list
       await _firestore.collection(Constants.users).doc(_uid).update({
         Constants.sentFriendRequestsUIDs: FieldValue.arrayRemove([friendID]),
       });
@@ -430,56 +422,54 @@ class AuthenticationProvider extends ChangeNotifier {
     }
   }
 
+  // Accept friend request
   Future<void> acceptFriendRequest({required String friendID}) async {
-    // add our uid to friends list
+    // Add our UID to friend's friends list
     await _firestore.collection(Constants.users).doc(friendID).update({
       Constants.friendsUIDs: FieldValue.arrayUnion([_uid]),
     });
 
-    // add friend uid to our friends list
+    // Add friend's UID to our friends list
     await _firestore.collection(Constants.users).doc(_uid).update({
       Constants.friendsUIDs: FieldValue.arrayUnion([friendID]),
     });
 
-    // remove our uid from friends request list
+    // Remove our UID from friend's sent friend requests list
     await _firestore.collection(Constants.users).doc(friendID).update({
       Constants.sentFriendRequestsUIDs: FieldValue.arrayRemove([_uid]),
     });
 
-    // remove friend uid from our friend requests sent list
+    // Remove friend's UID from our friend requests list
     await _firestore.collection(Constants.users).doc(_uid).update({
       Constants.friendRequestsUIDs: FieldValue.arrayRemove([friendID]),
     });
   }
 
-  // remove friend
+  // Remove friend
   Future<void> removeFriend({required String friendID}) async {
-    // remove our uid from friends list
+    // Remove our UID from friend's friends list
     await _firestore.collection(Constants.users).doc(friendID).update({
       Constants.friendsUIDs: FieldValue.arrayRemove([_uid]),
     });
 
-    // remove friend uid from our friends list
+    // Remove friend's UID from our friends list
     await _firestore.collection(Constants.users).doc(_uid).update({
       Constants.friendsUIDs: FieldValue.arrayRemove([friendID]),
     });
   }
 
-  // update image
+  // Update user or group image
   Future<String> updateImage({
     required bool isGroup,
     required String id,
   }) async {
-    // check if file is not null
     if (_finalFileImage == null) {
       return 'Error';
     }
-    ;
-    // set loading
+
     _isLoading = true;
 
     try {
-      // get the path
       final String filePath = isGroup
           ? '${Constants.groupImages}/$id'
           : '${Constants.userImages}/$id';
@@ -491,7 +481,6 @@ class AuthenticationProvider extends ChangeNotifier {
 
       if (isGroup) {
         await _updateGroupImage(id, imageUrl);
-        // set file to null
         _finalFileImage = null;
         _isLoading = false;
         notifyListeners();
@@ -499,23 +488,20 @@ class AuthenticationProvider extends ChangeNotifier {
       } else {
         await _updateUserImage(id, imageUrl);
         _userModel!.image = imageUrl;
-        // set file to null
         _finalFileImage = null;
         _isLoading = false;
-        // save user data to share preferences
         await saveUserDataToSharedPreferences();
         notifyListeners();
         return imageUrl;
       }
     } catch (e) {
-      // set loading to false
       _isLoading = false;
       notifyListeners();
       return 'Error';
     }
   }
 
-  // update group image
+  // Update group image in Firestore
   Future<void> _updateGroupImage(
     String id,
     String imageUrl,
@@ -526,7 +512,7 @@ class AuthenticationProvider extends ChangeNotifier {
         .update({Constants.groupImage: imageUrl});
   }
 
-  // update user image
+  // Update user image in Firestore
   Future<void> _updateUserImage(
     String id,
     String imageUrl,
@@ -537,7 +523,7 @@ class AuthenticationProvider extends ChangeNotifier {
         .update({Constants.image: imageUrl});
   }
 
-  // update name
+  // Update user or group name
   Future<String> updateName({
     required bool isGroup,
     required String id,
@@ -558,7 +544,6 @@ class AuthenticationProvider extends ChangeNotifier {
       await _updateUserName(id, newName);
 
       _userModel!.name = newName;
-      // save user data to share preferences
       await saveUserDataToSharedPreferences();
       newName = '';
       notifyListeners();
@@ -566,7 +551,7 @@ class AuthenticationProvider extends ChangeNotifier {
     }
   }
 
-  // update name
+  // Update user or group description
   Future<String> updateStatus({
     required bool isGroup,
     required String id,
@@ -587,7 +572,6 @@ class AuthenticationProvider extends ChangeNotifier {
       await _updateAboutMe(id, newDesc);
 
       _userModel!.aboutMe = newDesc;
-      // save user data to share preferences
       await saveUserDataToSharedPreferences();
       newDesc = '';
       notifyListeners();
@@ -595,14 +579,14 @@ class AuthenticationProvider extends ChangeNotifier {
     }
   }
 
-  // update groupName
+  // Update group name in Firestore
   Future<void> _updateGroupName(String id, String newName) async {
     await _firestore.collection(Constants.groups).doc(id).update({
       Constants.groupName: newName,
     });
   }
 
-  // update userName
+  // Update user name in Firestore
   Future<void> _updateUserName(String id, String newName) async {
     await _firestore
         .collection(Constants.users)
@@ -610,7 +594,7 @@ class AuthenticationProvider extends ChangeNotifier {
         .update({Constants.name: newName});
   }
 
-  // update aboutMe
+  // Update user about me in Firestore
   Future<void> _updateAboutMe(String id, String newDesc) async {
     await _firestore
         .collection(Constants.users)
@@ -618,7 +602,7 @@ class AuthenticationProvider extends ChangeNotifier {
         .update({Constants.aboutMe: newDesc});
   }
 
-  // update group desc
+  // Update group description in Firestore
   Future<void> _updateGroupDesc(String id, String newDesc) async {
     await _firestore
         .collection(Constants.groups)
@@ -626,30 +610,40 @@ class AuthenticationProvider extends ChangeNotifier {
         .update({Constants.groupDescription: newDesc});
   }
 
-  // generate a new token
+  // Generate a new token for push notifications
   Future<void> generateNewToken() async {
     final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
     String? token = await firebaseMessaging.getToken();
 
     log('Token: $token');
 
-    // save token to firestore
+    // Save token to Firestore
     _firestore.collection(Constants.users).doc(_userModel!.uid).update({
       Constants.token: token,
     });
   }
 
-  Future logout() async {
-    // clear user token from firestore
-    await _firestore.collection(Constants.users).doc(_userModel!.uid).update({
-      Constants.token: '',
-    });
-    // sign out from firebase auth
-    await _auth.signOut();
+  Future<void> logout() async {
+    try {
+      // Clear user token from Firestore
+      await _firestore.collection(Constants.users).doc(_userModel!.uid).update({
+        Constants.token: '',
+      });
+      log('Token cleared from Firestore');
 
-    //  clear shared preferences
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.clear();
-    notifyListeners();
+      // Sign out from Firebase Auth
+      await _auth.signOut();
+      log('Signed out from Firebase Auth');
+
+      // Clear shared preferences
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      await sharedPreferences.clear();
+      log('Shared preferences cleared');
+
+      notifyListeners();
+    } catch (e) {
+      log('Error during logout: $e');
+    }
   }
 }

@@ -27,7 +27,7 @@ class GroupStatusWidget extends StatelessWidget {
           onTap: !isAdmin
               ? null
               : () {
-                  // show dialog to change group type
+                  // Show dialog to change group type
                   MyDialogs.showMyAnimatedDialog(
                     context: context,
                     title: 'Change Group Type',
@@ -36,7 +36,7 @@ class GroupStatusWidget extends StatelessWidget {
                     textAction: 'Change',
                     onActionTap: (value, updatedText) {
                       if (value) {
-                        // change group type
+                        // Change group type
                         groupProvider.changeGroupType();
                       }
                     },
@@ -99,7 +99,7 @@ class ProfileStatusWidget extends StatelessWidget {
   }
 }
 
-class FriendsButton extends StatelessWidget {
+class FriendsButton extends StatefulWidget {
   const FriendsButton({
     super.key,
     required this.userModel,
@@ -110,14 +110,19 @@ class FriendsButton extends StatelessWidget {
   final UserModel currentUser;
 
   @override
+  _FriendsButtonState createState() => _FriendsButtonState();
+}
+
+class _FriendsButtonState extends State<FriendsButton> {
+  @override
   Widget build(BuildContext context) {
-    // friends button
+    // Friends button
     Widget buildFriendsButton() {
-      if (currentUser.uid == userModel.uid &&
-          userModel.friendsUIDs.isNotEmpty) {
+      if (widget.currentUser.uid == widget.userModel.uid &&
+          widget.userModel.friendsUIDs.isNotEmpty) {
         return MyElevatedButton(
           onPressed: () {
-            // navigate to friends screen
+            // Navigate to friends screen
             Navigator.pushNamed(
               context,
               Constants.friendsScreen,
@@ -129,19 +134,21 @@ class FriendsButton extends StatelessWidget {
           textColor: Theme.of(context).colorScheme.primary,
         );
       } else {
-        if (currentUser.uid != userModel.uid) {
-          // show cancel friend request button if the user sent us friend request
-          // else show send friend request button
-          if (userModel.friendRequestsUIDs.contains(currentUser.uid)) {
-            // show send friend request button
+        if (widget.currentUser.uid != widget.userModel.uid) {
+          // Show cancel friend request button if the user sent us friend request
+          // Else show send friend request button
+          if (widget.userModel.friendRequestsUIDs.contains(widget.currentUser.uid)) {
+            // Show send friend request button
             return MyElevatedButton(
               onPressed: () async {
                 await context
                     .read<AuthenticationProvider>()
-                    .cancelFriendRequest(friendID: userModel.uid)
+                    .cancelFriendRequest(friendID: widget.userModel.uid)
                     .whenComplete(() {
-                  GlobalMethods.showSnackBar(
-                      context, 'friend request canclled');
+                  if (mounted) {
+                    GlobalMethods.showSnackBar(
+                        context, 'Friend request cancelled');
+                  }
                 });
               },
               label: 'Cancel Request',
@@ -149,16 +156,18 @@ class FriendsButton extends StatelessWidget {
               backgroundColor: Theme.of(context).cardColor,
               textColor: Theme.of(context).colorScheme.primary,
             );
-          } else if (userModel.sentFriendRequestsUIDs
-              .contains(currentUser.uid)) {
+          } else if (widget.userModel.sentFriendRequestsUIDs
+              .contains(widget.currentUser.uid)) {
             return MyElevatedButton(
               onPressed: () async {
                 await context
                     .read<AuthenticationProvider>()
-                    .acceptFriendRequest(friendID: userModel.uid)
+                    .acceptFriendRequest(friendID: widget.userModel.uid)
                     .whenComplete(() {
-                  GlobalMethods.showSnackBar(
-                      context, 'You are now friends with ${userModel.name}');
+                  if (mounted) {
+                    GlobalMethods.showSnackBar(
+                        context, 'You are now friends with ${widget.userModel.name}');
+                  }
                 });
               },
               label: 'Accept Friend',
@@ -166,14 +175,14 @@ class FriendsButton extends StatelessWidget {
               backgroundColor: Theme.of(context).cardColor,
               textColor: Theme.of(context).colorScheme.primary,
             );
-          } else if (userModel.friendsUIDs.contains(currentUser.uid)) {
+          } else if (widget.userModel.friendsUIDs.contains(widget.currentUser.uid)) {
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 MyElevatedButton(
                   onPressed: () async {
-                    // show unfriend dialog to ask the user if he is sure to unfriend
-                    // create a dialog to confirm logout
+                    // Show unfriend dialog to ask the user if he is sure to unfriend
+                    // Create a dialog to confirm logout
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
@@ -182,7 +191,7 @@ class FriendsButton extends StatelessWidget {
                           textAlign: TextAlign.center,
                         ),
                         content: Text(
-                          'Are you sure you want to Unfriend ${userModel.name}?',
+                          'Are you sure you want to unfriend ${widget.userModel.name}?',
                           textAlign: TextAlign.center,
                         ),
                         actions: [
@@ -195,15 +204,17 @@ class FriendsButton extends StatelessWidget {
                           TextButton(
                             onPressed: () async {
                               Navigator.pop(context);
-                              // remove friend
+                              // Remove friend
                               await context
                                   .read<AuthenticationProvider>()
-                                  .removeFriend(friendID: userModel.uid)
+                                  .removeFriend(friendID: widget.userModel.uid)
                                   .whenComplete(() {
-                                GlobalMethods.showSnackBar(
-                                    context, 'You are no longer friends');
+                                if (mounted) {
+                                  GlobalMethods.showSnackBar(
+                                      context, 'You are no longer friends');
+                                }
                               });
-                            },
+                             },
                             child: const Text('Yes'),
                           ),
                         ],
@@ -218,14 +229,14 @@ class FriendsButton extends StatelessWidget {
                 const SizedBox(width: 10),
                 MyElevatedButton(
                   onPressed: () async {
-                    // navigate to chat screen
-                    // navigate to chat screen with the folowing arguments
+                    // Navigate to chat screen
+                    // Navigate to chat screen with the following arguments
                     // 1. friend uid 2. friend name 3. friend image 4. groupId with an empty string
                     Navigator.pushNamed(context, Constants.chatScreen,
                         arguments: {
-                          Constants.contactUID: userModel.uid,
-                          Constants.contactName: userModel.name,
-                          Constants.contactImage: userModel.image,
+                          Constants.contactUID: widget.userModel.uid,
+                          Constants.contactName: widget.userModel.name,
+                          Constants.contactImage: widget.userModel.image,
                           Constants.groupID: ''
                         });
                   },
@@ -241,9 +252,11 @@ class FriendsButton extends StatelessWidget {
               onPressed: () async {
                 await context
                     .read<AuthenticationProvider>()
-                    .sendFriendRequest(friendID: userModel.uid)
+                    .sendFriendRequest(friendID: widget.userModel.uid)
                     .whenComplete(() {
-                  GlobalMethods.showSnackBar(context, 'Friend request sent');
+                  if (mounted) {
+                    GlobalMethods.showSnackBar(context, 'Friend request sent');
+                  }
                 });
               },
               label: 'Send Request',
@@ -274,7 +287,7 @@ class FriendRequestButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // friend request button
+    // Friend request button
     Widget buildFriendRequestButton() {
       if (currentUser.uid == userModel.uid &&
           userModel.friendRequestsUIDs.isNotEmpty) {
@@ -284,7 +297,7 @@ class FriendRequestButton extends StatelessWidget {
             backgroundColor: Colors.orangeAccent,
             child: IconButton(
               onPressed: () {
-                // navigate to friend requests screen
+                // Navigate to friend requests screen
                 Navigator.pushNamed(
                   context,
                   Constants.friendRequestsScreen,
@@ -298,7 +311,7 @@ class FriendRequestButton extends StatelessWidget {
           ),
         );
       } else {
-        // not in our profile
+        // Not in our profile
         return const SizedBox.shrink();
       }
     }
@@ -319,19 +332,19 @@ class GetRequestWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // get requestWidget
+    // Get request widget
     Widget getRequestWidget() {
-      // check if user is admin
+      // Check if user is admin
       if (isAdmin) {
-        // chec if there is any request
+        // Check if there is any request
         if (groupProvider.groupModel.awaitingApprovalUIDs.isNotEmpty) {
           return InkWell(
             onTap: () {
-              // navigate to add members screen
-              // navigate to friend requests screen
+              // Navigate to add members screen
+              // Navigate to friend requests screen
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return FriendRequestScreen(
-                  groupId: groupProvider.groupModel.groupID,
+                  groupID: groupProvider.groupModel.groupID,
                 );
               }));
             },

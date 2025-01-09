@@ -9,15 +9,14 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-navigationController({
+// Function to handle navigation based on the notification type
+void navigationController({
   required BuildContext context,
   required RemoteMessage message,
 }) {
-  //if (context == null) return;
-
   switch (message.data[Constants.notificationType]) {
     case Constants.chatNotification:
-      // navigate to chat screen here
+      // Navigate to chat screen
       Navigator.pushNamed(
         context,
         Constants.chatScreen,
@@ -30,34 +29,32 @@ navigationController({
       );
       break;
     case Constants.friendRequestNotification:
-      // navigate to friend requests screen
+      // Navigate to friend requests screen
       Navigator.pushNamed(
         context,
         Constants.friendRequestsScreen,
       );
       break;
     case Constants.requestReplyNotification:
-      // navigate to friend requests screen
-      // navigate to friends screen
+      // Navigate to friends screen
       Navigator.pushNamed(
         context,
         Constants.friendsScreen,
       );
       break;
     case Constants.groupRequestNotification:
-      // navigate to friend requests screen
+      // Navigate to friend requests screen with group ID
       Navigator.of(context).push(MaterialPageRoute(builder: (context) {
         return FriendRequestScreen(
-          groupId: message.data[Constants.groupID],
+          groupID: message.data[Constants.groupID],
         );
       }));
       break;
-
     case Constants.groupChatNotification:
-      // parse the JSON string to a map
+      // Parse the JSON string to a map
       Map<String, dynamic> jsonMap =
           jsonDecode(message.data[Constants.groupModel]);
-      // transform the map to a simple GroupModel object
+      // Transform the map to a simple GroupModel object
       final Map<String, dynamic> flatGroupModelMap =
           flattenGroupModelMap(jsonMap);
 
@@ -65,7 +62,7 @@ navigationController({
       log('JSON: $jsonMap');
       log('Flat Map: $flatGroupModelMap');
       log('Group Model: $groupModel');
-      // navigate to group screen
+      // Navigate to group screen
       context
           .read<GroupProvider>()
           .setGroupModel(groupModel: groupModel)

@@ -18,6 +18,7 @@ class Constants {
   static const String groupSettingsScreen = '/groupSettingsScreen';
   static const String groupInformationScreen = '/groupInformationScreen';
 
+  // User Fields
   static const String uid = 'uid';
   static const String name = 'name';
   static const String phoneNumber = 'phoneNumber';
@@ -35,15 +36,27 @@ class Constants {
   static const String userImages = 'userImages';
   static const String userModel = 'userModel';
 
+  // Contact Fields
   static const String contactName = 'contactName';
   static const String contactImage = 'contactImage';
+  static const String contactUID = 'contactUID';
+
+  // Group Fields
   static const String groupID = 'groupID';
   static const String groupModel = 'groupModel';
+  static const String groupName = 'groupName';
+  static const String groupDescription = 'groupDescription';
+  static const String groupImage = 'groupImage';
+  static const String isPrivate = 'isPrivate';
+  static const String membersUIDs = 'membersUIDs';
+  static const String adminsUIDs = 'adminsUIDs';
+  static const String awaitingApprovalUIDs = 'awaitingApprovalUIDs';
+  static const String groupImages = 'groupImages';
 
+  // Message Fields
   static const String senderUID = 'senderUID';
   static const String senderName = 'senderName';
   static const String senderImage = 'senderImage';
-  static const String contactUID = 'contactUID';
   static const String message = 'message';
   static const String messageType = 'messageType';
   static const String timeSent = 'timeSent';
@@ -56,40 +69,35 @@ class Constants {
   static const String reactions = 'reactions';
   static const String isSeenBy = 'isSeenBy';
   static const String deletedBy = 'deletedBy';
-
   static const String lastMessage = 'lastMessage';
+
+  // Chat Fields
   static const String chats = 'chats';
   static const String messages = 'messages';
-  static const String groups = 'groups'; 
+  static const String chatFiles = 'chatFiles';
 
-  static const chatFiles = 'chatFiles';
-
-  static const String isTyping = 'isTyping';
-  static const String private = 'private';
-  static const String public = 'public';
-
-  static const String creatorUID = 'creatorUID';
-  static const String groupName = 'groupName';
-  static const String groupDescription = 'groupDescription';
-  static const String groupImage = 'groupImage';
-  static const String isPrivate = 'isPrivate';
+  // Group Settings
   static const String editSettings = 'editSettings';
   static const String approveMembers = 'approveMembers';
   static const String lockMessages = 'lockMessages';
   static const String requestToJoin = 'requestToJoin';
-  static const String membersUIDs = 'membersUIDs';
-  static const String adminsUIDs = 'adminsUIDs';
-  static const String awaitingApprovalUIDs = 'awaitingApprovalUIDs';
 
-  static const String groupImages = 'groupImages';
-
+  // Change Fields
   static const String changeName = 'changeName';
   static const String changeDesc = 'changeDesc';
 
+  // Notification Types
   static const String notificationType = 'notificationType';
   static const String groupChatNotification = 'groupChatNotification';
   static const String chatNotification = 'chatNotification';
   static const String friendRequestNotification = 'friendRequestNotification';
   static const String requestReplyNotification = 'requestReplyNotification';
   static const String groupRequestNotification = 'groupRequestNotification';
+
+  // Miscellaneous
+  static const String groups = 'groups';
+  static const String isTyping = 'isTyping';
+  static const String private = 'private';
+  static const String public = 'public';
+  static const String creatorUID = 'creatorUID';
 }

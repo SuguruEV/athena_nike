@@ -25,14 +25,14 @@ class CreateGroupScreen extends StatefulWidget {
 }
 
 class _CreateGroupScreenState extends State<CreateGroupScreen> {
-  // group name controller
+  // Controller for group name input
   final TextEditingController groupNameController = TextEditingController();
-  // group description controller
-  final TextEditingController groupDescriptionController =
-      TextEditingController();
+  // Controller for group description input
+  final TextEditingController groupDescriptionController = TextEditingController();
   File? finalFileImage;
   String userImage = '';
 
+  // Select image from camera or gallery
   void selectImage(bool fromCamera) async {
     finalFileImage = await GlobalMethods.pickImage(
       fromCamera: fromCamera,
@@ -41,16 +41,18 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
       },
     );
 
-    // crop image
+    // Crop the selected image
     await cropImage(finalFileImage?.path);
 
     popContext();
   }
 
-  popContext() {
+  // Close the bottom sheet
+  void popContext() {
     Navigator.pop(context);
   }
 
+  // Crop the selected image
   Future<void> cropImage(filePath) async {
     if (filePath != null) {
       CroppedFile? croppedFile = await ImageCropper().cropImage(
@@ -68,6 +70,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
     }
   }
 
+  // Show bottom sheet for image selection
   void showBottomSheet() {
     showModalBottomSheet(
       context: context,
@@ -109,26 +112,25 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
 
   GroupType groupValue = GroupType.private;
 
-  // create group
+  // Create a new group
   void createGroup() {
     final uid = context.read<AuthenticationProvider>().userModel!.uid;
     final groupProvider = context.read<GroupProvider>();
-    // check if the group name is empty
+    // Check if the group name is empty
     if (groupNameController.text.isEmpty) {
-      GlobalMethods.showSnackBar(context, 'Please enter group name');
+      GlobalMethods.showSnackBar(context, 'Please enter a group name');
       return;
     }
 
-    // name is less than 3 characters
+    // Check if the group name is less than 3 characters
     if (groupNameController.text.length < 3) {
-      GlobalMethods.showSnackBar(
-          context, 'Group name must be at least 3 characters');
+      GlobalMethods.showSnackBar(context, 'Group name must be at least 3 characters');
       return;
     }
 
-    // check if the group description is empty
+    // Check if the group description is empty
     if (groupDescriptionController.text.isEmpty) {
-      GlobalMethods.showSnackBar(context, 'Please enter group description');
+      GlobalMethods.showSnackBar(context, 'Please enter a group description');
       return;
     }
 
@@ -154,7 +156,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
       awaitingApprovalUIDs: [],
     );
 
-    // create group
+    // Create the group
     groupProvider.createGroup(
       newGroupModel: groupModel,
       fileImage: finalFileImage,
@@ -182,7 +184,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                   ? const CircularProgressIndicator()
                   : IconButton(
                       onPressed: () {
-                        // create group
+                        // Create the group
                         createGroup();
                       },
                       icon: const Icon(Icons.check)),
@@ -198,12 +200,12 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
             horizontal: 10.0,
           ),
           child: Column(
-            spacing: 10,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  // Display user image with option to change
                   DisplayUserImage(
                     finalFileImage: finalFileImage,
                     radius: 60,
@@ -212,34 +214,38 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                     },
                   ),
                   const SizedBox(width: 10),
+                  // Display group type selection
                   buildGroupType(),
                 ],
               ),
-
-              // texField for group name
+              const SizedBox(height: 20),
+              // TextField for group name
               TextField(
                 controller: groupNameController,
                 maxLength: 25,
                 textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(
-                  hintText: 'Group Name',
+                  hintText: 'Enter group name',
                   label: Text('Group Name'),
                   counterText: '',
                   border: OutlineInputBorder(),
                 ),
               ),
-              // textField for group description
+              const SizedBox(height: 20),
+              // TextField for group description
               TextField(
                 controller: groupDescriptionController,
                 maxLength: 100,
                 textInputAction: TextInputAction.done,
                 decoration: const InputDecoration(
-                  hintText: 'Group Description',
+                  hintText: 'Enter group description',
                   label: Text('Group Description'),
                   counterText: '',
                   border: OutlineInputBorder(),
                 ),
               ),
+              const SizedBox(height: 20),
+              // Group settings option
               Card(
                 child: Padding(
                   padding: const EdgeInsets.only(
@@ -251,12 +257,14 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                       icon: Icons.settings,
                       iconContainerColor: Colors.deepPurple,
                       onTap: () {
-                        // navigate to group settings screen
+                        // Navigate to group settings screen
                         Navigator.pushNamed(
                             context, Constants.groupSettingsScreen);
                       }),
                 ),
               ),
+              const SizedBox(height: 20),
+              // Title for selecting group members
               const Text(
                 'Select Group Members',
                 style: TextStyle(
@@ -264,14 +272,15 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
-              // Search bar
+              const SizedBox(height: 10),
+              // Search bar for finding friends
               SearchBarWidget(
                 onChanged: (value) {
                   context.read<SearchProvider>().setSearchQuery(value);
                 },
               ),
-
+              const SizedBox(height: 10),
+              // Display list of friends to select as group members
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.3,
                 child: const FriendsList(
@@ -285,6 +294,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
     );
   }
 
+  // Build the group type selection widgets
   Column buildGroupType() {
     return Column(
       children: [

@@ -14,6 +14,7 @@ class UserModel {
   List<String> friendRequestsUIDs;
   List<String> sentFriendRequestsUIDs;
 
+  // Constructor for UserModel
   UserModel({
     required this.uid,
     required this.name,
@@ -29,7 +30,7 @@ class UserModel {
     required this.sentFriendRequestsUIDs,
   });
 
-  // from map
+  // Create a UserModel instance from a map
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       uid: map[Constants.uid] ?? '',
@@ -42,14 +43,12 @@ class UserModel {
       createdAt: map[Constants.createdAt] ?? '',
       isOnline: map[Constants.isOnline] ?? false,
       friendsUIDs: List<String>.from(map[Constants.friendsUIDs] ?? []),
-      friendRequestsUIDs:
-          List<String>.from(map[Constants.friendRequestsUIDs] ?? []),
-      sentFriendRequestsUIDs:
-          List<String>.from(map[Constants.sentFriendRequestsUIDs] ?? []),
+      friendRequestsUIDs: List<String>.from(map[Constants.friendRequestsUIDs] ?? []),
+      sentFriendRequestsUIDs: List<String>.from(map[Constants.sentFriendRequestsUIDs] ?? []),
     );
   }
 
-  // to map
+  // Convert the UserModel instance to a map
   Map<String, dynamic> toMap() {
     return {
       Constants.uid: uid,

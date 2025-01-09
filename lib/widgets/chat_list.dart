@@ -34,7 +34,7 @@ class ChatList extends StatefulWidget {
 }
 
 class _ChatListState extends State<ChatList> {
-  // scroll controller
+  // Scroll controller
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -43,11 +43,12 @@ class _ChatListState extends State<ChatList> {
     super.dispose();
   }
 
+  // Handle context menu actions
   void onContextMenyClicked(
       {required String item, required MessageModel message}) {
     switch (item) {
       case 'Reply':
-        // set the message reply to true
+        // Set the message reply to true
         final messageReply = MessageReplyModel(
           message: message.message,
           senderUID: message.senderUID,
@@ -60,7 +61,7 @@ class _ChatListState extends State<ChatList> {
         context.read<ChatProvider>().setMessageReplyModel(messageReply);
         break;
       case 'Copy':
-        // copy message to clipboard
+        // Copy message to clipboard
         Clipboard.setData(ClipboardData(text: message.message));
         GlobalMethods.showSnackBar(context, 'Message copied to clipboard');
         break;
@@ -96,7 +97,7 @@ class _ChatListState extends State<ChatList> {
     }
   }
 
-  // Delet bottom sheet
+  // Show delete bottom sheet
   void showDeletBottomSheet({
     required MessageModel message,
     required String currentUserId,
@@ -112,9 +113,10 @@ class _ChatListState extends State<ChatList> {
     );
   }
 
+  // Send reaction to message
   void sendReactionToMessage(
       {required String reaction, required String messageID}) {
-    // get the sender uid
+    // Get the sender uid
     final senderUID = context.read<AuthenticationProvider>().userModel!.uid;
 
     context.read<ChatProvider>().sendReactionToMessage(
@@ -126,6 +128,7 @@ class _ChatListState extends State<ChatList> {
         );
   }
 
+  // Show emoji container
   void showEmojiContainer({required String messageID}) {
     showModalBottomSheet(
       context: context,
@@ -134,7 +137,7 @@ class _ChatListState extends State<ChatList> {
         child: EmojiPicker(
           onEmojiSelected: (category, emoji) {
             Navigator.pop(context);
-            // add emoji to message
+            // Add emoji to message
             sendReactionToMessage(
               reaction: emoji.emoji,
               messageID: messageID,
@@ -147,7 +150,7 @@ class _ChatListState extends State<ChatList> {
 
   @override
   Widget build(BuildContext context) {
-    // current user uid
+    // Current user uid
     final uid = context.read<AuthenticationProvider>().userModel!.uid;
     return FirestorePagination(
       limit: 20,
@@ -166,10 +169,10 @@ class _ChatListState extends State<ChatList> {
         final message = MessageModel.fromMap(
             documentSnapshot[index].data()! as Map<String, dynamic>);
 
-        // check if we sent the last message
+        // Check if we sent the last message
         final isMe = message.senderUID == uid;
 
-        // if the deletedBy contains the current user id then dont show the message
+        // If the deletedBy contains the current user id then don't show the message
         if (message.deletedBy.contains(uid)) {
           return const SizedBox.shrink();
         }
@@ -191,7 +194,7 @@ class _ChatListState extends State<ChatList> {
           dateHeader = DateWidget(message: message);
         }
 
-        // check if its groupChat
+        // Check if it's group chat
         if (widget.groupID.isNotEmpty) {
           chatProvider.setMessageStatus(
             currentUserId: uid,
@@ -261,7 +264,7 @@ class _ChatListState extends State<ChatList> {
                 child: MessageWidget(
                   message: message,
                   onRightSwipe: () {
-                    // set the message reply to true
+                    // Set the message reply to true
                     final messageReply = MessageReplyModel(
                       message: message.message,
                       senderUID: message.senderUID,

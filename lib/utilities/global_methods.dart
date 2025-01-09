@@ -20,6 +20,7 @@ import 'package:provider/provider.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class GlobalMethods {
+  // Show a snackbar with a message
   static void showSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -28,6 +29,7 @@ class GlobalMethods {
     );
   }
 
+  // Widget to display user image
   static Widget userImageWidget({
     required String imageUrl,
     File? fileImage,
@@ -46,6 +48,7 @@ class GlobalMethods {
     );
   }
 
+  // Get image to show based on the source
   static getImageToShow({
     required String imageUrl,
     required File? fileImage,
@@ -57,14 +60,14 @@ class GlobalMethods {
             : const AssetImage(AssetsManager.userImage);
   }
 
-// picp image from gallery or camera
+  // Pick image from gallery or camera
   static Future<File?> pickImage({
     required bool fromCamera,
     required Function(String) onFail,
   }) async {
     File? fileImage;
     if (fromCamera) {
-      // get picture from camera
+      // Get picture from camera
       try {
         final pickedFile =
             await ImagePicker().pickImage(source: ImageSource.camera);
@@ -77,7 +80,7 @@ class GlobalMethods {
         onFail(e.toString());
       }
     } else {
-      // get picture from gallery
+      // Get picture from gallery
       try {
         final pickedFile =
             await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -94,7 +97,7 @@ class GlobalMethods {
     return fileImage;
   }
 
-// pick video from gallery
+  // Pick video from gallery
   static Future<File?> pickVideo({
     required Function(String) onFail,
   }) async {
@@ -114,6 +117,7 @@ class GlobalMethods {
     return fileVideo;
   }
 
+  // Build date time widget
   static Center buildDateTime(groupedByValue) {
     return Center(
       child: Card(
@@ -132,6 +136,7 @@ class GlobalMethods {
     );
   }
 
+  // Display message based on its type
   static Widget messageToShow(
       {required MessageEnum type, required String message}) {
     switch (type) {
@@ -186,7 +191,7 @@ class GlobalMethods {
     }
   }
 
-// store file to storage and return file url
+  // Store file to storage and return file URL
   static Future<String> storeFileToStorage({
     required File file,
     required String reference,
@@ -198,6 +203,7 @@ class GlobalMethods {
     return fileUrl;
   }
 
+  // Get chat data from document
   static (ChatModel, GroupModel?) getChatData({
     required DocumentSnapshot<Object?> documnets,
     GroupModel? groupModel,
@@ -239,7 +245,7 @@ class GlobalMethods {
     }
   }
 
-// Navigate to chat screeen
+  // Navigate to chat screen
   static void navigateToChatScreen({
     required BuildContext context,
     required String uid,
@@ -254,6 +260,7 @@ class GlobalMethods {
     _handleGroupNavigation(context, uid, groupModel);
   }
 
+  // Navigate to personal chat screen
   static void _navigateToPersonalChat(
       BuildContext context, ChatModel chatModel) {
     Navigator.pushNamed(
@@ -268,6 +275,7 @@ class GlobalMethods {
     );
   }
 
+  // Handle group navigation
   static void _handleGroupNavigation(
       BuildContext context, String uid, GroupModel groupModel) {
     if (groupModel.isPrivate) {
@@ -288,6 +296,7 @@ class GlobalMethods {
     _navigateToGroupChat(context, groupModel);
   }
 
+  // Navigate to group chat screen
   static void _navigateToGroupChat(
       BuildContext context, GroupModel groupModel) {
     context
@@ -309,6 +318,7 @@ class GlobalMethods {
     });
   }
 
+  // Handle join request for group
   static void _handleJoinRequest(
       BuildContext context, String uid, GroupModel groupModel) {
     if (groupModel.awaitingApprovalUIDs.contains(uid)) {
@@ -342,14 +352,14 @@ class GlobalMethods {
     );
   }
 
-  // is same day
+  // Check if two dates are the same day
   static bool isSameDay(DateTime date1, DateTime date2) {
     return date1.year == date2.year &&
         date1.month == date2.month &&
         date1.day == date2.day;
   }
 
-  // format date
+  // Format date for header
   static String formatDateHeader(DateTime date) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);

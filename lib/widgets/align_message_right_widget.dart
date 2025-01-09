@@ -24,20 +24,21 @@ class AlignMessageRightWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final time = formatDate(message.timeSent, [hh, ':', nn, ' ', am]);
     final isReplying = message.repliedTo.isNotEmpty;
-    // get the reations from the list
+    // Get the reactions from the list
     final messageReations =
         message.reactions.map((e) => e.split('=')[1]).toList();
     final padding = message.reactions.isNotEmpty
         ? const EdgeInsets.only(left: 20.0, bottom: 25.0)
         : const EdgeInsets.only(bottom: 0.0);
 
+    // Check if the message is seen
     bool messageSeen() {
       final uid = context.read<AuthenticationProvider>().userModel!.uid;
       bool isSeen = false;
       if (isGroupChat) {
         List<String> isSeenByList = message.isSeenBy;
         if (isSeenByList.contains(uid)) {
-          // remove our uid then check again
+          // Remove our uid then check again
           isSeenByList.remove(uid);
         }
         isSeen = isSeenByList.isNotEmpty ? true : false;
@@ -53,7 +54,6 @@ class AlignMessageRightWidget extends StatelessWidget {
       child: ConstrainedBox(
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.7,
-          //minWidth: MediaQuery.of(context).size.width * 0.3,
         ),
         child: Stack(
           children: [

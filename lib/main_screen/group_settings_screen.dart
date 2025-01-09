@@ -18,25 +18,26 @@ class GroupSettingsScreen extends StatefulWidget {
 }
 
 class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
+  // Retrieve the names of the group admins
   String getGroupAdminsNames({
     required GroupProvider groupProvider,
     required String uid,
   }) {
-    // check if there are group members
+    // Check if there are group members
     if (groupProvider.groupMembersList.isEmpty) {
-      return 'To asign Admin roles, Please add group members in the previous screen';
+      return 'To assign admin roles, please add group members in the previous screen';
     } else {
       List<String> groupAdminsNames = [];
 
-      // get the list of group admins
+      // Get the list of group admins
       List<UserModel> groupAdminsList = groupProvider.groupAdminsList;
 
-      // get a list of names from the group admins list
+      // Map the list of group admins to their names
       List<String> groupAdminsNamesList = groupAdminsList.map((groupAdmin) {
         return groupAdmin.uid == uid ? 'You' : groupAdmin.name;
       }).toList();
 
-      // add these names to the groupAdminsNames list
+      // Add these names to the groupAdminsNames list
       groupAdminsNames.addAll(groupAdminsNamesList);
       return groupAdminsNames.length == 2
           ? '${groupAdminsNames[0]} and ${groupAdminsNames[1]}'
@@ -46,10 +47,11 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
     }
   }
 
+  // Determine the color for the admins container
   Color getAdminsContainerColor({
     required GroupProvider groupProvider,
   }) {
-    // check if there are group members
+    // Check if there are group members
     if (groupProvider.groupMembersList.isEmpty) {
       return Theme.of(context).disabledColor;
     } else {
@@ -59,10 +61,11 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // get the list of group admins
+    // Retrieve the list of group admins
     List<UserModel> groupAdminsList =
         context.read<GroupProvider>().groupAdminsList;
 
+    // Get the current user's UID
     final uid = context.read<AuthenticationProvider>().userModel!.uid;
 
     return Scaffold(
@@ -71,6 +74,7 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
         title: const Text('Group Settings'),
         leading: IconButton(
           onPressed: () {
+            // Remove temporary lists and navigate back
             context
                 .read<GroupProvider>()
                 .removeTempLists(isAdmins: true)
@@ -88,10 +92,11 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
                 const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
             child: Column(
               children: [
+                // Switch to enable or disable editing group settings
                 SettingsSwitchListTile(
                   title: 'Edit Group Settings',
                   subtitle:
-                      'Only Admins can change group info, name, image and description',
+                      'Only admins can change group info, name, image, and description',
                   icon: Icons.edit,
                   containerColor: Colors.green,
                   value: groupProvider.groupModel.editSettings,
@@ -100,10 +105,11 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
                   },
                 ),
                 const SizedBox(height: 10),
+                // Switch to enable or disable approval of new members
                 SettingsSwitchListTile(
                   title: 'Approve New Members',
                   subtitle:
-                      'New Members will be added only after admin approval',
+                      'New members will be added only after admin approval',
                   icon: Icons.approval,
                   containerColor: Colors.blue,
                   value: groupProvider.groupModel.approveMembers,
@@ -112,11 +118,12 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
                   },
                 ),
                 const SizedBox(height: 10),
+                // Switch to enable or disable request to join
                 groupProvider.groupModel.approveMembers
                     ? SettingsSwitchListTile(
                         title: 'Request to Join',
                         subtitle:
-                            'Request incoming members to join the group, before viewing group content',
+                            'Request incoming members to join the group before viewing group content',
                         icon: Icons.request_page,
                         containerColor: Colors.orange,
                         value: groupProvider.groupModel.requestToJoin,
@@ -126,10 +133,11 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
                       )
                     : const SizedBox.shrink(),
                 const SizedBox(height: 10),
+                // Switch to enable or disable locking messages
                 SettingsSwitchListTile(
                   title: 'Lock Messages',
                   subtitle:
-                      'Only Admins can send messages, other members can only read messages',
+                      'Only admins can send messages, other members can only read messages',
                   icon: Icons.lock,
                   containerColor: Colors.deepPurple,
                   value: groupProvider.groupModel.lockMessages,
@@ -138,6 +146,7 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
                   },
                 ),
                 const SizedBox(height: 10),
+                // Display group admins
                 Card(
                   color: getAdminsContainerColor(groupProvider: groupProvider),
                   child: Padding(
@@ -149,12 +158,12 @@ class _GroupSettingsScreenState extends State<GroupSettingsScreen> {
                       icon: Icons.admin_panel_settings,
                       iconContainerColor: Colors.red,
                       onTap: () {
-                        // check if there are group members
+                        // Check if there are group members
                         if (groupProvider.groupMembersList.isEmpty) {
                           return;
                         }
                         groupProvider.setEmptyTemps();
-                        // show bottom sheet to select admins
+                        // Show bottom sheet to select admins
                         showBottomSheet(
                           context: context,
                           builder: (context) {

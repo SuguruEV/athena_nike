@@ -68,6 +68,7 @@ class MessageReplyPreview extends StatelessWidget {
     );
   }
 
+  // Close button to cancel the reply
   InkWell closeButton(ChatProvider chatProvider, BuildContext context) {
     return InkWell(
       onTap: () {
@@ -88,6 +89,7 @@ class MessageReplyPreview extends StatelessWidget {
     );
   }
 
+  // Build the name and message preview
   Column buildNameAndMessage(MessageEnum type) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,6 +114,7 @@ class MessageReplyPreview extends StatelessWidget {
     );
   }
 
+  // Get the title for the reply preview
   Widget getTitle() {
     if (replyMessageModel != null) {
       bool isMe = replyMessageModel!.isMe;
@@ -120,7 +123,6 @@ class MessageReplyPreview extends StatelessWidget {
         style: GoogleFonts.titilliumWeb(
           fontWeight: FontWeight.bold,
           color: Colors.blue,
-          //fontSize: 12,
         ),
       );
     } else {
@@ -129,7 +131,6 @@ class MessageReplyPreview extends StatelessWidget {
         style: GoogleFonts.titilliumWeb(
           fontWeight: FontWeight.bold,
           color: Colors.blue,
-          //fontSize: 12,
         ),
       );
     }

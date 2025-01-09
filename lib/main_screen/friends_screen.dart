@@ -25,17 +25,18 @@ class _FriendsScreenState extends State<FriendsScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            // Search bar
+            // Search bar for filtering friends
             SearchBarWidget(
               onChanged: (value) {
                 context.read<SearchProvider>().setSearchQuery(value);
               },
             ),
-
+            // Display list of friends
             const Expanded(
-                child: FriendsList(
-              viewType: FriendViewType.friends,
-            )),
+              child: FriendsList(
+                viewType: FriendViewType.friends,
+              ),
+            ),
           ],
         ),
       ),

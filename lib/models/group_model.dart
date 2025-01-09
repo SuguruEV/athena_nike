@@ -44,7 +44,7 @@ class GroupModel {
     required this.awaitingApprovalUIDs,
   });
 
-  // to map
+  // Convert the GroupModel instance to a map
   Map<String, dynamic> toMap() {
     return {
       Constants.creatorUID: creatorUID,
@@ -69,7 +69,7 @@ class GroupModel {
     };
   }
 
-  // from map
+  // Create a GroupModel instance from a map
   factory GroupModel.fromMap(Map<String, dynamic> map) {
     return GroupModel(
       creatorUID: map[Constants.creatorUID] ?? '',

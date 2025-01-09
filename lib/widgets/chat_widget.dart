@@ -30,6 +30,7 @@ class ChatWidget extends StatelessWidget {
       title: Text(chatModel.name),
       subtitle: Row(
         children: [
+          // Display "You:" if the current user is the sender
           uid == chatModel.senderUID
               ? const Text(
                   'You:',
@@ -37,6 +38,7 @@ class ChatWidget extends StatelessWidget {
                 )
               : const SizedBox(),
           const SizedBox(width: 5),
+          // Display the last message
           GlobalMethods.messageToShow(
             type: chatModel.messageType,
             message: chatModel.lastMessage,
@@ -48,7 +50,9 @@ class ChatWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Display the time the message was sent
             Text(chatModel.timeSent),
+            // Display the unread message counter
             UnreadMessageCounter(
               uid: uid,
               contactUID: chatModel.contactUID,

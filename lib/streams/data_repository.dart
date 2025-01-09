@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class DataRepository {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // get chatsList qury
+  // Get chats list query
   static Query getChatsListQuery({
     required String userID,
     GroupModel? groupModel,
@@ -43,8 +43,7 @@ class DataRepository {
     if (viewType == FriendViewType.friendRequests) {
       if (groupID.isEmpty) {
         // Group's awaiting approval members
-        List<String> awaitingUIDs =
-            await getGroupAwaitingUIDs(groupID: groupID);
+        List<String> awaitingUIDs = await getUsersFriendRequestsUIDs(uid: uid);
 
         return _firestore
             .collection(Constants.users)

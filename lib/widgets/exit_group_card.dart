@@ -24,7 +24,7 @@ class ExitGroupCard extends StatelessWidget {
           icon: Icons.exit_to_app,
           iconContainerColor: Colors.red,
           onTap: () {
-            // exit group
+            // Show confirmation dialog to exit group
             MyDialogs.showMyAnimatedDialog(
               context: context,
               title: 'Exit Group',
@@ -32,12 +32,12 @@ class ExitGroupCard extends StatelessWidget {
               textAction: 'Exit',
               onActionTap: (value, updatedText) async {
                 if (value) {
-                  // exit group
+                  // Exit group
                   final groupProvider = context.read<GroupProvider>();
                   await groupProvider.exitGroup(uid: uid).whenComplete(() {
                     GlobalMethods.showSnackBar(
                         context, 'You have exited the group');
-                    // navigate to first screen
+                    // Navigate to the first screen
                     Navigator.popUntil(context, (route) => route.isFirst);
                   });
                 }

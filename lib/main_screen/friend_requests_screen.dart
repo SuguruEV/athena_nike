@@ -5,9 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FriendRequestScreen extends StatefulWidget {
-  const FriendRequestScreen({super.key, this.groupId = ''});
+  const FriendRequestScreen({super.key, this.groupID = ''});
 
-  final String groupId;
+  final String groupID;
 
   @override
   State<FriendRequestScreen> createState() => _FriendRequestScreenState();
@@ -37,7 +37,7 @@ class _FriendRequestScreenState extends State<FriendRequestScreen> {
             Expanded(
                 child: FriendsList(
               viewType: FriendViewType.friendRequests,
-              groupID: widget.groupId,
+              groupID: widget.groupID,
             )),
           ],
         ),

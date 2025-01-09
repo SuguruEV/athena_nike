@@ -43,31 +43,31 @@ class _BottomChatFieldState extends State<BottomChatField> {
   bool isSendingAudio = false;
   bool isShowEmojiPicker = false;
 
-  // hide emoji container
+  // Hide emoji container
   void hideEmojiContainer() {
     setState(() {
       isShowEmojiPicker = false;
     });
   }
 
-  // show emoji container
+  // Show emoji container
   void showEmojiContainer() {
     setState(() {
       isShowEmojiPicker = true;
     });
   }
 
-  // show keyboard
+  // Show keyboard
   void showKeyBoard() {
     _focusNode.requestFocus();
   }
 
-  // hide keyboard
+  // Hide keyboard
   void hideKeyNoard() {
     _focusNode.unfocus();
   }
 
-  // toggle emoji and keyboard container
+  // Toggle emoji and keyboard container
   void toggleEmojiKeyboardContainer() {
     if (isShowEmojiPicker) {
       showKeyBoard();
@@ -94,7 +94,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
     super.dispose();
   }
 
-  // check microphone permission
+  // Check microphone permission
   Future<bool> checkMicrophonePermission() async {
     bool hasPermission = await Permission.microphone.isGranted;
     final status = await Permission.microphone.request();
@@ -107,7 +107,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
     return hasPermission;
   }
 
-  // start recording audio
+  // Start recording audio
   void startRecording() async {
     final hasPermission = await checkMicrophonePermission();
     if (hasPermission) {
@@ -122,19 +122,20 @@ class _BottomChatFieldState extends State<BottomChatField> {
     }
   }
 
-  // stop recording audio
+  // Stop recording audio
   void stopRecording() async {
     await _soundRecord!.stop();
     setState(() {
       isRecording = false;
       isSendingAudio = true;
     });
-    // send audio message to firestore
+    // Send audio message to Firestore
     sendFileMessage(
       messageType: MessageEnum.audio,
     );
   }
 
+  // Select an image from camera or gallery
   void selectImage(bool fromCamera) async {
     finalFileImage = await GlobalMethods.pickImage(
       fromCamera: fromCamera,
@@ -143,13 +144,13 @@ class _BottomChatFieldState extends State<BottomChatField> {
       },
     );
 
-    // crop image
+    // Crop image
     await cropImage(finalFileImage?.path);
 
     popContext();
   }
 
-  // select a video file from device
+  // Select a video file from device
   void selectVideo() async {
     File? fileVideo = await GlobalMethods.pickVideo(
       onFail: (String message) {
@@ -161,17 +162,19 @@ class _BottomChatFieldState extends State<BottomChatField> {
 
     if (fileVideo != null) {
       filePath = fileVideo.path;
-      // send video message to firestore
+      // Send video message to Firestore
       sendFileMessage(
         messageType: MessageEnum.video,
       );
     }
   }
 
+  // Pop the context
   popContext() {
     Navigator.pop(context);
   }
 
+  // Crop the selected image
   Future<void> cropImage(croppedFilePath) async {
     if (croppedFilePath != null) {
       CroppedFile? croppedFile = await ImageCropper().cropImage(
@@ -183,7 +186,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
 
       if (croppedFile != null) {
         filePath = croppedFile.path;
-        // send image message to firestore
+        // Send image message to Firestore
         sendFileMessage(
           messageType: MessageEnum.image,
         );
@@ -191,7 +194,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
     }
   }
 
-  // send image message to firestore
+  // Send file message to Firestore
   void sendFileMessage({
     required MessageEnum messageType,
   }) {
@@ -222,7 +225,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
     );
   }
 
-  // send text message to firestore
+  // Send text message to Firestore
   void sendTextMessage() {
     final currentUser = context.read<AuthenticationProvider>().userModel!;
     final chatProvider = context.read<ChatProvider>();
@@ -251,17 +254,18 @@ class _BottomChatFieldState extends State<BottomChatField> {
         : buildBottomChatField();
   }
 
+  // Build locked messages view
   Widget buildLoackedMessages() {
     final uid = context.read<AuthenticationProvider>().userModel!.uid;
 
     final groupProvider = context.read<GroupProvider>();
-    // check if is admin
+    // Check if the user is an admin
     final isAdmin = groupProvider.groupModel.adminsUIDs.contains(uid);
 
-    // chec if is member
+    // Check if the user is a member
     final isMember = groupProvider.groupModel.membersUIDs.contains(uid);
 
-    // check is messages are locked
+    // Check if messages are locked
     final isLocked = groupProvider.groupModel.lockMessages;
     return isAdmin
         ? buildBottomChatField()
@@ -272,7 +276,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
                 child: Center(
                   child: TextButton(
                     onPressed: () async {
-                      // send request to join group
+                      // Send request to join group
                       await groupProvider
                           .sendRequestToJoinGroup(
                         groupID: groupProvider.groupModel.groupID,
@@ -297,6 +301,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
               );
   }
 
+  // Build view for members
   buildisMember(bool isLocked) {
     return isLocked
         ? const SizedBox(
@@ -315,6 +320,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
         : buildBottomChatField();
   }
 
+  // Build bottom chat field
   Consumer<ChatProvider> buildBottomChatField() {
     return Consumer<ChatProvider>(
       builder: (context, chatProvider, child) {
@@ -338,7 +344,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
                       : const SizedBox.shrink(),
                   Row(
                     children: [
-                      // emoji button
+                      // Emoji button
                       IconButton(
                         onPressed: toggleEmojiKeyboardContainer,
                         icon: Icon(isShowEmojiPicker
@@ -358,7 +364,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            // select image from camera
+                                            // Select image from camera
                                             ListTile(
                                               leading:
                                                   const Icon(Icons.camera_alt),
@@ -367,7 +373,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
                                                 selectImage(true);
                                               },
                                             ),
-                                            // select image from gallery
+                                            // Select image from gallery
                                             ListTile(
                                               leading: const Icon(Icons.image),
                                               title: const Text('Gallery'),
@@ -375,7 +381,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
                                                 selectImage(false);
                                               },
                                             ),
-                                            // select a video file from device
+                                            // Select a video file from device
                                             ListTile(
                                               leading: const Icon(
                                                   Icons.video_library),
@@ -449,7 +455,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
                 ],
               ),
             ),
-            // show emoji container
+            // Show emoji container
             isShowEmojiPicker
                 ? SizedBox(
                     height: 280,

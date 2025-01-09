@@ -15,43 +15,44 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
-    // get arguments passed from previous screen
+    // Get arguments passed from the previous screen
     final arguments = ModalRoute.of(context)!.settings.arguments as Map;
-    // get the contactUID from the arguments
+    // Get the contactUID from the arguments
     final contactUID = arguments[Constants.contactUID];
-    // get the contactName from the arguments
+    // Get the contactName from the arguments
     final contactName = arguments[Constants.contactName];
-    // get the contactImage from the arguments
+    // Get the contactImage from the arguments
     final contactImage = arguments[Constants.contactImage];
-    // get the groupId from the arguments
-    final groupId = arguments[Constants.groupID];
-    // check if the groupId is empty - then its a chat with a friend else its a group chat
-    final isGroupChat = groupId.isNotEmpty ? true : false;
+    // Get the groupId from the arguments
+    final groupID = arguments[Constants.groupID];
+    // Check if the groupId is empty - then it's a chat with a friend, else it's a group chat
+    final isGroupChat = groupID.isNotEmpty ? true : false;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: // get appBar color from theme
-            Theme.of(context).appBarTheme.backgroundColor,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         title: isGroupChat
-            ? GroupChatAppBar(groupId: groupId)
-            : ChatAppBar(contactUID: contactUID),
+            ? GroupChatAppBar(groupID: groupID) // Display group chat app bar
+            : ChatAppBar(contactUID: contactUID), // Display individual chat app bar
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
+            // Display the chat messages
             Expanded(
               child: ChatList(
                 contactUID: contactUID,
-                groupID: groupId,
+                groupID: groupID,
               ),
             ),
+            // Input field for sending new messages
             BottomChatField(
               contactUID: contactUID,
               contactName: contactName,
               contactImage: contactImage,
-              groupID: groupId,
+              groupID: groupID,
             ),
           ],
         ),

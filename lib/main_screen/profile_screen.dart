@@ -22,18 +22,18 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   bool isDarkMode = false;
 
-  // get the saved theme mode
+  // Get the saved theme mode
   void getThemeMode() async {
-    // get the saved theme mode
+    // Get the saved theme mode
     final savedThemeMode = await AdaptiveTheme.getThemeMode();
-    // check if the saved theme mode is dark
+    // Check if the saved theme mode is dark
     if (savedThemeMode == AdaptiveThemeMode.dark) {
-      // set the isDarkMode to true
+      // Set the isDarkMode to true
       setState(() {
         isDarkMode = true;
       });
     } else {
-      // set the isDarkMode to false
+      // Set the isDarkMode to false
       setState(() {
         isDarkMode = false;
       });
@@ -48,7 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // get user data from arguments
+    // Get user data from arguments
     final uid = ModalRoute.of(context)!.settings.arguments as String;
     final authProvider = context.watch<AuthenticationProvider>();
     bool isMyProfile = uid == authProvider.uid;
@@ -124,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           icon: Icons.person,
                                           iconContainerColor: Colors.deepPurple,
                                           onTap: () {
-                                            // navigate to account settings
+                                            // Navigate to account settings
                                           },
                                         ),
                                         SettingsListTile(
@@ -132,7 +132,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           icon: Icons.image,
                                           iconContainerColor: Colors.green,
                                           onTap: () {
-                                            // navigate to account settings
+                                            // Navigate to account settings
                                           },
                                         ),
                                         SettingsListTile(
@@ -140,7 +140,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           icon: Icons.notifications,
                                           iconContainerColor: Colors.red,
                                           onTap: () {
-                                            // navigate to account settings
+                                            // Navigate to account settings
                                             OpenSettings
                                                 .openAppNotificationSetting();
                                           },
@@ -157,7 +157,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           icon: Icons.help,
                                           iconContainerColor: Colors.yellow,
                                           onTap: () {
-                                            // navigate to account settings
+                                            // Navigate to account settings
                                           },
                                         ),
                                         SettingsListTile(
@@ -165,7 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           icon: Icons.share,
                                           iconContainerColor: Colors.blue,
                                           onTap: () {
-                                            // navigate to account settings
+                                            // Navigate to account settings
                                           },
                                         ),
                                       ],
@@ -175,7 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   Card(
                                     child: ListTile(
                                       contentPadding: const EdgeInsets.only(
-                                        // added padding for the list tile
+                                        // Added padding for the list tile
                                         left: 8.0,
                                         right: 8.0,
                                       ),
@@ -201,17 +201,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       trailing: Switch(
                                           value: isDarkMode,
                                           onChanged: (value) {
-                                            // set the isDarkMode to the value
+                                            // Set the isDarkMode to the value
                                             setState(() {
                                               isDarkMode = value;
                                             });
-                                            // check if the value is true
+                                            // Check if the value is true
                                             if (value) {
-                                              // set the theme mode to dark
+                                              // Set the theme mode to dark
                                               AdaptiveTheme.of(context)
                                                   .setDark();
                                             } else {
-                                              // set the theme mode to light
+                                              // Set the theme mode to light
                                               AdaptiveTheme.of(context)
                                                   .setLight();
                                             }
@@ -236,7 +236,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               onActionTap:
                                                   (value, updatedText) {
                                                 if (value) {
-                                                  // logout
+                                                  // Logout
                                                   context
                                                       .read<
                                                           AuthenticationProvider>()

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:athena_nike/authentication/landing_screen.dart';
 import 'package:athena_nike/authentication/login_screen.dart';
@@ -22,15 +23,14 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// Background message handler for Firebase Messaging
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
-
-  // log("Handling a background message: ${message.messageId}");
-  // log("Handling a background message: ${message.notification!.title}");
-  // log("Handling a background message: ${message.notification!.body}");
-  // log("Handling a background message: ${message.data}");
+  log("Handling a background message: ${message.messageId}");
+  log("Handling a background message: ${message.notification!.title}");
+  log("Handling a background message: ${message.notification!.body}");
+  log("Handling a background message: ${message.data}");
 }
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

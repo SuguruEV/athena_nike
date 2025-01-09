@@ -52,6 +52,7 @@ class _HomeScreenState extends State<HomeScreen>
     super.dispose();
   }
 
+  // Initialize platform state for app badge support
   initPlatformState() async {
     bool appBadgeSupported = false;
 
@@ -73,13 +74,13 @@ class _HomeScreenState extends State<HomeScreen>
     setState(() {
       _appBadgeSupported = appBadgeSupported;
     });
-    // remove app badge if supported
+    // Remove app badge if supported
     if (_appBadgeSupported) {
       FlutterAppBadger.removeBadge();
     }
   }
 
-  // request notification permissions
+  // Request notification permissions
   void requestNotificationPermissions() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     if (Platform.isIOS) {
@@ -116,17 +117,17 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-  // initialize cloud messaging
+  // Initialize cloud messaging
   void initCloudMessaging() async {
-    // make sure widget is initialized before initializing cloud messaging
+    // Make sure widget is initialized before initializing cloud messaging
     WidgetsBinding.instance!.addPostFrameCallback((_) async {
-      // 1. generate a new token
+      // 1. Generate a new token
       await context.read<AuthenticationProvider>().generateNewToken();
 
-      // 2. initialize firebase messaging
+      // 2. Initialize Firebase messaging
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         if (message.notification != null) {
-          // update app badge
+          // Update app badge
           if (_appBadgeSupported) {
             FlutterAppBadger.updateBadgeCount(1);
           }
@@ -134,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen>
         }
       });
 
-      // 3. setup onMessage handler
+      // 3. Setup onMessage handler
       setupInteractedMessage();
     });
   }
@@ -157,6 +158,7 @@ class _HomeScreenState extends State<HomeScreen>
     FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
   }
 
+  // Handle the received message and navigate accordingly
   void _handleMessage(RemoteMessage message) {
     navigationController(context: context, message: message);
   }
@@ -165,26 +167,26 @@ class _HomeScreenState extends State<HomeScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
-        // user comes back to the app
-        // update user status to online
+        // User comes back to the app
+        // Update user status to online
         context.read<AuthenticationProvider>().updateUserStatus(
               value: true,
             );
-        // remove the badge if the app is resumed
+        // Remove the badge if the app is resumed
         FlutterAppBadger.removeBadge();
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
       case AppLifecycleState.hidden:
-        // app is inactive, paused, detached or hidden
-        // update user status to offline
+        // App is inactive, paused, detached or hidden
+        // Update user status to offline
         context.read<AuthenticationProvider>().updateUserStatus(
               value: false,
             );
         break;
       default:
-        // handle other states
+        // Handle other states
         break;
     }
     super.didChangeAppLifecycleState(state);
@@ -203,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen>
                 imageUrl: authProvider.userModel!.image,
                 radius: 20,
                 onTap: () {
-                  // navigate to user profile with uis as arguments
+                  // Navigate to user profile with UID as arguments
                   Navigator.pushNamed(
                     context,
                     Constants.profileScreen,
@@ -257,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen>
           ],
           currentIndex: currentIndex,
           onTap: (index) {
-            // animate to the page
+            // Animate to the page
             pageController.animateToPage(index,
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeIn);

@@ -11,6 +11,7 @@ class NotificationServices {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+  // Create notification channels and initialize the plugin
   static Future<void> createNotificationChannelAndInitialize() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -41,29 +42,30 @@ class NotificationServices {
 
     if (androidImplementation != null) {
       await androidImplementation.createNotificationChannel(
-          NotificationChannels.highInportanceChannel);
+          NotificationChannels.highImportanceChannel);
       await androidImplementation
-          .createNotificationChannel(NotificationChannels.lowInportanceChannel);
+          .createNotificationChannel(NotificationChannels.lowImportanceChannel);
     }
   }
 
+  // Handle local notification received on iOS
   static Future<void> onDidReceiveLocalNotification(
     int id,
     String? title,
     String? body,
     String? payload,
   ) async {
-    // handle notification taps here on IOS
     log('Body: $body');
     log('payload: $payload');
   }
 
+  // Handle notification response
   static void onDidReceiveNotificationResponse(
       NotificationResponse notificationRespons) {
     log('onDidReceiveNotificationResponse : $notificationRespons');
     final payload = notificationRespons.payload;
     if (payload != null) {
-      // convert payload to remoteMessage and handle interaction
+      // Convert payload to RemoteMessage and handle interaction
       final message = RemoteMessage.fromMap(jsonDecode(payload));
       log('message: $message');
       navigationController(
@@ -71,11 +73,13 @@ class NotificationServices {
     }
   }
 
+  // Handle background notification response
   static void onDidReceiveBackgroundNotificationResponse(
       NotificationResponse notificationRespons) {
     log('BackgroundPayload : $notificationRespons');
   }
 
+  // Display notification
   static displayNotification(RemoteMessage message) {
     log('display notification: $message');
     RemoteNotification? notification = message.notification;
@@ -107,14 +111,15 @@ class NotificationServices {
     );
   }
 
+  // Find the channel name based on the channel id
   static String findChannelName(String channelId) {
     switch (channelId) {
       case 'high_importance_channel':
-        return NotificationChannels.highInportanceChannel.name;
+        return NotificationChannels.highImportanceChannel.name;
       case 'low_importance_channel':
-        return NotificationChannels.lowInportanceChannel.name;
+        return NotificationChannels.lowImportanceChannel.name;
       default:
-        return NotificationChannels.highInportanceChannel.name;
+        return NotificationChannels.highImportanceChannel.name;
     }
   }
 }

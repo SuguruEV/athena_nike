@@ -15,17 +15,16 @@ class UserInformationScreen extends StatefulWidget {
 }
 
 class _UserInformationScreenState extends State<UserInformationScreen> {
-  // final RoundedLoadingButtonController _btnController =
-  //     RoundedLoadingButtonController();
   final TextEditingController _nameController = TextEditingController();
 
+  // Dispose the controller when the widget is removed from the widget tree
   @override
   void dispose() {
-    //_btnController.stop();
     _nameController.dispose();
     super.dispose();
   }
 
+  // Build the widget tree for the user information screen
   @override
   Widget build(BuildContext context) {
     final AuthenticationProvider authentication =
@@ -36,77 +35,81 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
         onPressed: () => Navigator.of(context).pop(),
       ),
       body: Center(
-          child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 20.0,
-        ),
-        child: Column(
-          children: [
-            DisplayUserImage(
-              finalFileImage: authentication.finalFileImage,
-              radius: 60,
-              onPressed: () {
-                authentication.showBottomSheet(
-                    context: context, onSuccess: () {});
-              },
-            ),
-            const SizedBox(height: 30),
-            TextField(
-              controller: _nameController,
-              maxLength: 20,
-              decoration: const InputDecoration(
-                hintText: 'Enter your name',
-                labelText: 'Enter your name',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 20.0,
+          ),
+          child: Column(
+            children: [
+              // Display user image with option to change
+              DisplayUserImage(
+                finalFileImage: authentication.finalFileImage,
+                radius: 60,
+                onPressed: () {
+                  authentication.showBottomSheet(
+                      context: context, onSuccess: () {});
+                },
+              ),
+              const SizedBox(height: 30),
+              // Input field for user name
+              TextField(
+                controller: _nameController,
+                maxLength: 20,
+                decoration: const InputDecoration(
+                  hintText: 'Enter your name',
+                  labelText: 'Name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 40),
-            Container(
-              width: double.infinity,
-              height: 50,
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.circular(25),
+              const SizedBox(height: 40),
+              // Button to save user information
+              Container(
+                width: double.infinity,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                child: MaterialButton(
+                  onPressed: context.read<AuthenticationProvider>().isLoading
+                      ? null
+                      : () {
+                          if (_nameController.text.isEmpty ||
+                              _nameController.text.length < 3) {
+                            GlobalMethods.showSnackBar(
+                                context, 'Please enter a valid name');
+                            return;
+                          }
+                          // Save user data to Firestore
+                          saveUserDataToFireStore();
+                        },
+                  child: context.watch<AuthenticationProvider>().isLoading
+                      ? const CircularProgressIndicator(
+                          color: Colors.orangeAccent,
+                        )
+                      : const Text(
+                          'Continue',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 1.5),
+                        ),
+                ),
               ),
-              child: MaterialButton(
-                onPressed: context.read<AuthenticationProvider>().isLoading
-                    ? null
-                    : () {
-                        if (_nameController.text.isEmpty ||
-                            _nameController.text.length < 3) {
-                          GlobalMethods.showSnackBar(
-                              context, 'Please enter your name');
-                          return;
-                        }
-                        // save user data to firestore
-                        saveUserDataToFireStore();
-                      },
-                child: context.watch<AuthenticationProvider>().isLoading
-                    ? const CircularProgressIndicator(
-                        color: Colors.orangeAccent,
-                      )
-                    : const Text(
-                        'Continue',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: 1.5),
-                      ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      )),
+      ),
     );
   }
 
-  // save user data to firestore
+  // Save user data to Firestore
   void saveUserDataToFireStore() async {
     final authProvider = context.read<AuthenticationProvider>();
 
@@ -125,13 +128,13 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
       sentFriendRequestsUIDs: [],
     );
 
-    authProvider.saveUserDataToFireStore(
+    authProvider.saveUserDataToFirestore(
       userModel: userModel,
-      //fileImage: finalFileImage,
       onSuccess: () async {
-        // save user data to shared preferences
+        // Save user data to shared preferences
         await authProvider.saveUserDataToSharedPreferences();
 
+        // Navigate to home screen
         navigateToHomeScreen();
       },
       onFail: () async {
@@ -140,8 +143,8 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
     );
   }
 
+  // Navigate to the home screen and remove all previous screens
   void navigateToHomeScreen() {
-    // navigate to home screen and remove all previous screens
     Navigator.of(context).pushNamedAndRemoveUntil(
       Constants.homeScreen,
       (route) => false,

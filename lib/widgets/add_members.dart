@@ -18,6 +18,7 @@ class AddMembers extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        // Display the number of group members
         Text(
           '${groupProvider.groupMembersList.length} members',
           style: const TextStyle(
@@ -25,10 +26,12 @@ class AddMembers extends StatelessWidget {
             fontSize: 18,
           ),
         ),
+        // If the user is not an admin, show an empty SizedBox
         !isAdmin
             ? const SizedBox()
             : Row(
                 children: [
+                  // Display "Add Members" text
                   const Text(
                     'Add Members',
                     style: TextStyle(
@@ -36,6 +39,7 @@ class AddMembers extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 10),
+                  // Display a button to add members
                   CircleAvatar(
                     child: IconButton(
                       onPressed: onPressed,

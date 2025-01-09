@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class GroupChatAppBar extends StatefulWidget {
-  const GroupChatAppBar({super.key, required this.groupId});
+  const GroupChatAppBar({super.key, required this.groupID});
 
-  final String groupId;
+  final String groupID;
 
   @override
   State<GroupChatAppBar> createState() => _GroupChatAppBarState();
@@ -21,7 +21,7 @@ class _GroupChatAppBarState extends State<GroupChatAppBar> {
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream:
-          context.read<GroupProvider>().groupStream(groupID: widget.groupId),
+          context.read<GroupProvider>().groupStream(groupID: widget.groupID),
       builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.hasError) {
           return const Center(child: Text('Something went wrong'));
@@ -36,7 +36,7 @@ class _GroupChatAppBarState extends State<GroupChatAppBar> {
 
         return GestureDetector(
           onTap: () {
-            // navigate to group information screen
+            // Navigate to group information screen
             context
                 .read<GroupProvider>()
                 .updateGroupMembersList()
@@ -50,7 +50,8 @@ class _GroupChatAppBarState extends State<GroupChatAppBar> {
                 imageUrl: groupModel.groupImage,
                 radius: 20,
                 onTap: () {
-                  // navigate to group settings screen
+                  // Navigate to group settings screen
+                  Navigator.pushNamed(context, Constants.groupSettingsScreen, arguments: groupModel.groupID);
                 },
               ),
               const SizedBox(width: 10),

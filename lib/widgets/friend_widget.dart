@@ -46,7 +46,7 @@ class FriendWidget extends StatelessWidget {
           ? ElevatedButton(
               onPressed: () async {
                 if (groupID.isEmpty) {
-                  // accept friend request
+                  // Accept friend request
                   await context
                       .read<AuthenticationProvider>()
                       .acceptFriendRequest(friendID: friend.uid)
@@ -55,7 +55,7 @@ class FriendWidget extends StatelessWidget {
                         context, 'You are now friends with ${friend.name}');
                   });
                 } else {
-                  // accept group request
+                  // Accept group request
                   await context
                       .read<GroupProvider>()
                       .acceptRequestToJoinGroup(
@@ -75,7 +75,7 @@ class FriendWidget extends StatelessWidget {
               ? Checkbox(
                   value: getValue(),
                   onChanged: (value) {
-                    // check the check box
+                    // Check the check box
                     if (isAdminView) {
                       if (value == true) {
                         context
@@ -102,7 +102,7 @@ class FriendWidget extends StatelessWidget {
               : null,
       onTap: () {
         if (viewType == FriendViewType.friends) {
-          // navigate to chat screen with the folowing arguments
+          // Navigate to chat screen with the following arguments
           // 1. friend uid 2. friend name 3. friend image 4. groupId with an empty string
           Navigator.pushNamed(context, Constants.chatScreen, arguments: {
             Constants.contactUID: friend.uid,
@@ -111,7 +111,7 @@ class FriendWidget extends StatelessWidget {
             Constants.groupID: ''
           });
         } else if (viewType == FriendViewType.allUsers) {
-          // navite to this user's profile screen
+          // Navigate to this user's profile screen
           Navigator.pushNamed(
             context,
             Constants.profileScreen,
@@ -119,7 +119,7 @@ class FriendWidget extends StatelessWidget {
           );
         } else {
           if (groupID.isNotEmpty) {
-            // navigate to this person's profile
+            // Navigate to this person's profile
             Navigator.pushNamed(
               context,
               Constants.profileScreen,

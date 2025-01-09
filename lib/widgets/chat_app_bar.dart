@@ -45,7 +45,7 @@ class _ChatAppBarState extends State<ChatAppBar> {
               imageUrl: userModel.image,
               radius: 20,
               onTap: () {
-                // navigate to this friends profile with uid as argument
+                // Navigate to this friend's profile with uid as argument
                 Navigator.pushNamed(context, Constants.profileScreen,
                     arguments: userModel.uid);
               },

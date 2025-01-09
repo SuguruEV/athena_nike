@@ -1,24 +1,27 @@
+// Enum representing different views for friends
 enum FriendViewType {
-  friends,
-  friendRequests,
-  groupView,
-  allUsers,
+  friends,        // View for friends
+  friendRequests, // View for friend requests
+  groupView,      // View for groups
+  allUsers,       // View for all users
 }
 
+// Enum representing different types of messages
 enum MessageEnum {
-  text,
-  image,
-  video,
-  audio,
+  text,   // Text message
+  image,  // Image message
+  video,  // Video message
+  audio,  // Audio message
 }
 
+// Enum representing different types of groups
 enum GroupType {
-  private,
-  public,
-  none,
+  private, // Private group
+  public,  // Public group
+  none,    // No group
 }
 
-// extension convertMessageEnumToString on String
+// Extension on String to convert it to MessageEnum
 extension MessageEnumExtension on String {
   MessageEnum toMessageEnum() {
     switch (this) {

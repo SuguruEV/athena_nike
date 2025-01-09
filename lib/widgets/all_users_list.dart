@@ -53,7 +53,7 @@ class AllUsersList extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
-        // hide our data from the list
+        // Hide the current user's data from the list
         if (user.uid == userID) {
           return const SizedBox.shrink();
         }

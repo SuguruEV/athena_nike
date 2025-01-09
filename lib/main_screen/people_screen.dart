@@ -30,7 +30,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
                   },
                 ),
 
-                // list of users
+                // List of users based on the search query
                 Expanded(
                   child: searchQuery.isEmpty
                       ? const Center(
