@@ -1,4 +1,4 @@
-import groovy.util.XmlSlurper
+import groovy.xml.*;
 
 buildscript {
     repositories {
@@ -6,7 +6,6 @@ buildscript {
     }
     dependencies {
         classpath 'org.codehaus.groovy:groovy:3.0.9'
-        classpath 'org.codehaus.groovy:groovy-xml:3.0.9'
     }
 }
 

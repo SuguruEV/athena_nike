@@ -8,6 +8,7 @@ import 'package:athena_nike/widgets/my_app_bar.dart';
 import 'package:athena_nike/widgets/settings_list_tile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_open_app_settings/flutter_open_app_settings.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:open_settings/open_settings.dart';
 import 'package:provider/provider.dart';
@@ -141,8 +142,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           iconContainerColor: Colors.red,
                                           onTap: () {
                                             // Navigate to account settings
-                                            OpenSettings
-                                                .openAppNotificationSetting();
+                                            FlutterOpenAppSettings
+                                                .openAppsSettings(
+                                              settingsCode:
+                                                  SettingsCode.APP_SETTINGS,
+                                            );
                                           },
                                         ),
                                       ],

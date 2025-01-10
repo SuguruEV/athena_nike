@@ -4,7 +4,7 @@
     <!-- Optional, you'll have to check this permission by yourself. -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
-        android:label="athena_nike"
+        android:label="Aegis"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
         android:enableOnBackInvokedCallback="true">
