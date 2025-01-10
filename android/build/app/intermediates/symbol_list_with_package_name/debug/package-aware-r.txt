@@ -1269,6 +1269,7 @@ layout ucrop_layout_scale_wheel
 layout ucrop_view
 menu ucrop_menu_activity
 mipmap ic_launcher
+mipmap launcher_icon
 raw firebase_common_keep
 string abc_action_bar_home_description
 string abc_action_bar_up_description
