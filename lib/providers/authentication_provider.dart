@@ -176,13 +176,18 @@ class AuthenticationProvider extends ChangeNotifier {
   }
 
   // Get user data from Firestore
-  Future<void> getUserDataFromFirestore() async {
-    DocumentSnapshot documentSnapshot =
-        await _firestore.collection(Constants.users).doc(_uid).get();
+Future<void> getUserDataFromFirestore() async {
+  DocumentSnapshot documentSnapshot =
+      await _firestore.collection(Constants.users).doc(_uid).get();
+  if (documentSnapshot.exists && documentSnapshot.data() != null) {
     _userModel =
         UserModel.fromMap(documentSnapshot.data() as Map<String, dynamic>);
     notifyListeners();
+  } else {
+    // Handle the case where the document does not exist or data is null
+    log('User data not found or is null');
   }
+}
 
   // Save user data to shared preferences
   Future<void> saveUserDataToSharedPreferences() async {
@@ -310,35 +315,34 @@ class AuthenticationProvider extends ChangeNotifier {
     }
   }
 
-Future<void> verifyOTPCode({
-  required String verificationId,
-  required String otpCode,
-  required BuildContext context,
-  required Function onSuccess,
-}) async {
-  _isLoading = true;
-  notifyListeners();
-
-  final credential = PhoneAuthProvider.credential(
-    verificationId: verificationId,
-    smsCode: otpCode,
-  );
-
-  await _auth.signInWithCredential(credential).then((value) async {
-    _uid = value.user!.uid;
-    _phoneNumber = value.user!.phoneNumber;
-    _isSuccessful = true;
-    _isLoading = false;
-    await getUserDataFromFirestore(); // Update state with new user data
-    onSuccess();
+  Future<void> verifyOTPCode({
+    required String verificationId,
+    required String otpCode,
+    required BuildContext context,
+    required Function onSuccess,
+  }) async {
+    _isLoading = true;
     notifyListeners();
-  }).catchError((e) {
-    _isSuccessful = false;
-    _isLoading = false;
-    notifyListeners();
-    GlobalMethods.showSnackBar(context, e.toString());
-  });
-}
+
+    final credential = PhoneAuthProvider.credential(
+      verificationId: verificationId,
+      smsCode: otpCode,
+    );
+
+    await _auth.signInWithCredential(credential).then((value) async {
+      _uid = value.user!.uid;
+      _phoneNumber = value.user!.phoneNumber;
+      _isSuccessful = true;
+      _isLoading = false;
+      onSuccess();
+      notifyListeners();
+    }).catchError((e) {
+      _isSuccessful = false;
+      _isLoading = false;
+      notifyListeners();
+      GlobalMethods.showSnackBar(context, e.toString());
+    });
+  }
 
   // Save user data to Firestore
   void saveUserDataToFirestore({

@@ -77,6 +77,8 @@ dependencies:
   plugin_platform_interface: ^2.1.8
   smart_auth: ^3.2.0
   open_settings_plus: ^0.4.0
+  external_app_launcher: ^4.0.1
+  flutter_markdown: ^0.7.5
   rounded_loading_button:
     git:
       url: https://github.com/scopendo/flutter_rounded_loading_button.git
@@ -108,6 +110,7 @@ flutter:
   assets:
     - assets/images/
     - assets/lottie/
+    - assets/MANUAL.md
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

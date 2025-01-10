@@ -1,4 +1,5 @@
 import groovy.xml.*;
+import groovy.util.XmlSlurper;
 
 buildscript {
     repositories {

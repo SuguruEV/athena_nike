@@ -16,6 +16,8 @@ MERGED from [:firebase_core] C:\Project\athena_nike\build\firebase_core\intermed
 MERGED from [:firebase_core] C:\Project\athena_nike\build\firebase_core\intermediates\merged_manifest\debug\AndroidManifest.xml:7:5-13:19
 MERGED from [:image_picker_android] C:\Project\athena_nike\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:8:5-32:19
 MERGED from [:image_picker_android] C:\Project\athena_nike\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:8:5-32:19
+MERGED from [:url_launcher_android] C:\Project\athena_nike\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:7:5-12:19
+MERGED from [:url_launcher_android] C:\Project\athena_nike\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:7:5-12:19
 MERGED from [com.google.firebase:firebase-firestore:25.1.1] C:\Users\Usuario\.gradle\caches\transforms-3\a1f26dab07b22eb69295acda9946574b\transformed\jetified-firebase-firestore-25.1.1\AndroidManifest.xml:13:5-24:19
 MERGED from [com.google.firebase:firebase-firestore:25.1.1] C:\Users\Usuario\.gradle\caches\transforms-3\a1f26dab07b22eb69295acda9946574b\transformed\jetified-firebase-firestore-25.1.1\AndroidManifest.xml:13:5-24:19
 MERGED from [com.google.firebase:firebase-messaging:24.1.0] C:\Users\Usuario\.gradle\caches\transforms-3\b8338217fe7838912d3262146ed5361b\transformed\jetified-firebase-messaging-24.1.0\AndroidManifest.xml:28:5-64:19
@@ -98,6 +100,7 @@ MERGED from [:audioplayers_android] C:\Project\athena_nike\build\audioplayers_an
 MERGED from [:cached_video_player] C:\Project\athena_nike\build\cached_video_player\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:cloud_firestore] C:\Project\athena_nike\build\cloud_firestore\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-15:12
 MERGED from [:emoji_picker_flutter] C:\Project\athena_nike\build\emoji_picker_flutter\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-7:12
+MERGED from [:external_app_launcher] C:\Project\athena_nike\build\external_app_launcher\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:firebase_auth] C:\Project\athena_nike\build\firebase_auth\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-15:12
 MERGED from [:firebase_database] C:\Project\athena_nike\build\firebase_database\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-15:12
 MERGED from [:firebase_messaging] C:\Project\athena_nike\build\firebase_messaging\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-48:12
@@ -117,6 +120,7 @@ MERGED from [:permission_handler_android] C:\Project\athena_nike\build\permissio
 MERGED from [:shared_preferences_android] C:\Project\athena_nike\build\shared_preferences_android\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:smart_auth] C:\Project\athena_nike\build\smart_auth\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:sqflite_android] C:\Project\athena_nike\build\sqflite_android\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-7:12
+MERGED from [:url_launcher_android] C:\Project\athena_nike\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-14:12
 MERGED from [com.google.firebase:firebase-firestore:25.1.1] C:\Users\Usuario\.gradle\caches\transforms-3\a1f26dab07b22eb69295acda9946574b\transformed\jetified-firebase-firestore-25.1.1\AndroidManifest.xml:2:1-26:12
 MERGED from [com.google.firebase:firebase-messaging:24.1.0] C:\Users\Usuario\.gradle\caches\transforms-3\b8338217fe7838912d3262146ed5361b\transformed\jetified-firebase-messaging-24.1.0\AndroidManifest.xml:17:1-66:12
 MERGED from [com.google.firebase:firebase-database:21.0.0] C:\Users\Usuario\.gradle\caches\transforms-3\4bedf519664d140a91a04b17b6eeae3b\transformed\jetified-firebase-database-21.0.0\AndroidManifest.xml:15:1-38:12
@@ -166,7 +170,7 @@ MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] C:\Users\Usuario\.gra
 MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] C:\Users\Usuario\.gradle\caches\transforms-3\d92958aac014ae7818069ff248f54240\transformed\lifecycle-livedata-core-2.7.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] C:\Users\Usuario\.gradle\caches\transforms-3\f14c0432a950b37d2ae35a7a0b4fc805\transformed\jetified-lifecycle-viewmodel-savedstate-2.7.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.core:core-ktx:1.15.0] C:\Users\Usuario\.gradle\caches\transforms-3\f775dfb346fddd4fc20939c95640e0d8\transformed\jetified-core-ktx-1.15.0\AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.browser:browser:1.4.0] C:\Users\Usuario\.gradle\caches\transforms-3\bb5a5125e57e439427cd66fb993867a0\transformed\browser-1.4.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.browser:browser:1.8.0] C:\Users\Usuario\.gradle\caches\transforms-3\5817c6ab20461ca34d4a9e51e2c64148\transformed\browser-1.8.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.2.0] C:\Users\Usuario\.gradle\caches\transforms-3\50c9da325e88b69dc5888e1e7ab06425\transformed\slidingpanelayout-1.2.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.window:window:1.2.0] C:\Users\Usuario\.gradle\caches\transforms-3\f8ec00f3fcc9d3a9a9c66e73a873b76c\transformed\jetified-window-1.2.0\AndroidManifest.xml:17:1-31:12
 MERGED from [androidx.window:window-java:1.2.0] C:\Users\Usuario\.gradle\caches\transforms-3\e801b4138ecad13fba43ba1699fe67aa\transformed\jetified-window-java-1.2.0\AndroidManifest.xml:17:1-21:12
@@ -288,6 +292,8 @@ MERGED from [:cloud_firestore] C:\Project\athena_nike\build\cloud_firestore\inte
 MERGED from [:cloud_firestore] C:\Project\athena_nike\build\cloud_firestore\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:emoji_picker_flutter] C:\Project\athena_nike\build\emoji_picker_flutter\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:emoji_picker_flutter] C:\Project\athena_nike\build\emoji_picker_flutter\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:external_app_launcher] C:\Project\athena_nike\build\external_app_launcher\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:external_app_launcher] C:\Project\athena_nike\build\external_app_launcher\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:firebase_auth] C:\Project\athena_nike\build\firebase_auth\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:firebase_auth] C:\Project\athena_nike\build\firebase_auth\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:firebase_database] C:\Project\athena_nike\build\firebase_database\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
@@ -326,6 +332,8 @@ MERGED from [:smart_auth] C:\Project\athena_nike\build\smart_auth\intermediates\
 MERGED from [:smart_auth] C:\Project\athena_nike\build\smart_auth\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:sqflite_android] C:\Project\athena_nike\build\sqflite_android\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:sqflite_android] C:\Project\athena_nike\build\sqflite_android\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:url_launcher_android] C:\Project\athena_nike\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:url_launcher_android] C:\Project\athena_nike\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [com.google.firebase:firebase-firestore:25.1.1] C:\Users\Usuario\.gradle\caches\transforms-3\a1f26dab07b22eb69295acda9946574b\transformed\jetified-firebase-firestore-25.1.1\AndroidManifest.xml:6:5-44
 MERGED from [com.google.firebase:firebase-firestore:25.1.1] C:\Users\Usuario\.gradle\caches\transforms-3\a1f26dab07b22eb69295acda9946574b\transformed\jetified-firebase-firestore-25.1.1\AndroidManifest.xml:6:5-44
 MERGED from [com.google.firebase:firebase-messaging:24.1.0] C:\Users\Usuario\.gradle\caches\transforms-3\b8338217fe7838912d3262146ed5361b\transformed\jetified-firebase-messaging-24.1.0\AndroidManifest.xml:20:5-44
@@ -424,8 +432,8 @@ MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] C:\Users\U
 MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] C:\Users\Usuario\.gradle\caches\transforms-3\f14c0432a950b37d2ae35a7a0b4fc805\transformed\jetified-lifecycle-viewmodel-savedstate-2.7.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.core:core-ktx:1.15.0] C:\Users\Usuario\.gradle\caches\transforms-3\f775dfb346fddd4fc20939c95640e0d8\transformed\jetified-core-ktx-1.15.0\AndroidManifest.xml:5:5-44
 MERGED from [androidx.core:core-ktx:1.15.0] C:\Users\Usuario\.gradle\caches\transforms-3\f775dfb346fddd4fc20939c95640e0d8\transformed\jetified-core-ktx-1.15.0\AndroidManifest.xml:5:5-44
-MERGED from [androidx.browser:browser:1.4.0] C:\Users\Usuario\.gradle\caches\transforms-3\bb5a5125e57e439427cd66fb993867a0\transformed\browser-1.4.0\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.browser:browser:1.4.0] C:\Users\Usuario\.gradle\caches\transforms-3\bb5a5125e57e439427cd66fb993867a0\transformed\browser-1.4.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.browser:browser:1.8.0] C:\Users\Usuario\.gradle\caches\transforms-3\5817c6ab20461ca34d4a9e51e2c64148\transformed\browser-1.8.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.browser:browser:1.8.0] C:\Users\Usuario\.gradle\caches\transforms-3\5817c6ab20461ca34d4a9e51e2c64148\transformed\browser-1.8.0\AndroidManifest.xml:5:5-44
 MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.2.0] C:\Users\Usuario\.gradle\caches\transforms-3\50c9da325e88b69dc5888e1e7ab06425\transformed\slidingpanelayout-1.2.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.2.0] C:\Users\Usuario\.gradle\caches\transforms-3\50c9da325e88b69dc5888e1e7ab06425\transformed\slidingpanelayout-1.2.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.window:window:1.2.0] C:\Users\Usuario\.gradle\caches\transforms-3\f8ec00f3fcc9d3a9a9c66e73a873b76c\transformed\jetified-window-1.2.0\AndroidManifest.xml:20:5-44
@@ -754,6 +762,14 @@ ADDED from [:image_picker_android] C:\Project\athena_nike\build\image_picker_and
 		ADDED from [:image_picker_android] C:\Project\athena_nike\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:30:17-33
 	android:name
 		ADDED from [:image_picker_android] C:\Project\athena_nike\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:29:17-63
+activity#io.flutter.plugins.urllauncher.WebViewActivity
+ADDED from [:url_launcher_android] C:\Project\athena_nike\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:8:9-11:74
+	android:exported
+		ADDED from [:url_launcher_android] C:\Project\athena_nike\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:10:13-37
+	android:theme
+		ADDED from [:url_launcher_android] C:\Project\athena_nike\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:11:13-71
+	android:name
+		ADDED from [:url_launcher_android] C:\Project\athena_nike\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:9:13-74
 meta-data#com.google.firebase.components:com.google.firebase.firestore.FirebaseFirestoreKtxRegistrar
 ADDED from [com.google.firebase:firebase-firestore:25.1.1] C:\Users\Usuario\.gradle\caches\transforms-3\a1f26dab07b22eb69295acda9946574b\transformed\jetified-firebase-firestore-25.1.1\AndroidManifest.xml:17:13-19:85
 	android:value

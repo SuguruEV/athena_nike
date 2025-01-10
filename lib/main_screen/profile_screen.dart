@@ -4,13 +4,13 @@ import 'package:athena_nike/models/user_model.dart';
 import 'package:athena_nike/providers/authentication_provider.dart';
 import 'package:athena_nike/utilities/my_dialogs.dart';
 import 'package:athena_nike/widgets/info_details_card.dart';
+import 'package:athena_nike/widgets/manual_screen.dart';
 import 'package:athena_nike/widgets/my_app_bar.dart';
 import 'package:athena_nike/widgets/settings_list_tile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_open_app_settings/flutter_open_app_settings.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:open_settings/open_settings.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -121,22 +121,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     child: Column(
                                       children: [
                                         SettingsListTile(
-                                          title: 'Account',
-                                          icon: Icons.person,
-                                          iconContainerColor: Colors.blueAccent,
-                                          onTap: () {
-                                            // Navigate to account settings
-                                          },
-                                        ),
-                                        SettingsListTile(
-                                          title: 'My Media',
-                                          icon: Icons.image,
-                                          iconContainerColor: Colors.green,
-                                          onTap: () {
-                                            // Navigate to account settings
-                                          },
-                                        ),
-                                        SettingsListTile(
                                           title: 'Notifications',
                                           icon: Icons.notifications,
                                           iconContainerColor: Colors.red,
@@ -160,16 +144,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           title: 'Help',
                                           icon: Icons.help,
                                           iconContainerColor: Colors.yellow,
-                                          onTap: () {
-                                            // Navigate to account settings
-                                          },
-                                        ),
-                                        SettingsListTile(
-                                          title: 'Share',
-                                          icon: Icons.share,
-                                          iconContainerColor: Colors.blue,
-                                          onTap: () {
-                                            // Navigate to account settings
+                                          onTap: () async {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ManualScreen(),
+                                              ),
+                                            );
                                           },
                                         ),
                                       ],
